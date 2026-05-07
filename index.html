@@ -273,14 +273,6 @@
             padding: 8px;
         }
 
-        .status-ok {
-            color: #10B981;
-        }
-
-        .status-error {
-            color: #EF4444;
-        }
-
         @media (max-width: 768px) {
             body { padding: 16px; }
             .charts { grid-template-columns: 1fr; }
@@ -409,46 +401,31 @@
     </div>
 
     <script>
-        // ⚠️ CHAVE API GROQ - ATUALIZE COM SUA NOVA CHAVE
         const GROQ_API_KEY = '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';
         
         let dadosGlobais = [];
         let charts = {};
 
-        // LINK DE PUBLICAÇÃO DA SUA PLANILHA
         const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBY17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pubhtml';
 
-        // ============================================
-        // FUNÇÃO PRINCIPAL: CARREGAR DADOS DA PLANILHA
-        // ============================================
         async function carregarDadosPlanilha() {
             const tbody = document.getElementById('transacoes-body');
             if (tbody) tbody.innerHTML = '<tr><td colspan="5">🔄 Conectando ao Google Sheets...</td></tr>';
             
             try {
-                // URL para exportar TODA a planilha em CSV (todas as abas)
                 const csvUrl = URL_PUBLICACAO.replace('/pubhtml', '/export?format=csv');
-                
-                console.log('Carregando de:', csvUrl);
                 const response = await fetch(csvUrl);
-                
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
                 const csvText = await response.text();
                 const linhas = csvText.split('\n').filter(l => l.trim().length > 0);
-                
                 if (linhas.length < 2) throw new Error('CSV vazio');
                 
-                // Parse do CSV para JSON
                 const novosDados = [];
-                
                 for (let i = 1; i < linhas.length; i++) {
-                    const linha = linhas[i];
                     const valores = [];
                     let dentroAspas = false;
                     let valorAtual = '';
-                    
-                    // Parse manual para respeitar vírgulas dentro de aspas
+                    const linha = linhas[i];
                     for (let char of linha) {
                         if (char === '"') {
                             dentroAspas = !dentroAspas;
@@ -463,80 +440,44 @@
                     
                     if (valores.length >= 6 && valores[0]) {
                         const data = valores[0].replace(/"/g, '');
-                        const tipoRegistro = valores[1]?.replace(/"/g, '') || '';
-                        const descricao = valores[2]?.replace(/"/g, '') || '';
-                        const categoria = valores[4]?.replace(/"/g, '') || '';
-                        const valorStr = valores[5]?.replace(/"/g, '').replace(',', '.');
-                        const valor = parseFloat(valorStr) || 0;
-                        
-                        // Determinar o tipo (extrato ou cartao) baseado na coluna tipo_registro
                         let tipo = 'extrato';
+                        const tipoRegistro = valores[1]?.replace(/"/g, '') || '';
                         if (tipoRegistro === 'cartao' || valores[7]?.includes('5217') || valores[7]?.includes('7398')) {
                             tipo = 'cartao';
                         }
+                        const descricao = valores[2]?.replace(/"/g, '') || '';
+                        const categoria = valores[4]?.replace(/"/g, '') || 'Outros';
+                        const valor = parseFloat(valores[5]?.replace(/"/g, '').replace(',', '.')) || 0;
                         
                         if (data && data.match(/\d{4}-\d{2}-\d{2}/)) {
-                            novosDados.push({
-                                data: data,
-                                descricao: descricao.substring(0, 60),
-                                categoria: categoria || 'Outros',
-                                valor: valor,
-                                tipo: tipo
-                            });
+                            novosDados.push({ data, descricao, categoria, valor, tipo });
                         }
                     }
                 }
                 
-                if (novosDados.length === 0) {
-                    throw new Error('Nenhuma transação encontrada');
-                }
+                if (novosDados.length === 0) throw new Error('Nenhuma transação encontrada');
                 
                 dadosGlobais = novosDados;
-                const totalTransacoes = dadosGlobais.length;
-                const somaPositiva = dadosGlobais.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-                const somaNegativa = dadosGlobais.filter(d => d.valor < 0).reduce((s, d) => s + Math.abs(d.valor), 0);
-                
-                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${totalTransacoes} transações carregadas ✓`;
-                document.getElementById('last-update').style.color = '#10B981';
-                
+                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${dadosGlobais.length} transações`;
                 aplicarFiltros();
-                
             } catch (error) {
-                console.error('Erro detalhado:', error);
+                console.error(error);
                 document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ERRO: ${error.message}`;
-                document.getElementById('last-update').style.color = '#EF4444';
-                
-                // Mostra mensagem na tabela
-                const tbody = document.getElementById('transacoes-body');
-                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar planilha: ${error.message}. Verifique se a planilha está publicada.</td></tr>`;
+                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar: ${error.message}</td></tr>`;
             }
         }
 
-        // ============================================
-        // APLICAR FILTROS
-        // ============================================
         function aplicarFiltros() {
-            const mesSelecionado = document.getElementById('mes').value;
-            const categoriaSelecionada = document.getElementById('categoria').value;
-            const tipoSelecionado = document.getElementById('tipo').value;
-            const buscaTexto = document.getElementById('busca').value.toLowerCase();
+            const mesSel = document.getElementById('mes').value;
+            const catSel = document.getElementById('categoria').value;
+            const tipoSel = document.getElementById('tipo').value;
+            const buscaText = document.getElementById('busca').value.toLowerCase();
             
             let dadosFiltrados = dadosGlobais.filter(t => {
-                // Filtro por mês
-                if (mesSelecionado !== 'todos') {
-                    const mesTransacao = t.data.substring(0, 7);
-                    if (mesTransacao !== mesSelecionado) return false;
-                }
-                
-                // Filtro por categoria
-                if (categoriaSelecionada !== 'todas' && t.categoria !== categoriaSelecionada) return false;
-                
-                // Filtro por tipo
-                if (tipoSelecionado !== 'todas' && t.tipo !== tipoSelecionado) return false;
-                
-                // Filtro por busca textual
-                if (buscaTexto && !t.descricao.toLowerCase().includes(buscaTexto)) return false;
-                
+                if (mesSel !== 'todos' && t.data.substring(0, 7) !== mesSel) return false;
+                if (catSel !== 'todas' && t.categoria !== catSel) return false;
+                if (tipoSel !== 'todas' && t.tipo !== tipoSel) return false;
+                if (buscaText && !t.descricao.toLowerCase().includes(buscaText)) return false;
                 return true;
             });
             
@@ -546,170 +487,100 @@
         }
 
         function atualizarCards(dados) {
-            const dataAtual = new Date();
-            const mesAtual = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2,'0')}`;
-            
-            // Filtra apenas transações do mês atual para os cards "do mês"
+            const mesAtual = new Date().toISOString().substring(0, 7);
             const transacoesMes = dadosGlobais.filter(t => t.data.substring(0, 7) === mesAtual);
-            const receitasMes = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesasMes = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const economiaMes = receitasMes - despesasMes;
+            const receitas = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesas = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const saldo = dadosGlobais.reduce((s, t) => s + t.valor, 0);
             
-            // Saldo total (todas transações)
-            let saldoTotal = 0;
-            [...dadosGlobais].sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(t => { saldoTotal += t.valor; });
-            
-            document.getElementById('saldo-atual').innerHTML = `R$ ${saldoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('receitas-mes').innerHTML = `R$ ${receitasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('despesas-mes').innerHTML = `R$ ${despesasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('economia-mes').innerHTML = `R$ ${economiaMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            
-            const economiaStatus = economiaMes >= 0 ? '✅ No verde' : '⚠️ No vermelho';
-            document.getElementById('economia-status').innerHTML = economiaStatus;
-            document.getElementById('saldo-change').innerHTML = `${dadosGlobais.length} transações no total`;
+            document.getElementById('saldo-atual').innerHTML = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('receitas-mes').innerHTML = `R$ ${receitas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('despesas-mes').innerHTML = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('economia-mes').innerHTML = `R$ ${(receitas - despesas).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         }
 
         function atualizarTabela(dados) {
             const tbody = document.getElementById('transacoes-body');
             if (!tbody) return;
             tbody.innerHTML = '';
-            
-            // Mostra TODAS as transações filtradas (sem limite)
-            const dadosOrdenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data));
-            
-            for (let t of dadosOrdenados) {
+            const ordenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data));
+            for (let t of ordenados) {
                 const row = tbody.insertRow();
                 row.insertCell(0).innerHTML = new Date(t.data).toLocaleDateString('pt-BR');
                 row.insertCell(1).innerHTML = t.descricao.substring(0, 50);
-                row.insertCell(2).innerHTML = t.categoria || '-';
+                row.insertCell(2).innerHTML = t.categoria;
                 row.insertCell(3).innerHTML = `<span class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${Math.abs(t.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>`;
                 row.insertCell(4).innerHTML = t.tipo === 'extrato' ? '💳 Conta' : '💳 Cartão';
             }
-            
-            if (dadosOrdenados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada com os filtros selecionados.</td></tr>';
-            }
+            if (ordenados.length === 0) tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada</td></tr>';
         }
 
         function atualizarGraficos(dados) {
-            // Gastos por categoria (apenas despesas)
             const catMap = new Map();
             dados.filter(t => t.valor < 0).forEach(t => {
                 const cat = t.categoria || 'Outros';
                 catMap.set(cat, (catMap.get(cat) || 0) + Math.abs(t.valor));
             });
-            
-            const categorias = Array.from(catMap.keys());
-            const valores = Array.from(catMap.values());
-            
             if (charts.categorias) charts.categorias.destroy();
             const ctx1 = document.getElementById('categorias-chart');
             if (ctx1) {
                 charts.categorias = new Chart(ctx1, {
                     type: 'doughnut',
-                    data: { labels: categorias, datasets: [{ data: valores, backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1'] }] },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
+                    data: { labels: Array.from(catMap.keys()), datasets: [{ data: Array.from(catMap.values()), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'] }] },
+                    options: { responsive: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
                 });
             }
             
-            // Evolução mensal
             const mesesMap = new Map();
             dadosGlobais.forEach(t => {
-                if (!t.data) return;
                 const mes = t.data.substring(0, 7);
                 if (!mesesMap.has(mes)) mesesMap.set(mes, { receitas: 0, despesas: 0 });
                 const m = mesesMap.get(mes);
                 if (t.valor > 0) m.receitas += t.valor;
                 else m.despesas += Math.abs(t.valor);
             });
-            
             const mesesOrdenados = Array.from(mesesMap.keys()).sort();
             if (charts.evolucao) charts.evolucao.destroy();
             const ctx2 = document.getElementById('evolucao-chart');
             if (ctx2) {
                 charts.evolucao = new Chart(ctx2, {
                     type: 'bar',
-                    data: {
-                        labels: mesesOrdenados.map(m => {
-                            const [ano, mes] = m.split('-');
-                            const nomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                            return `${nomes[parseInt(mes)-1]} ${ano}`;
-                        }),
-                        datasets: [
-                            { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981', borderRadius: 8 },
-                            { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444', borderRadius: 8 }
-                        ]
-                    },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
+                    data: { labels: mesesOrdenados, datasets: [{ label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981' }, { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444' }] },
+                    options: { responsive: true }
                 });
             }
         }
 
-        // ============================================
-        // IA - PERGUNTAR PARA GROQ
-        // ============================================
         async function enviarPergunta() {
             const input = document.getElementById('chat-input');
             const pergunta = input.value.trim();
             if (!pergunta) return;
-            
             const messagesDiv = document.getElementById('chat-messages');
             messagesDiv.innerHTML += `<div class="message user">${pergunta}</div>`;
             input.value = '';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            
-            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando dados...</div>`;
-            
+            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando...</div>`;
             try {
-                const resumoDados = gerarResumoDados();
+                const resumo = `Total receitas: ${dadosGlobais.filter(t=>t.valor>0).reduce((s,t)=>s+t.valor,0)}, Total despesas: ${dadosGlobais.filter(t=>t.valor<0).reduce((s,t)=>s+Math.abs(t.valor),0)}`;
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${GROQ_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'llama3-8b-8192',
-                        messages: [
-                            { role: 'system', content: `Você é um assistente financeiro pessoal. Responda apenas sobre finanças baseado nos dados do usuário. Use linguagem clara e amigável. Dados resumidos: ${resumoDados}` },
-                            { role: 'user', content: pergunta }
-                        ],
-                        temperature: 0.7,
-                        max_tokens: 500
-                    })
+                    method: 'POST', headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: 'llama3-8b-8192', messages: [{ role: 'system', content: `Você é assistente financeiro. Dados: ${resumo}` }, { role: 'user', content: pergunta }], temperature: 0.7, max_tokens: 500 })
                 });
-                
                 const data = await response.json();
                 document.getElementById('loading-ia')?.remove();
-                
-                const resposta = data.choices?.[0]?.message?.content || 'Desculpe, não consegui processar sua pergunta.';
-                messagesDiv.innerHTML += `<div class="message assistant">${resposta}</div>`;
+                messagesDiv.innerHTML += `<div class="message assistant">${data.choices?.[0]?.message?.content || 'Não consegui processar'}</div>`;
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                
             } catch (error) {
                 document.getElementById('loading-ia')?.remove();
-                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro ao conectar com IA. Verifique sua chave API.</div>`;
+                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro na IA</div>`;
             }
         }
         
-        function gerarResumoDados() {
-            const receitas = dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesas = dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const categorias = {};
-            dadosGlobais.filter(t => t.valor < 0).forEach(t => {
-                const cat = t.categoria || 'Outros';
-                categorias[cat] = (categorias[cat] || 0) + Math.abs(t.valor);
-            });
-            return `Total receitas: R$ ${receitas}, Total despesas: R$ ${despesas}, Gastos por categoria: ${JSON.stringify(categorias)}`;
-        }
-        
-        // Event listeners para filtros
         document.getElementById('mes').addEventListener('change', () => aplicarFiltros());
         document.getElementById('categoria').addEventListener('change', () => aplicarFiltros());
         document.getElementById('tipo').addEventListener('change', () => aplicarFiltros());
         document.getElementById('busca').addEventListener('keyup', () => aplicarFiltros());
         
-        // Inicializar
         carregarDadosPlanilha();
     </script>
 </body>
