@@ -296,6 +296,7 @@
                 <label>📅 Mês</label>
                 <select id="mes">
                     <option value="todos">Todos os meses</option>
+                    <option value="2025-12">Dezembro 2025</option>
                     <option value="2026-01">Janeiro 2026</option>
                     <option value="2026-02">Fevereiro 2026</option>
                     <option value="2026-03">Março 2026</option>
@@ -320,6 +321,9 @@
                     <option value="Empréstimo">🏦 Empréstimo</option>
                     <option value="Pagamento Cartão">💳 Pagamento Cartão</option>
                     <option value="Transferência">🔄 Transferência</option>
+                    <option value="Reembolso">↩️ Reembolso</option>
+                    <option value="Juros">📉 Juros</option>
+                    <option value="Imposto">📃 Imposto</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -401,31 +405,46 @@
     </div>
 
     <script>
+        // ⚠️ CHAVE API GROQ - RECOMENDO REVOGAR ESTA E CRIAR UMA NOVA
         const GROQ_API_KEY = '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';
         
         let dadosGlobais = [];
         let charts = {};
 
+        // ✅ URL CORRIGIDA - Link de exportação CSV com o gid correto da aba movimentacoes
         const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/export?format=csv&gid=966920672';
 
+        // ============================================
+        // FUNÇÃO PRINCIPAL: CARREGAR DADOS DA PLANILHA
+        // ============================================
         async function carregarDadosPlanilha() {
             const tbody = document.getElementById('transacoes-body');
             if (tbody) tbody.innerHTML = '<tr><td colspan="5">🔄 Conectando ao Google Sheets...</td></tr>';
             
             try {
-                const csvUrl = URL_PUBLICACAO.replace('/pubhtml', '/export?format=csv');
-                const response = await fetch(csvUrl);
+                console.log('Carregando de:', URL_PUBLICACAO);
+                const response = await fetch(URL_PUBLICACAO);
+                
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
                 const csvText = await response.text();
+                console.log('CSV recebido, tamanho:', csvText.length);
+                
                 const linhas = csvText.split('\n').filter(l => l.trim().length > 0);
+                console.log('Linhas encontradas:', linhas.length);
+                
                 if (linhas.length < 2) throw new Error('CSV vazio');
                 
                 const novosDados = [];
+                const cabecalho = linhas[0].split(',').map(c => c.replace(/"/g, '').trim());
+                console.log('Cabeçalho:', cabecalho);
+                
                 for (let i = 1; i < linhas.length; i++) {
+                    const linha = linhas[i];
                     const valores = [];
                     let dentroAspas = false;
                     let valorAtual = '';
-                    const linha = linhas[i];
+                    
                     for (let char of linha) {
                         if (char === '"') {
                             dentroAspas = !dentroAspas;
@@ -440,33 +459,56 @@
                     
                     if (valores.length >= 6 && valores[0]) {
                         const data = valores[0].replace(/"/g, '');
-                        let tipo = 'extrato';
                         const tipoRegistro = valores[1]?.replace(/"/g, '') || '';
+                        const descricao = valores[2]?.replace(/"/g, '') || '';
+                        const categoria = valores[4]?.replace(/"/g, '') || 'Outros';
+                        const valorStr = valores[5]?.replace(/"/g, '').replace(',', '.');
+                        const valor = parseFloat(valorStr) || 0;
+                        
+                        let tipo = 'extrato';
                         if (tipoRegistro === 'cartao' || valores[7]?.includes('5217') || valores[7]?.includes('7398')) {
                             tipo = 'cartao';
                         }
-                        const descricao = valores[2]?.replace(/"/g, '') || '';
-                        const categoria = valores[4]?.replace(/"/g, '') || 'Outros';
-                        const valor = parseFloat(valores[5]?.replace(/"/g, '').replace(',', '.')) || 0;
                         
                         if (data && data.match(/\d{4}-\d{2}-\d{2}/)) {
-                            novosDados.push({ data, descricao, categoria, valor, tipo });
+                            novosDados.push({
+                                data: data,
+                                descricao: descricao.substring(0, 60),
+                                categoria: categoria,
+                                valor: valor,
+                                tipo: tipo
+                            });
                         }
                     }
                 }
                 
-                if (novosDados.length === 0) throw new Error('Nenhuma transação encontrada');
+                if (novosDados.length === 0) {
+                    throw new Error('Nenhuma transação encontrada no CSV');
+                }
                 
                 dadosGlobais = novosDados;
-                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${dadosGlobais.length} transações`;
+                const totalTransacoes = dadosGlobais.length;
+                const somaPositiva = dadosGlobais.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+                const somaNegativa = dadosGlobais.filter(d => d.valor < 0).reduce((s, d) => s + Math.abs(d.valor), 0);
+                
+                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${totalTransacoes} transações carregadas ✓`;
+                document.getElementById('last-update').style.color = '#10B981';
+                
                 aplicarFiltros();
+                
             } catch (error) {
-                console.error(error);
+                console.error('Erro detalhado:', error);
                 document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ERRO: ${error.message}`;
-                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar: ${error.message}</td></tr>`;
+                document.getElementById('last-update').style.color = '#EF4444';
+                
+                const tbody = document.getElementById('transacoes-body');
+                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar planilha: ${error.message}. Verifique se a planilha está publicada.</td></tr>`;
             }
         }
 
+        // ============================================
+        // APLICAR FILTROS
+        // ============================================
         function aplicarFiltros() {
             const mesSel = document.getElementById('mes').value;
             const catSel = document.getElementById('categoria').value;
@@ -489,21 +531,29 @@
         function atualizarCards(dados) {
             const mesAtual = new Date().toISOString().substring(0, 7);
             const transacoesMes = dadosGlobais.filter(t => t.data.substring(0, 7) === mesAtual);
-            const receitas = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesas = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const saldo = dadosGlobais.reduce((s, t) => s + t.valor, 0);
+            const receitasMes = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesasMes = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const economiaMes = receitasMes - despesasMes;
             
-            document.getElementById('saldo-atual').innerHTML = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('receitas-mes').innerHTML = `R$ ${receitas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('despesas-mes').innerHTML = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('economia-mes').innerHTML = `R$ ${(receitas - despesas).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            const saldoTotal = dadosGlobais.reduce((s, t) => s + t.valor, 0);
+            
+            document.getElementById('saldo-atual').innerHTML = `R$ ${saldoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('receitas-mes').innerHTML = `R$ ${receitasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('despesas-mes').innerHTML = `R$ ${despesasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('economia-mes').innerHTML = `R$ ${economiaMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('saldo-change').innerHTML = `${dadosGlobais.length} transações no total`;
+            
+            const economiaStatus = economiaMes >= 0 ? '✅ No verde' : '⚠️ No vermelho';
+            document.getElementById('economia-status').innerHTML = economiaStatus;
         }
 
         function atualizarTabela(dados) {
             const tbody = document.getElementById('transacoes-body');
             if (!tbody) return;
             tbody.innerHTML = '';
+            
             const ordenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data));
+            
             for (let t of ordenados) {
                 const row = tbody.insertRow();
                 row.insertCell(0).innerHTML = new Date(t.data).toLocaleDateString('pt-BR');
@@ -512,25 +562,46 @@
                 row.insertCell(3).innerHTML = `<span class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${Math.abs(t.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>`;
                 row.insertCell(4).innerHTML = t.tipo === 'extrato' ? '💳 Conta' : '💳 Cartão';
             }
-            if (ordenados.length === 0) tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada</td></tr>';
+            
+            if (ordenados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada com os filtros selecionados.</td></tr>';
+            }
         }
 
         function atualizarGraficos(dados) {
+            // Gráfico de Gastos por Categoria
             const catMap = new Map();
             dados.filter(t => t.valor < 0).forEach(t => {
                 const cat = t.categoria || 'Outros';
                 catMap.set(cat, (catMap.get(cat) || 0) + Math.abs(t.valor));
             });
+            
+            const categorias = Array.from(catMap.keys());
+            const valores = Array.from(catMap.values());
+            
             if (charts.categorias) charts.categorias.destroy();
             const ctx1 = document.getElementById('categorias-chart');
-            if (ctx1) {
+            if (ctx1 && categorias.length > 0) {
                 charts.categorias = new Chart(ctx1, {
                     type: 'doughnut',
-                    data: { labels: Array.from(catMap.keys()), datasets: [{ data: Array.from(catMap.values()), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'] }] },
+                    data: {
+                        labels: categorias,
+                        datasets: [{
+                            data: valores,
+                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
+                });
+            } else if (ctx1) {
+                charts.categorias = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: { labels: ['Sem dados'], datasets: [{ data: [1], backgroundColor: ['#334155'] }] },
                     options: { responsive: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
                 });
             }
             
+            // Gráfico de Evolução Mensal
             const mesesMap = new Map();
             dadosGlobais.forEach(t => {
                 const mes = t.data.substring(0, 7);
@@ -539,48 +610,98 @@
                 if (t.valor > 0) m.receitas += t.valor;
                 else m.despesas += Math.abs(t.valor);
             });
+            
             const mesesOrdenados = Array.from(mesesMap.keys()).sort();
+            const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            
             if (charts.evolucao) charts.evolucao.destroy();
             const ctx2 = document.getElementById('evolucao-chart');
-            if (ctx2) {
+            if (ctx2 && mesesOrdenados.length > 0) {
                 charts.evolucao = new Chart(ctx2, {
                     type: 'bar',
-                    data: { labels: mesesOrdenados, datasets: [{ label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981' }, { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444' }] },
+                    data: {
+                        labels: mesesOrdenados.map(m => {
+                            const [ano, mes] = m.split('-');
+                            return `${nomesMeses[parseInt(mes)-1]} ${ano}`;
+                        }),
+                        datasets: [
+                            { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981', borderRadius: 8 },
+                            { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444', borderRadius: 8 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
+                });
+            } else if (ctx2) {
+                charts.evolucao = new Chart(ctx2, {
+                    type: 'bar',
+                    data: { labels: ['Sem dados'], datasets: [{ label: 'Receitas', data: [0], backgroundColor: '#10B981' }, { label: 'Despesas', data: [0], backgroundColor: '#EF4444' }] },
                     options: { responsive: true }
                 });
             }
+        }
+
+        // ============================================
+        // IA - PERGUNTAR PARA GROQ
+        // ============================================
+        function gerarResumoDados() {
+            const receitas = dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesas = dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const categorias = {};
+            dadosGlobais.filter(t => t.valor < 0).forEach(t => {
+                const cat = t.categoria || 'Outros';
+                categorias[cat] = (categorias[cat] || 0) + Math.abs(t.valor);
+            });
+            return `Total receitas: R$ ${receitas.toFixed(2)}, Total despesas: R$ ${despesas.toFixed(2)}, Gastos por categoria: ${JSON.stringify(categorias)}`;
         }
 
         async function enviarPergunta() {
             const input = document.getElementById('chat-input');
             const pergunta = input.value.trim();
             if (!pergunta) return;
+            
             const messagesDiv = document.getElementById('chat-messages');
             messagesDiv.innerHTML += `<div class="message user">${pergunta}</div>`;
             input.value = '';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando...</div>`;
+            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando seus dados financeiros...</div>`;
+            
             try {
-                const resumo = `Total receitas: ${dadosGlobais.filter(t=>t.valor>0).reduce((s,t)=>s+t.valor,0)}, Total despesas: ${dadosGlobais.filter(t=>t.valor<0).reduce((s,t)=>s+Math.abs(t.valor),0)}`;
+                const resumoDados = gerarResumoDados();
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST', headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'llama3-8b-8192', messages: [{ role: 'system', content: `Você é assistente financeiro. Dados: ${resumo}` }, { role: 'user', content: pergunta }], temperature: 0.7, max_tokens: 500 })
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'llama3-8b-8192',
+                        messages: [
+                            { role: 'system', content: `Você é um assistente financeiro pessoal. Responda apenas sobre finanças baseado nos dados do usuário. Use linguagem clara, amigável e dicas práticas. Dados resumidos: ${resumoDados}` },
+                            { role: 'user', content: pergunta }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 500
+                    })
                 });
+                
                 const data = await response.json();
                 document.getElementById('loading-ia')?.remove();
-                messagesDiv.innerHTML += `<div class="message assistant">${data.choices?.[0]?.message?.content || 'Não consegui processar'}</div>`;
+                const resposta = data.choices?.[0]?.message?.content || 'Desculpe, não consegui processar sua pergunta.';
+                messagesDiv.innerHTML += `<div class="message assistant">${resposta}</div>`;
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             } catch (error) {
                 document.getElementById('loading-ia')?.remove();
-                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro na IA</div>`;
+                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro ao conectar com a IA. Verifique sua chave API Groq.</div>`;
             }
         }
         
+        // Event listeners
         document.getElementById('mes').addEventListener('change', () => aplicarFiltros());
         document.getElementById('categoria').addEventListener('change', () => aplicarFiltros());
         document.getElementById('tipo').addEventListener('change', () => aplicarFiltros());
         document.getElementById('busca').addEventListener('keyup', () => aplicarFiltros());
         
+        // Inicializar
         carregarDadosPlanilha();
     </script>
 </body>
