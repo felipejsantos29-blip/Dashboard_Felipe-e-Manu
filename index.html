@@ -103,11 +103,6 @@
             background: #2563EB;
         }
 
-        input {
-            cursor: text;
-            min-width: 200px;
-        }
-
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -123,24 +118,10 @@
             transition: transform 0.2s;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        .card-title {
-            font-size: 14px;
-            color: #94A3B8;
-            margin-bottom: 8px;
-        }
-
         .card-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
-        }
-
-        .card-change {
-            font-size: 12px;
-            margin-top: 8px;
+            margin: 8px 0;
         }
 
         .card.positive { border-left-color: #10B981; }
@@ -160,22 +141,12 @@
             border-radius: 16px;
         }
 
-        .chart-container h3 {
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
-        canvas {
-            max-height: 300px;
-        }
-
         .table-container {
             background: #1E293B;
             border-radius: 16px;
-            overflow-x: auto;
+            overflow: auto;
             margin-bottom: 24px;
             max-height: 500px;
-            overflow-y: auto;
         }
 
         table {
@@ -191,43 +162,19 @@
 
         th {
             background: #0F172A;
-            color: #94A3B8;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
             position: sticky;
             top: 0;
+            color: #94A3B8;
+            font-size: 12px;
         }
 
-        tr:hover {
-            background: #334155;
-        }
-
-        .valor-positivo {
-            color: #10B981;
-        }
-
-        .valor-negativo {
-            color: #EF4444;
-        }
+        .valor-positivo { color: #10B981; }
+        .valor-negativo { color: #EF4444; }
 
         .chat-section {
             background: #1E293B;
             border-radius: 16px;
             overflow: hidden;
-        }
-
-        .chat-header {
-            background: #0F172A;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #334155;
-        }
-
-        .chat-header::before {
-            content: "🤖";
         }
 
         .chat-messages {
@@ -246,15 +193,8 @@
             font-size: 14px;
         }
 
-        .message.user {
-            background: #3B82F6;
-            align-self: flex-end;
-        }
-
-        .message.assistant {
-            background: #334155;
-            align-self: flex-start;
-        }
+        .message.user { background: #3B82F6; align-self: flex-end; }
+        .message.assistant { background: #334155; align-self: flex-start; }
 
         .chat-input-area {
             display: flex;
@@ -263,23 +203,7 @@
             border-top: 1px solid #334155;
         }
 
-        .chat-input-area input {
-            flex: 1;
-        }
-
-        .loading {
-            color: #94A3B8;
-            font-style: italic;
-            padding: 8px;
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 16px; }
-            .charts { grid-template-columns: 1fr; }
-            .filters { flex-direction: column; align-items: stretch; }
-            .filter-group select, .filter-group input { width: 100%; }
-            .message { max-width: 95%; }
-        }
+        .chat-input-area input { flex: 1; }
     </style>
 </head>
 <body>
@@ -287,7 +211,7 @@
         <div class="header">
             <h1>Controle Financeiro - Felipe e Manu</h1>
             <div class="update-info">
-                📊 Dados carregados: <span id="last-update">--</span>
+                📊 Dados: <span id="last-update">--</span>
             </div>
         </div>
 
@@ -319,19 +243,6 @@
                     <option value="Investimento">📈 Investimento</option>
                     <option value="Salário">💵 Salário</option>
                     <option value="Empréstimo">🏦 Empréstimo</option>
-                    <option value="Pagamento Cartão">💳 Pagamento Cartão</option>
-                    <option value="Transferência">🔄 Transferência</option>
-                    <option value="Reembolso">↩️ Reembolso</option>
-                    <option value="Juros">📉 Juros</option>
-                    <option value="Imposto">📃 Imposto</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>💳 Tipo</label>
-                <select id="tipo">
-                    <option value="todas">Ambos</option>
-                    <option value="extrato">Extrato Conta</option>
-                    <option value="cartao">Cartão de Crédito</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -339,8 +250,7 @@
                 <input type="text" id="busca" placeholder="Descrição...">
             </div>
             <div class="filter-group">
-                <label>&nbsp;</label>
-                <button onclick="carregarDadosPlanilha()">🔄 Atualizar Dados</button>
+                <button onclick="carregarDadosPlanilha()">🔄 Atualizar</button>
             </div>
         </div>
 
@@ -348,22 +258,20 @@
             <div class="card neutral">
                 <div class="card-title">💰 SALDO ATUAL</div>
                 <div class="card-value" id="saldo-atual">R$ 0,00</div>
-                <div class="card-change" id="saldo-change">Carregando...</div>
+                <div id="saldo-change">--</div>
             </div>
             <div class="card positive">
                 <div class="card-title">📈 RECEITAS (Mês)</div>
                 <div class="card-value" id="receitas-mes">R$ 0,00</div>
-                <div class="card-change" id="receitas-change">---</div>
             </div>
             <div class="card negative">
                 <div class="card-title">📉 DESPESAS (Mês)</div>
                 <div class="card-value" id="despesas-mes">R$ 0,00</div>
-                <div class="card-change" id="despesas-change">---</div>
             </div>
             <div class="card neutral">
-                <div class="card-title">🎯 ECONOMIA DO MÊS</div>
+                <div class="card-title">🎯 ECONOMIA (Mês)</div>
                 <div class="card-value" id="economia-mes">R$ 0,00</div>
-                <div class="card-change" id="economia-status">---</div>
+                <div id="economia-status">--</div>
             </div>
         </div>
 
@@ -390,319 +298,204 @@
         </div>
 
         <div class="chat-section">
-            <div class="chat-header">
-                <strong>Assistente Financeiro IA</strong>
-                <span style="font-size: 12px; color: #94A3B8;">Pergunte sobre seus gastos</span>
-            </div>
             <div class="chat-messages" id="chat-messages">
-                <div class="message assistant">Olá! 👋 Sou seu assistente financeiro. Pergunte-me sobre seus gastos, como "Quanto gastei com alimentação?" ou "Qual foi minha maior despesa?"</div>
+                <div class="message assistant">Olá! 👋 Sou seu assistente financeiro. Como posso ajudar?</div>
             </div>
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') enviarPergunta()">
+                <input type="text" id="chat-input" placeholder="Pergunte algo..." onkeypress="if(event.key==='Enter') enviarPergunta()">
                 <button onclick="enviarPergunta()">Enviar ➤</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ⚠️ CHAVE API GROQ - RECOMENDO REVOGAR ESTA E CRIAR UMA NOVA
+        // Substitua por sua chave se necessário
         const GROQ_API_KEY = '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';
-        
+        const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
+
         let dadosGlobais = [];
         let charts = {};
 
-        // ✅ URL CORRIGIDA - Link de exportação CSV com o gid correto da aba movimentacoes
-        const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/1cLj_Yel7CEhkHMnReQhxnKcvVieLXv0Q/export?format=csv';
-
-        // ============================================
-        // FUNÇÃO PRINCIPAL: CARREGAR DADOS DA PLANILHA
-        // ============================================
         async function carregarDadosPlanilha() {
             const tbody = document.getElementById('transacoes-body');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="5">🔄 Conectando ao Google Sheets...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5">🔄 Sincronizando...</td></tr>';
             
             try {
-                console.log('Carregando de:', URL_PUBLICACAO);
                 const response = await fetch(URL_PUBLICACAO);
-                
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
                 const csvText = await response.text();
-                console.log('CSV recebido, tamanho:', csvText.length);
-                
                 const linhas = csvText.split('\n').filter(l => l.trim().length > 0);
-                console.log('Linhas encontradas:', linhas.length);
-                
-                if (linhas.length < 2) throw new Error('CSV vazio');
                 
                 const novosDados = [];
-                const cabecalho = linhas[0].split(',').map(c => c.replace(/"/g, '').trim());
-                console.log('Cabeçalho:', cabecalho);
-                
                 for (let i = 1; i < linhas.length; i++) {
-                    const linha = linhas[i];
-                    const valores = [];
-                    let dentroAspas = false;
-                    let valorAtual = '';
+                    const valores = parseCSVLine(linhas[i]);
                     
-                    for (let char of linha) {
-                        if (char === '"') {
-                            dentroAspas = !dentroAspas;
-                        } else if (char === ',' && !dentroAspas) {
-                            valores.push(valorAtual.trim());
-                            valorAtual = '';
-                        } else {
-                            valorAtual += char;
-                        }
-                    }
-                    valores.push(valorAtual.trim());
-                    
-                    if (valores.length >= 6 && valores[0]) {
-                        const data = valores[0].replace(/"/g, '');
-                        const tipoRegistro = valores[1]?.replace(/"/g, '') || '';
-                        const descricao = valores[2]?.replace(/"/g, '') || '';
-                        const categoria = valores[4]?.replace(/"/g, '') || 'Outros';
-                        const valorStr = valores[5]?.replace(/"/g, '').replace(',', '.');
+                    // Mapeamento baseado na sua planilha: 1: data, 2: tipo, 3: desc, 4: cat, 5: valor
+                    if (valores.length >= 6) {
+                        const data = valores[1];
+                        const desc = valores[3];
+                        const cat = valores[4] || 'Outros';
+                        const valorStr = valores[5].replace(/"/g, '').replace(/\s/g, '').replace(',', '.');
                         const valor = parseFloat(valorStr) || 0;
-                        
-                        let tipo = 'extrato';
-                        if (tipoRegistro === 'cartao' || valores[7]?.includes('5217') || valores[7]?.includes('7398')) {
-                            tipo = 'cartao';
-                        }
-                        
-                        if (data && data.match(/\d{4}-\d{2}-\d{2}/)) {
+
+                        if (data && data.includes('-') && !desc.toUpperCase().includes("SALDO DO DIA")) {
                             novosDados.push({
                                 data: data,
-                                descricao: descricao.substring(0, 60),
-                                categoria: categoria,
+                                descricao: desc,
+                                categoria: cat,
                                 valor: valor,
-                                tipo: tipo
+                                tipo: valores[2].toLowerCase()
                             });
                         }
                     }
                 }
                 
-                if (novosDados.length === 0) {
-                    throw new Error('Nenhuma transação encontrada no CSV');
-                }
-                
                 dadosGlobais = novosDados;
-                const totalTransacoes = dadosGlobais.length;
-                const somaPositiva = dadosGlobais.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-                const somaNegativa = dadosGlobais.filter(d => d.valor < 0).reduce((s, d) => s + Math.abs(d.valor), 0);
-                
-                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${totalTransacoes} transações carregadas ✓`;
-                document.getElementById('last-update').style.color = '#10B981';
-                
+                document.getElementById('last-update').innerHTML = `${new Date().toLocaleTimeString()} - ${dadosGlobais.length} itens`;
                 aplicarFiltros();
-                
-            } catch (error) {
-                console.error('Erro detalhado:', error);
-                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ERRO: ${error.message}`;
-                document.getElementById('last-update').style.color = '#EF4444';
-                
-                const tbody = document.getElementById('transacoes-body');
-                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar planilha: ${error.message}. Verifique se a planilha está publicada.</td></tr>`;
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5">❌ Erro ao ler planilha. Verifique a publicação.</td></tr>';
             }
         }
 
-        // ============================================
-        // APLICAR FILTROS
-        // ============================================
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let char of line) {
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else current += char;
+            }
+            result.push(current.trim());
+            return result;
+        }
+
         function aplicarFiltros() {
             const mesSel = document.getElementById('mes').value;
             const catSel = document.getElementById('categoria').value;
-            const tipoSel = document.getElementById('tipo').value;
-            const buscaText = document.getElementById('busca').value.toLowerCase();
+            const busca = document.getElementById('busca').value.toLowerCase();
             
-            let dadosFiltrados = dadosGlobais.filter(t => {
-                if (mesSel !== 'todos' && t.data.substring(0, 7) !== mesSel) return false;
+            const filtrados = dadosGlobais.filter(t => {
+                if (mesSel !== 'todos' && !t.data.startsWith(mesSel)) return false;
                 if (catSel !== 'todas' && t.categoria !== catSel) return false;
-                if (tipoSel !== 'todas' && t.tipo !== tipoSel) return false;
-                if (buscaText && !t.descricao.toLowerCase().includes(buscaText)) return false;
+                if (busca && !t.descricao.toLowerCase().includes(busca)) return false;
                 return true;
             });
             
-            atualizarCards(dadosFiltrados);
-            atualizarTabela(dadosFiltrados);
-            atualizarGraficos(dadosFiltrados);
+            renderizarTudo(filtrados);
         }
 
-        function atualizarCards(dados) {
-            const mesAtual = new Date().toISOString().substring(0, 7);
-            const transacoesMes = dadosGlobais.filter(t => t.data.substring(0, 7) === mesAtual);
-            const receitasMes = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesasMes = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const economiaMes = receitasMes - despesasMes;
-            
+        function renderizarTudo(dados) {
+            // Cards
             const saldoTotal = dadosGlobais.reduce((s, t) => s + t.valor, 0);
-            
-            document.getElementById('saldo-atual').innerHTML = `R$ ${saldoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('receitas-mes').innerHTML = `R$ ${receitasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('despesas-mes').innerHTML = `R$ ${despesasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('economia-mes').innerHTML = `R$ ${economiaMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('saldo-change').innerHTML = `${dadosGlobais.length} transações no total`;
-            
-            const economiaStatus = economiaMes >= 0 ? '✅ No verde' : '⚠️ No vermelho';
-            document.getElementById('economia-status').innerHTML = economiaStatus;
-        }
+            const mesAtual = new Date().toISOString().substring(0, 7);
+            const dadosMes = dadosGlobais.filter(t => t.data.startsWith(mesAtual));
+            const recMes = dadosMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const desMes = dadosMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
 
-        function atualizarTabela(dados) {
+            document.getElementById('saldo-atual').innerText = formatMoeda(saldoTotal);
+            document.getElementById('receitas-mes').innerText = formatMoeda(recMes);
+            document.getElementById('despesas-mes').innerText = formatMoeda(desMes);
+            document.getElementById('economia-mes').innerText = formatMoeda(recMes - desMes);
+            document.getElementById('economia-status').innerText = (recMes - desMes) >= 0 ? '✅ No azul' : '⚠️ No vermelho';
+
+            // Tabela
             const tbody = document.getElementById('transacoes-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            
-            const ordenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data));
-            
-            for (let t of ordenados) {
-                const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = new Date(t.data).toLocaleDateString('pt-BR');
-                row.insertCell(1).innerHTML = t.descricao.substring(0, 50);
-                row.insertCell(2).innerHTML = t.categoria;
-                row.insertCell(3).innerHTML = `<span class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${Math.abs(t.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>`;
-                row.insertCell(4).innerHTML = t.tipo === 'extrato' ? '💳 Conta' : '💳 Cartão';
-            }
-            
-            if (ordenados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada com os filtros selecionados.</td></tr>';
-            }
+            tbody.innerHTML = dados.slice(0, 100).map(t => `
+                <tr>
+                    <td>${t.data.split('-').reverse().join('/')}</td>
+                    <td>${t.descricao}</td>
+                    <td>${t.categoria}</td>
+                    <td class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">${formatMoeda(t.valor)}</td>
+                    <td>${t.tipo}</td>
+                </tr>
+            `).join('');
+
+            // Gráficos
+            renderCharts(dados);
         }
 
-        function atualizarGraficos(dados) {
-            // Gráfico de Gastos por Categoria
-            const catMap = new Map();
-            dados.filter(t => t.valor < 0).forEach(t => {
-                const cat = t.categoria || 'Outros';
-                catMap.set(cat, (catMap.get(cat) || 0) + Math.abs(t.valor));
+        function formatMoeda(v) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+        }
+
+        function renderCharts(dados) {
+            // Categorias
+            const cats = {};
+            dados.filter(t => t.valor < 0).forEach(t => cats[t.categoria] = (cats[t.categoria] || 0) + Math.abs(t.valor));
+            
+            if (charts.cat) charts.cat.destroy();
+            charts.cat = new Chart(document.getElementById('categorias-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(cats),
+                    datasets: [{ data: Object.values(cats), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'] }]
+                },
+                options: { plugins: { legend: { labels: { color: '#fff' } } } }
             });
-            
-            const categorias = Array.from(catMap.keys());
-            const valores = Array.from(catMap.values());
-            
-            if (charts.categorias) charts.categorias.destroy();
-            const ctx1 = document.getElementById('categorias-chart');
-            if (ctx1 && categorias.length > 0) {
-                charts.categorias = new Chart(ctx1, {
-                    type: 'doughnut',
-                    data: {
-                        labels: categorias,
-                        datasets: [{
-                            data: valores,
-                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
-                });
-            } else if (ctx1) {
-                charts.categorias = new Chart(ctx1, {
-                    type: 'doughnut',
-                    data: { labels: ['Sem dados'], datasets: [{ data: [1], backgroundColor: ['#334155'] }] },
-                    options: { responsive: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
-                });
-            }
-            
-            // Gráfico de Evolução Mensal
-            const mesesMap = new Map();
+
+            // Evolução
+            const meses = {};
             dadosGlobais.forEach(t => {
-                const mes = t.data.substring(0, 7);
-                if (!mesesMap.has(mes)) mesesMap.set(mes, { receitas: 0, despesas: 0 });
-                const m = mesesMap.get(mes);
-                if (t.valor > 0) m.receitas += t.valor;
-                else m.despesas += Math.abs(t.valor);
+                const m = t.data.substring(0, 7);
+                if (!meses[m]) meses[m] = { r: 0, d: 0 };
+                if (t.valor > 0) meses[m].r += t.valor; else meses[m].d += Math.abs(t.valor);
             });
+            const labels = Object.keys(meses).sort();
             
-            const mesesOrdenados = Array.from(mesesMap.keys()).sort();
-            const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-            
-            if (charts.evolucao) charts.evolucao.destroy();
-            const ctx2 = document.getElementById('evolucao-chart');
-            if (ctx2 && mesesOrdenados.length > 0) {
-                charts.evolucao = new Chart(ctx2, {
-                    type: 'bar',
-                    data: {
-                        labels: mesesOrdenados.map(m => {
-                            const [ano, mes] = m.split('-');
-                            return `${nomesMeses[parseInt(mes)-1]} ${ano}`;
-                        }),
-                        datasets: [
-                            { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981', borderRadius: 8 },
-                            { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444', borderRadius: 8 }
-                        ]
-                    },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
-                });
-            } else if (ctx2) {
-                charts.evolucao = new Chart(ctx2, {
-                    type: 'bar',
-                    data: { labels: ['Sem dados'], datasets: [{ label: 'Receitas', data: [0], backgroundColor: '#10B981' }, { label: 'Despesas', data: [0], backgroundColor: '#EF4444' }] },
-                    options: { responsive: true }
-                });
-            }
-        }
-
-        // ============================================
-        // IA - PERGUNTAR PARA GROQ
-        // ============================================
-        function gerarResumoDados() {
-            const receitas = dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesas = dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const categorias = {};
-            dadosGlobais.filter(t => t.valor < 0).forEach(t => {
-                const cat = t.categoria || 'Outros';
-                categorias[cat] = (categorias[cat] || 0) + Math.abs(t.valor);
+            if (charts.evo) charts.evo.destroy();
+            charts.evo = new Chart(document.getElementById('evolucao-chart'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Receitas', data: labels.map(l => meses[l].r), backgroundColor: '#10B981' },
+                        { label: 'Despesas', data: labels.map(l => meses[l].d), backgroundColor: '#EF4444' }
+                    ]
+                },
+                options: { scales: { y: { ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } } }
             });
-            return `Total receitas: R$ ${receitas.toFixed(2)}, Total despesas: R$ ${despesas.toFixed(2)}, Gastos por categoria: ${JSON.stringify(categorias)}`;
         }
 
         async function enviarPergunta() {
             const input = document.getElementById('chat-input');
-            const pergunta = input.value.trim();
-            if (!pergunta) return;
-            
-            const messagesDiv = document.getElementById('chat-messages');
-            messagesDiv.innerHTML += `<div class="message user">${pergunta}</div>`;
+            const msg = input.value;
+            if (!msg) return;
+
+            const chat = document.getElementById('chat-messages');
+            chat.innerHTML += `<div class="message user">${msg}</div>`;
             input.value = '';
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando seus dados financeiros...</div>`;
-            
+
             try {
-                const resumoDados = gerarResumoDados();
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                const resumo = `Receitas Totais: ${formatMoeda(dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0))}. Despesas Totais: ${formatMoeda(dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0))}`;
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${GROQ_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: 'llama3-8b-8192',
                         messages: [
-                            { role: 'system', content: `Você é um assistente financeiro pessoal. Responda apenas sobre finanças baseado nos dados do usuário. Use linguagem clara, amigável e dicas práticas. Dados resumidos: ${resumoDados}` },
-                            { role: 'user', content: pergunta }
-                        ],
-                        temperature: 0.7,
-                        max_tokens: 500
+                            { role: 'system', content: `Você é um assistente financeiro amigável. Resuma os dados: ${resumo}` },
+                            { role: 'user', content: msg }
+                        ]
                     })
                 });
-                
-                const data = await response.json();
-                document.getElementById('loading-ia')?.remove();
-                const resposta = data.choices?.[0]?.message?.content || 'Desculpe, não consegui processar sua pergunta.';
-                messagesDiv.innerHTML += `<div class="message assistant">${resposta}</div>`;
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            } catch (error) {
-                document.getElementById('loading-ia')?.remove();
-                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro ao conectar com a IA. Verifique sua chave API Groq.</div>`;
+                const data = await res.json();
+                chat.innerHTML += `<div class="message assistant">${data.choices[0].message.content}</div>`;
+            } catch (e) {
+                chat.innerHTML += `<div class="message assistant">Erro ao contatar IA.</div>`;
             }
+            chat.scrollTop = chat.scrollHeight;
         }
-        
-        // Event listeners
-        document.getElementById('mes').addEventListener('change', () => aplicarFiltros());
-        document.getElementById('categoria').addEventListener('change', () => aplicarFiltros());
-        document.getElementById('tipo').addEventListener('change', () => aplicarFiltros());
-        document.getElementById('busca').addEventListener('keyup', () => aplicarFiltros());
-        
-        // Inicializar
+
+        // Init
         carregarDadosPlanilha();
+        
+        // Listeners
+        document.getElementById('mes').addEventListener('change', aplicarFiltros);
+        document.getElementById('categoria').addEventListener('change', aplicarFiltros);
+        document.getElementById('busca').addEventListener('input', aplicarFiltros);
     </script>
 </body>
 </html>
