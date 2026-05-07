@@ -6,496 +6,243 @@
     <title>Dashboard Financeiro - Felipe e Manu</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: #0F172A;
-            color: #F1F5F9;
-            padding: 24px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        h1 {
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        h1::before {
-            content: "💰";
-            font-size: 32px;
-        }
-
-        .update-info {
-            background: #1E293B;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #94A3B8;
-        }
-
-        .filters {
-            background: #1E293B;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: flex-end;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .filter-group label {
-            font-size: 12px;
-            color: #94A3B8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        select, input, button {
-            background: #0F172A;
-            border: 1px solid #334155;
-            padding: 10px 16px;
-            border-radius: 12px;
-            color: #F1F5F9;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-width: 140px;
-        }
-
-        select:hover, input:hover, button:hover {
-            border-color: #3B82F6;
-        }
-
-        button {
-            background: #3B82F6;
-            border-color: #3B82F6;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #2563EB;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .card {
-            background: #1E293B;
-            padding: 20px;
-            border-radius: 16px;
-            border-left: 4px solid;
-            transition: transform 0.2s;
-        }
-
-        .card-value {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0F172A; color: #F1F5F9; padding: 24px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .update-info { background: #1E293B; padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #94A3B8; }
+        .filters { background: #1E293B; padding: 20px; border-radius: 16px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 6px; }
+        .filter-group label { font-size: 11px; color: #94A3B8; text-transform: uppercase; }
+        select, input, button { background: #0F172A; border: 1px solid #334155; padding: 10px 16px; border-radius: 12px; color: #F1F5F9; font-size: 14px; cursor: pointer; }
+        button { background: #3B82F6; font-weight: bold; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .card { background: #1E293B; padding: 20px; border-radius: 16px; border-left: 4px solid; }
+        .card-title { font-size: 12px; color: #94A3B8; }
+        .card-value { font-size: 24px; font-weight: bold; margin-top: 8px; }
         .card.positive { border-left-color: #10B981; }
         .card.negative { border-left-color: #EF4444; }
         .card.neutral { border-left-color: #3B82F6; }
-
-        .charts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        .chart-container {
-            background: #1E293B;
-            padding: 20px;
-            border-radius: 16px;
-        }
-
-        .table-container {
-            background: #1E293B;
-            border-radius: 16px;
-            overflow: auto;
-            margin-bottom: 24px;
-            max-height: 500px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid #334155;
-        }
-
-        th {
-            background: #0F172A;
-            position: sticky;
-            top: 0;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-
-        .valor-positivo { color: #10B981; }
-        .valor-negativo { color: #EF4444; }
-
-        .chat-section {
-            background: #1E293B;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-        }
-
-        .message.user { background: #3B82F6; align-self: flex-end; }
-        .message.assistant { background: #334155; align-self: flex-start; }
-
-        .chat-input-area {
-            display: flex;
-            padding: 16px;
-            gap: 12px;
-            border-top: 1px solid #334155;
-        }
-
-        .chat-input-area input { flex: 1; }
+        .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 24px; }
+        .chart-container { background: #1E293B; padding: 20px; border-radius: 16px; min-height: 350px; }
+        .table-container { background: #1E293B; border-radius: 16px; overflow: auto; max-height: 450px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #334155; font-size: 14px; }
+        th { background: #0F172A; position: sticky; top: 0; color: #94A3B8; }
+        .val-pos { color: #10B981; }
+        .val-neg { color: #EF4444; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Controle Financeiro - Felipe e Manu</h1>
-            <div class="update-info">
-                📊 Dados: <span id="last-update">--</span>
-            </div>
+            <div class="update-info">📊 <span id="status">Sincronizando...</span></div>
         </div>
 
         <div class="filters">
             <div class="filter-group">
                 <label>📅 Mês</label>
-                <select id="mes">
+                <select id="filtro-mes">
                     <option value="todos">Todos os meses</option>
-                    <option value="2025-12">Dezembro 2025</option>
-                    <option value="2026-01">Janeiro 2026</option>
-                    <option value="2026-02">Fevereiro 2026</option>
-                    <option value="2026-03">Março 2026</option>
-                    <option value="2026-04">Abril 2026</option>
-                    <option value="2026-05">Maio 2026</option>
-                    <option value="2026-06">Junho 2026</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label>📂 Categoria</label>
-                <select id="categoria">
-                    <option value="todas">Todas</option>
-                    <option value="Alimentação">🍔 Alimentação</option>
-                    <option value="Transporte">🚗 Transporte</option>
-                    <option value="Saúde">🏥 Saúde</option>
-                    <option value="Educação">🎓 Educação</option>
-                    <option value="Pet">🐾 Pet</option>
-                    <option value="Serviços">📱 Serviços</option>
-                    <option value="Compras">🛍️ Compras</option>
-                    <option value="Investimento">📈 Investimento</option>
-                    <option value="Salário">💵 Salário</option>
-                    <option value="Empréstimo">🏦 Empréstimo</option>
+                <select id="filtro-cat">
+                    <option value="todas">Todas Categorias</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label>🔍 Buscar</label>
-                <input type="text" id="busca" placeholder="Descrição...">
+                <label>🔍 Busca</label>
+                <input type="text" id="filtro-busca" placeholder="Ex: Mercado...">
             </div>
-            <div class="filter-group">
-                <button onclick="carregarDadosPlanilha()">🔄 Atualizar</button>
-            </div>
+            <button onclick="carregarDados()">🔄 Atualizar</button>
         </div>
 
         <div class="cards">
             <div class="card neutral">
-                <div class="card-title">💰 SALDO ATUAL</div>
-                <div class="card-value" id="saldo-atual">R$ 0,00</div>
-                <div id="saldo-change">--</div>
+                <div class="card-title">💰 SALDO NO FILTRO</div>
+                <div class="card-value" id="card-saldo">R$ 0,00</div>
             </div>
             <div class="card positive">
-                <div class="card-title">📈 RECEITAS (Mês)</div>
-                <div class="card-value" id="receitas-mes">R$ 0,00</div>
+                <div class="card-title">📈 RECEITAS NO FILTRO</div>
+                <div class="card-value" id="card-receitas">R$ 0,00</div>
             </div>
             <div class="card negative">
-                <div class="card-title">📉 DESPESAS (Mês)</div>
-                <div class="card-value" id="despesas-mes">R$ 0,00</div>
-            </div>
-            <div class="card neutral">
-                <div class="card-title">🎯 ECONOMIA (Mês)</div>
-                <div class="card-value" id="economia-mes">R$ 0,00</div>
-                <div id="economia-status">--</div>
+                <div class="card-title">📉 DESPESAS NO FILTRO</div>
+                <div class="card-value" id="card-despesas">R$ 0,00</div>
             </div>
         </div>
 
         <div class="charts">
-            <div class="chart-container">
-                <h3>📊 Gastos por Categoria</h3>
-                <canvas id="categorias-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>📈 Evolução Mensal</h3>
-                <canvas id="evolucao-chart"></canvas>
-            </div>
+            <div class="chart-container"><h3>Gastos por Categoria</h3><canvas id="chart-cat"></canvas></div>
+            <div class="chart-container"><h3>Evolução Mensal</h3><canvas id="chart-evo"></canvas></div>
         </div>
 
         <div class="table-container">
-            <table id="transacoes-table">
-                <thead>
-                    <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Tipo</th></tr>
-                </thead>
-                <tbody id="transacoes-body">
-                    <tr><td colspan="5">Carregando dados...</td></tr>
-                </tbody>
+            <table>
+                <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th></tr></thead>
+                <tbody id="tabela-corpo"></tbody>
             </table>
-        </div>
-
-        <div class="chat-section">
-            <div class="chat-messages" id="chat-messages">
-                <div class="message assistant">Olá! 👋 Sou seu assistente financeiro. Como posso ajudar?</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Pergunte algo..." onkeypress="if(event.key==='Enter') enviarPergunta()">
-                <button onclick="enviarPergunta()">Enviar ➤</button>
-            </div>
         </div>
     </div>
 
     <script>
-        // Substitua por sua chave se necessário
-        const GROQ_API_KEY = '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';
-        const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
-
+        const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
         let dadosGlobais = [];
-        let charts = {};
+        let meuChartCat = null;
+        let meuChartEvo = null;
 
-        async function carregarDadosPlanilha() {
-            const tbody = document.getElementById('transacoes-body');
-            tbody.innerHTML = '<tr><td colspan="5">🔄 Sincronizando...</td></tr>';
-            
+        async function carregarDados() {
             try {
-                const response = await fetch(URL_PUBLICACAO);
-                const csvText = await response.text();
-                const linhas = csvText.split('\n').filter(l => l.trim().length > 0);
+                const resp = await fetch(URL_CSV);
+                const csv = await resp.text();
+                const linhas = csv.split('\n').filter(l => l.trim().length > 0);
                 
-                const novosDados = [];
-                for (let i = 1; i < linhas.length; i++) {
-                    const valores = parseCSVLine(linhas[i]);
-                    
-                    // Mapeamento baseado na sua planilha: 1: data, 2: tipo, 3: desc, 4: cat, 5: valor
-                    if (valores.length >= 6) {
-                        const data = valores[1];
-                        const desc = valores[3];
-                        const cat = valores[4] || 'Outros';
-                        const valorStr = valores[5].replace(/"/g, '').replace(/\s/g, '').replace(',', '.');
-                        const valor = parseFloat(valorStr) || 0;
+                dadosGlobais = [];
+                const mesesUnicos = new Set();
+                const catsUnicas = new Set();
 
-                        if (data && data.includes('-') && !desc.toUpperCase().includes("SALDO DO DIA")) {
-                            novosDados.push({
-                                data: data,
-                                descricao: desc,
-                                categoria: cat,
-                                valor: valor,
-                                tipo: valores[2].toLowerCase()
-                            });
-                        }
+                for (let i = 1; i < linhas.length; i++) {
+                    const col = parseCSVLine(linhas[i]);
+                    if (col.length < 6) continue;
+
+                    const data = col[1].trim(); // 2026-06-05
+                    const desc = col[3].trim();
+                    const cat = col[4].trim() || 'Outros';
+                    
+                    // Limpeza de valor numérico brasileira ("-2,19")
+                    let vLimpo = col[5].replace(/"/g, '').replace(/\s/g, '').replace(',', '.');
+                    const valor = parseFloat(vLimpo) || 0;
+
+                    if (data.includes('-') && !desc.toUpperCase().includes("SALDO DO DIA")) {
+                        dadosGlobais.push({ data, desc, cat, valor });
+                        mesesUnicos.add(data.substring(0, 7));
+                        catsUnicas.add(cat);
                     }
                 }
-                
-                dadosGlobais = novosDados;
-                document.getElementById('last-update').innerHTML = `${new Date().toLocaleTimeString()} - ${dadosGlobais.length} itens`;
+
+                popularFiltros(Array.from(mesesUnicos).sort().reverse(), Array.from(catsUnicas).sort());
                 aplicarFiltros();
+                document.getElementById('status').innerText = `${dadosGlobais.length} registros carregados`;
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="5">❌ Erro ao ler planilha. Verifique a publicação.</td></tr>';
+                document.getElementById('status').innerText = "Erro ao carregar dados";
             }
         }
 
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let char of line) {
-                if (char === '"') inQuotes = !inQuotes;
-                else if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
-                    current = '';
-                } else current += char;
+        function parseCSVLine(text) {
+            const res = []; let cur = '', q = false;
+            for (let c of text) {
+                if (c === '"') q = !q;
+                else if (c === ',' && !q) { res.push(cur); cur = ''; }
+                else cur += c;
             }
-            result.push(current.trim());
-            return result;
+            res.push(cur); return res;
+        }
+
+        function popularFiltros(meses, cats) {
+            const fMes = document.getElementById('filtro-mes');
+            const fCat = document.getElementById('filtro-cat');
+            
+            // Preserva a opção "Todos"
+            if(fMes.options.length <= 1) {
+                meses.forEach(m => fMes.add(new Option(m.split('-').reverse().join('/'), m)));
+            }
+            if(fCat.options.length <= 1) {
+                cats.forEach(c => fCat.add(new Option(c, c)));
+            }
         }
 
         function aplicarFiltros() {
-            const mesSel = document.getElementById('mes').value;
-            const catSel = document.getElementById('categoria').value;
-            const busca = document.getElementById('busca').value.toLowerCase();
-            
-            const filtrados = dadosGlobais.filter(t => {
-                if (mesSel !== 'todos' && !t.data.startsWith(mesSel)) return false;
-                if (catSel !== 'todas' && t.categoria !== catSel) return false;
-                if (busca && !t.descricao.toLowerCase().includes(busca)) return false;
-                return true;
+            const mSel = document.getElementById('filtro-mes').value;
+            const cSel = document.getElementById('filtro-cat').value;
+            const bSel = document.getElementById('filtro-busca').value.toLowerCase();
+
+            const filtrados = dadosGlobais.filter(d => {
+                const bateMes = mSel === 'todos' || d.data.startsWith(mSel);
+                const bateCat = cSel === 'todas' || d.cat === cSel;
+                const bateBusca = !bSel || d.desc.toLowerCase().includes(bSel);
+                return bateMes && bateCat && bateBusca;
             });
-            
-            renderizarTudo(filtrados);
+
+            atualizarDashboard(filtrados);
         }
 
-        function renderizarTudo(dados) {
-            // Cards
-            const saldoTotal = dadosGlobais.reduce((s, t) => s + t.valor, 0);
-            const mesAtual = new Date().toISOString().substring(0, 7);
-            const dadosMes = dadosGlobais.filter(t => t.data.startsWith(mesAtual));
-            const recMes = dadosMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const desMes = dadosMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+        function atualizarDashboard(dados) {
+            // 1. Cálculos dos Cards (Dinâmicos baseados no filtro)
+            const rec = dados.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+            const des = dados.filter(d => d.valor < 0).reduce((s, d) => s + Math.abs(d.valor), 0);
+            const saldo = rec - des;
 
-            document.getElementById('saldo-atual').innerText = formatMoeda(saldoTotal);
-            document.getElementById('receitas-mes').innerText = formatMoeda(recMes);
-            document.getElementById('despesas-mes').innerText = formatMoeda(desMes);
-            document.getElementById('economia-mes').innerText = formatMoeda(recMes - desMes);
-            document.getElementById('economia-status').innerText = (recMes - desMes) >= 0 ? '✅ No azul' : '⚠️ No vermelho';
+            document.getElementById('card-receitas').innerText = formatarMoeda(rec);
+            document.getElementById('card-despesas').innerText = formatarMoeda(des);
+            document.getElementById('card-saldo').innerText = formatarMoeda(saldo);
+            document.getElementById('card-saldo').className = 'card-value ' + (saldo >= 0 ? 'val-pos' : 'val-neg');
 
-            // Tabela
-            const tbody = document.getElementById('transacoes-body');
-            tbody.innerHTML = dados.slice(0, 100).map(t => `
+            // 2. Tabela
+            const corpo = document.getElementById('tabela-corpo');
+            corpo.innerHTML = dados.slice(0, 50).map(d => `
                 <tr>
-                    <td>${t.data.split('-').reverse().join('/')}</td>
-                    <td>${t.descricao}</td>
-                    <td>${t.categoria}</td>
-                    <td class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">${formatMoeda(t.valor)}</td>
-                    <td>${t.tipo}</td>
+                    <td>${d.data.split('-').reverse().join('/')}</td>
+                    <td>${d.desc}</td>
+                    <td>${d.cat}</td>
+                    <td class="${d.valor >= 0 ? 'val-pos' : 'val-neg'}">${formatarMoeda(d.valor)}</td>
                 </tr>
             `).join('');
 
-            // Gráficos
-            renderCharts(dados);
+            // 3. Gráficos
+            gerarGraficos(dados);
         }
 
-        function formatMoeda(v) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+        function formatarMoeda(v) {
+            return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function renderCharts(dados) {
-            // Categorias
-            const cats = {};
-            dados.filter(t => t.valor < 0).forEach(t => cats[t.categoria] = (cats[t.categoria] || 0) + Math.abs(t.valor));
+        function gerarGraficos(dados) {
+            // Categoria (Rosca)
+            const resumoCat = {};
+            dados.filter(d => d.valor < 0).forEach(d => resumoCat[d.cat] = (resumoCat[d.cat] || 0) + Math.abs(d.valor));
             
-            if (charts.cat) charts.cat.destroy();
-            charts.cat = new Chart(document.getElementById('categorias-chart'), {
+            if (meuChartCat) meuChartCat.destroy();
+            meuChartCat = new Chart(document.getElementById('chart-cat'), {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(cats),
-                    datasets: [{ data: Object.values(cats), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'] }]
+                    labels: Object.keys(resumoCat),
+                    datasets: [{ data: Object.values(resumoCat), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'] }]
                 },
-                options: { plugins: { legend: { labels: { color: '#fff' } } } }
+                options: { plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
             });
 
-            // Evolução
-            const meses = {};
-            dadosGlobais.forEach(t => {
-                const m = t.data.substring(0, 7);
-                if (!meses[m]) meses[m] = { r: 0, d: 0 };
-                if (t.valor > 0) meses[m].r += t.valor; else meses[m].d += Math.abs(t.valor);
+            // Evolução (Barras) - Sempre mostra todos os meses para comparação
+            const resumoMes = {};
+            dadosGlobais.forEach(d => {
+                const m = d.data.substring(0, 7);
+                if (!resumoMes[m]) resumoMes[m] = { r: 0, d: 0 };
+                if (d.valor > 0) resumoMes[m].r += d.valor; else resumoMes[m].d += Math.abs(d.valor);
             });
-            const labels = Object.keys(meses).sort();
-            
-            if (charts.evo) charts.evo.destroy();
-            charts.evo = new Chart(document.getElementById('evolucao-chart'), {
+
+            const labelsEvo = Object.keys(resumoMes).sort();
+            if (meuChartEvo) meuChartEvo.destroy();
+            meuChartEvo = new Chart(document.getElementById('chart-evo'), {
                 type: 'bar',
                 data: {
-                    labels,
+                    labels: labelsEvo,
                     datasets: [
-                        { label: 'Receitas', data: labels.map(l => meses[l].r), backgroundColor: '#10B981' },
-                        { label: 'Despesas', data: labels.map(l => meses[l].d), backgroundColor: '#EF4444' }
+                        { label: 'Receitas', data: labelsEvo.map(l => resumoMes[l].r), backgroundColor: '#10B981' },
+                        { label: 'Despesas', data: labelsEvo.map(l => resumoMes[l].d), backgroundColor: '#EF4444' }
                     ]
                 },
-                options: { scales: { y: { ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } } }
+                options: { scales: { y: { ticks: { color: '#F1F5F9' } }, x: { ticks: { color: '#F1F5F9' } } } }
             });
         }
 
-        async function enviarPergunta() {
-            const input = document.getElementById('chat-input');
-            const msg = input.value;
-            if (!msg) return;
+        // Listeners de filtro
+        document.getElementById('filtro-mes').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-cat').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-busca').addEventListener('input', aplicarFiltros);
 
-            const chat = document.getElementById('chat-messages');
-            chat.innerHTML += `<div class="message user">${msg}</div>`;
-            input.value = '';
-
-            try {
-                const resumo = `Receitas Totais: ${formatMoeda(dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0))}. Despesas Totais: ${formatMoeda(dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0))}`;
-                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: 'llama3-8b-8192',
-                        messages: [
-                            { role: 'system', content: `Você é um assistente financeiro amigável. Resuma os dados: ${resumo}` },
-                            { role: 'user', content: msg }
-                        ]
-                    })
-                });
-                const data = await res.json();
-                chat.innerHTML += `<div class="message assistant">${data.choices[0].message.content}</div>`;
-            } catch (e) {
-                chat.innerHTML += `<div class="message assistant">Erro ao contatar IA.</div>`;
-            }
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        // Init
-        carregarDadosPlanilha();
-        
-        // Listeners
-        document.getElementById('mes').addEventListener('change', aplicarFiltros);
-        document.getElementById('categoria').addEventListener('change', aplicarFiltros);
-        document.getElementById('busca').addEventListener('input', aplicarFiltros);
+        carregarDados();
     </script>
 </body>
 </html>
