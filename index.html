@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Financeiro - Felipe Santos</title>
+    <title>Dashboard Financeiro - Felipe e Manu</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -25,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -55,7 +53,6 @@
             color: #94A3B8;
         }
 
-        /* Filtros */
         .filters {
             background: #1E293B;
             padding: 20px;
@@ -110,7 +107,6 @@
             min-width: 200px;
         }
 
-        /* Cards */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -150,7 +146,6 @@
         .card.negative { border-left-color: #EF4444; }
         .card.neutral { border-left-color: #3B82F6; }
 
-        /* Gráficos */
         .charts {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -173,7 +168,6 @@
             max-height: 300px;
         }
 
-        /* Tabela */
         .table-container {
             background: #1E293B;
             border-radius: 16px;
@@ -212,7 +206,6 @@
             color: #EF4444;
         }
 
-        /* Chat IA */
         .chat-section {
             background: #1E293B;
             border-radius: 16px;
@@ -287,13 +280,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Controle Financeiro</h1>
+            <h1>Controle Financeiro - Felipe e Manu</h1>
             <div class="update-info">
                 📊 Dados carregados: <span id="last-update">--</span>
             </div>
         </div>
 
-        <!-- Filtros -->
         <div class="filters">
             <div class="filter-group">
                 <label>📅 Período</label>
@@ -338,8 +330,7 @@
             </div>
         </div>
 
-        <!-- Cards KPIs -->
-        <div class="cards" id="cards">
+        <div class="cards">
             <div class="card neutral">
                 <div class="card-title">💰 SALDO ATUAL</div>
                 <div class="card-value" id="saldo-atual">R$ 0,00</div>
@@ -362,7 +353,6 @@
             </div>
         </div>
 
-        <!-- Gráficos -->
         <div class="charts">
             <div class="chart-container">
                 <h3>📊 Gastos por Categoria</h3>
@@ -374,7 +364,6 @@
             </div>
         </div>
 
-        <!-- Tabela de Transações -->
         <div class="table-container">
             <table id="transacoes-table">
                 <thead>
@@ -386,7 +375,6 @@
             </table>
         </div>
 
-        <!-- Chat IA -->
         <div class="chat-section">
             <div class="chat-header">
                 <strong>Assistente Financeiro IA</strong>
@@ -403,20 +391,16 @@
     </div>
 
     <script>
-        // ⚠️ CHAVE API GROQ - VISÍVEL (uso apenas para teste)
+        // ⚠️ CHAVE API GROQ
         const GROQ_API_KEY = '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';
         
         let dadosGlobais = [];
         let charts = {};
 
-        // ============================================
-        // DADOS DA SUA PLANILHA (COPIE OS DADOS AQUI)
-        // ============================================
-        // PARA USAR COM GOOGLE SHEETS, SUBSTITUA PELO SEU ID
-        const GOOGLE_SHEETS_ID = '2PACX-1vQsLc59dPTESRnZSBY17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA';
-        
-        // DADOS DE EXEMPLO (SUBSTITUA PELOS SEUS DADOS REAIS)
-        const dadosExemplo = [
+        // LINK DE PUBLICAÇÃO DA PLANILHA (formato /pubhtml)
+        const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBY17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pubhtml';
+
+        let dadosExemplo = [
             { data: '2026-05-05', descricao: 'PIX TRANSF CIRLENE', categoria: 'Empréstimo', valor: 35000, tipo: 'extrato' },
             { data: '2026-05-05', descricao: 'APLICACAO COFRINHOS', categoria: 'Investimento', valor: -34731.65, tipo: 'extrato' },
             { data: '2026-05-04', descricao: 'FATURA PAGA LATAM PASS', categoria: 'Pagamento Cartão', valor: -1917.54, tipo: 'extrato' },
@@ -432,51 +416,48 @@
             { data: '2026-01-29', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 1819.03, tipo: 'extrato' },
         ];
 
-        // ============================================
-        // FUNÇÃO PARA CARREGAR DADOS
-        // ============================================
         async function carregarDadosPlanilha() {
             document.getElementById('transacoes-body').innerHTML = '<tr><td colspan="5">Carregando dados...</td></tr>';
             
             try {
-                // TENTA CARREGAR DO GOOGLE SHEETS
-                if (GOOGLE_SHEETS_ID !== 'SEU_ID_DA_PLANILHA_AQUI') {
-                    const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=movimentacoes`;
-                    const response = await fetch(url);
-                    const csvText = await response.text();
-                    const linhas = csvText.split('\n').slice(1);
-                    
+                // Usa o link de publicação para obter os dados em CSV
+                const csvUrl = URL_PUBLICACAO.replace('/pubhtml', '/export?format=csv&gid=966920672');
+                
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
+                const linhas = csvText.split('\n');
+                
+                if (linhas.length > 2) {
                     dadosGlobais = [];
-                    for (let linha of linhas) {
-                        const cols = linha.split(',');
-                        if (cols.length >= 5) {
+                    const cabecalho = linhas[0].split(',');
+                    
+                    for (let i = 1; i < linhas.length; i++) {
+                        const cols = linhas[i].split(',');
+                        if (cols.length >= 5 && cols[0]) {
                             dadosGlobais.push({
-                                data: cols[0]?.replace(/"/g, ''),
-                                descricao: cols[2]?.replace(/"/g, ''),
-                                categoria: cols[4]?.replace(/"/g, ''),
+                                data: cols[0]?.replace(/"/g, '').trim(),
+                                descricao: cols[2]?.replace(/"/g, '').trim(),
+                                categoria: cols[4]?.replace(/"/g, '').trim(),
                                 valor: parseFloat(cols[5]) || 0,
-                                tipo: cols[1]?.replace(/"/g, '')
+                                tipo: cols[1]?.replace(/"/g, '').trim()
                             });
                         }
                     }
+                    
+                    document.getElementById('last-update').innerText = new Date().toLocaleString();
+                    aplicarFiltros();
                 } else {
-                    // USA DADOS DE EXEMPLO
-                    dadosGlobais = [...dadosExemplo];
+                    throw new Error('Poucos dados na planilha');
                 }
                 
-                document.getElementById('last-update').innerText = new Date().toLocaleString();
-                aplicarFiltros();
-                
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar planilha:', error);
                 dadosGlobais = [...dadosExemplo];
+                document.getElementById('last-update').innerText = new Date().toLocaleString() + ' (dados de exemplo)';
                 aplicarFiltros();
             }
         }
 
-        // ============================================
-        // APLICAR FILTROS
-        // ============================================
         function aplicarFiltros() {
             const periodo = document.getElementById('periodo').value;
             const categoria = document.getElementById('categoria').value;
@@ -497,9 +478,6 @@
         }
 
         function atualizarCards(dados) {
-            const dataAtual = new Date();
-            const mesAtual = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2,'0')}`;
-            
             const receitas = dados.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
             const despesas = dados.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
             const economia = receitas - despesas;
@@ -514,7 +492,7 @@
             
             const economiaStatus = economia >= 0 ? '✅ No verde' : '⚠️ No vermelho';
             document.getElementById('economia-status').innerHTML = economiaStatus;
-            document.getElementById('saldo-change').innerHTML = `${dadosFiltrados.length} transações no período`;
+            document.getElementById('saldo-change').innerHTML = `${dados.length} transações no período`;
         }
 
         function atualizarTabela(dados) {
@@ -538,7 +516,6 @@
         }
 
         function atualizarGraficos(dados) {
-            // Gastos por categoria
             const catMap = new Map();
             dados.filter(t => t.valor < 0).forEach(t => {
                 const cat = t.categoria || 'Outros';
@@ -556,7 +533,6 @@
                 options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
             });
             
-            // Evolução mensal
             const mesesMap = new Map();
             dados.forEach(t => {
                 const mes = t.data.substring(0, 7);
@@ -582,9 +558,6 @@
             });
         }
 
-        // ============================================
-        // IA - PERGUNTAR PARA GROQ
-        // ============================================
         async function enviarPergunta() {
             const input = document.getElementById('chat-input');
             const pergunta = input.value.trim();
@@ -599,7 +572,6 @@
             
             try {
                 const resumoDados = gerarResumoDados();
-                
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
                     headers: {
@@ -638,11 +610,9 @@
                 const cat = t.categoria || 'Outros';
                 categorias[cat] = (categorias[cat] || 0) + Math.abs(t.valor);
             });
-            
             return `Total receitas: R$ ${receitas}, Total despesas: R$ ${despesas}, Gastos por categoria: ${JSON.stringify(categorias)}`;
         }
         
-        // Inicializar
         carregarDadosPlanilha();
     </script>
 </body>
