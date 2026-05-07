@@ -86,6 +86,7 @@
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
+            min-width: 140px;
         }
 
         select:hover, input:hover, button:hover {
@@ -173,6 +174,8 @@
             border-radius: 16px;
             overflow-x: auto;
             margin-bottom: 24px;
+            max-height: 500px;
+            overflow-y: auto;
         }
 
         table {
@@ -192,6 +195,8 @@
             font-weight: 600;
             font-size: 12px;
             text-transform: uppercase;
+            position: sticky;
+            top: 0;
         }
 
         tr:hover {
@@ -268,6 +273,14 @@
             padding: 8px;
         }
 
+        .status-ok {
+            color: #10B981;
+        }
+
+        .status-error {
+            color: #EF4444;
+        }
+
         @media (max-width: 768px) {
             body { padding: 16px; }
             .charts { grid-template-columns: 1fr; }
@@ -288,11 +301,15 @@
 
         <div class="filters">
             <div class="filter-group">
-                <label>📅 Período</label>
-                <select id="periodo">
-                    <option value="todas">Todas as transações</option>
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
+                <label>📅 Mês</label>
+                <select id="mes">
+                    <option value="todos">Todos os meses</option>
+                    <option value="2026-01">Janeiro 2026</option>
+                    <option value="2026-02">Fevereiro 2026</option>
+                    <option value="2026-03">Março 2026</option>
+                    <option value="2026-04">Abril 2026</option>
+                    <option value="2026-05">Maio 2026</option>
+                    <option value="2026-06">Junho 2026</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -310,6 +327,7 @@
                     <option value="Salário">💵 Salário</option>
                     <option value="Empréstimo">🏦 Empréstimo</option>
                     <option value="Pagamento Cartão">💳 Pagamento Cartão</option>
+                    <option value="Transferência">🔄 Transferência</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -322,7 +340,7 @@
             </div>
             <div class="filter-group">
                 <label>🔍 Buscar</label>
-                <input type="text" id="busca" placeholder="Descrição..." onkeyup="aplicarFiltros()">
+                <input type="text" id="busca" placeholder="Descrição...">
             </div>
             <div class="filter-group">
                 <label>&nbsp;</label>
@@ -391,84 +409,134 @@
     </div>
 
     <script>
-        // ⚠️ CHAVE API GROQ
+        // ⚠️ CHAVE API GROQ - ATUALIZE COM SUA NOVA CHAVE
         const GROQ_API_KEY = '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';
         
         let dadosGlobais = [];
         let charts = {};
 
-        // LINK DE PUBLICAÇÃO DA PLANILHA (formato /pubhtml)
+        // LINK DE PUBLICAÇÃO DA SUA PLANILHA
         const URL_PUBLICACAO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBY17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pubhtml';
 
-        let dadosExemplo = [
-            { data: '2026-05-05', descricao: 'PIX TRANSF CIRLENE', categoria: 'Empréstimo', valor: 35000, tipo: 'extrato' },
-            { data: '2026-05-05', descricao: 'APLICACAO COFRINHOS', categoria: 'Investimento', valor: -34731.65, tipo: 'extrato' },
-            { data: '2026-05-04', descricao: 'FATURA PAGA LATAM PASS', categoria: 'Pagamento Cartão', valor: -1917.54, tipo: 'extrato' },
-            { data: '2026-04-29', descricao: 'TEF CREDITO SALARIO', categoria: 'Salário', valor: 1739.69, tipo: 'extrato' },
-            { data: '2026-04-20', descricao: 'PIX TRANSF Felipe', categoria: 'Transferência', valor: 9456.55, tipo: 'extrato' },
-            { data: '2026-04-20', descricao: 'FATURA PAGA ITAU', categoria: 'Pagamento Cartão', valor: -2222.45, tipo: 'extrato' },
-            { data: '2026-04-15', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 1761.48, tipo: 'extrato' },
-            { data: '2026-03-15', descricao: 'OUTBACK SHOPPING', categoria: 'Alimentação', valor: -203.28, tipo: 'cartao' },
-            { data: '2026-03-13', descricao: 'TEF CREDITO SALARIO', categoria: 'Salário', valor: 1761.48, tipo: 'extrato' },
-            { data: '2026-02-24', descricao: 'PAG BOLETO FACULDADES', categoria: 'Educação', valor: -328.67, tipo: 'extrato' },
-            { data: '2026-02-13', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 4399.24, tipo: 'extrato' },
-            { data: '2026-02-13', descricao: 'PIX TRANSF Felipe', categoria: 'Transferência', valor: -4600, tipo: 'extrato' },
-            { data: '2026-01-29', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 1819.03, tipo: 'extrato' },
-        ];
-
+        // ============================================
+        // FUNÇÃO PRINCIPAL: CARREGAR DADOS DA PLANILHA
+        // ============================================
         async function carregarDadosPlanilha() {
-            document.getElementById('transacoes-body').innerHTML = '<tr><td colspan="5">Carregando dados...</td></tr>';
+            const tbody = document.getElementById('transacoes-body');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5">🔄 Conectando ao Google Sheets...</td></tr>';
             
             try {
-                // Usa o link de publicação para obter os dados em CSV
-                const csvUrl = URL_PUBLICACAO.replace('/pubhtml', '/export?format=csv&gid=966920672');
+                // URL para exportar TODA a planilha em CSV (todas as abas)
+                const csvUrl = URL_PUBLICACAO.replace('/pubhtml', '/export?format=csv');
                 
+                console.log('Carregando de:', csvUrl);
                 const response = await fetch(csvUrl);
-                const csvText = await response.text();
-                const linhas = csvText.split('\n');
                 
-                if (linhas.length > 2) {
-                    dadosGlobais = [];
-                    const cabecalho = linhas[0].split(',');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const csvText = await response.text();
+                const linhas = csvText.split('\n').filter(l => l.trim().length > 0);
+                
+                if (linhas.length < 2) throw new Error('CSV vazio');
+                
+                // Parse do CSV para JSON
+                const novosDados = [];
+                
+                for (let i = 1; i < linhas.length; i++) {
+                    const linha = linhas[i];
+                    const valores = [];
+                    let dentroAspas = false;
+                    let valorAtual = '';
                     
-                    for (let i = 1; i < linhas.length; i++) {
-                        const cols = linhas[i].split(',');
-                        if (cols.length >= 5 && cols[0]) {
-                            dadosGlobais.push({
-                                data: cols[0]?.replace(/"/g, '').trim(),
-                                descricao: cols[2]?.replace(/"/g, '').trim(),
-                                categoria: cols[4]?.replace(/"/g, '').trim(),
-                                valor: parseFloat(cols[5]) || 0,
-                                tipo: cols[1]?.replace(/"/g, '').trim()
+                    // Parse manual para respeitar vírgulas dentro de aspas
+                    for (let char of linha) {
+                        if (char === '"') {
+                            dentroAspas = !dentroAspas;
+                        } else if (char === ',' && !dentroAspas) {
+                            valores.push(valorAtual.trim());
+                            valorAtual = '';
+                        } else {
+                            valorAtual += char;
+                        }
+                    }
+                    valores.push(valorAtual.trim());
+                    
+                    if (valores.length >= 6 && valores[0]) {
+                        const data = valores[0].replace(/"/g, '');
+                        const tipoRegistro = valores[1]?.replace(/"/g, '') || '';
+                        const descricao = valores[2]?.replace(/"/g, '') || '';
+                        const categoria = valores[4]?.replace(/"/g, '') || '';
+                        const valorStr = valores[5]?.replace(/"/g, '').replace(',', '.');
+                        const valor = parseFloat(valorStr) || 0;
+                        
+                        // Determinar o tipo (extrato ou cartao) baseado na coluna tipo_registro
+                        let tipo = 'extrato';
+                        if (tipoRegistro === 'cartao' || valores[7]?.includes('5217') || valores[7]?.includes('7398')) {
+                            tipo = 'cartao';
+                        }
+                        
+                        if (data && data.match(/\d{4}-\d{2}-\d{2}/)) {
+                            novosDados.push({
+                                data: data,
+                                descricao: descricao.substring(0, 60),
+                                categoria: categoria || 'Outros',
+                                valor: valor,
+                                tipo: tipo
                             });
                         }
                     }
-                    
-                    document.getElementById('last-update').innerText = new Date().toLocaleString();
-                    aplicarFiltros();
-                } else {
-                    throw new Error('Poucos dados na planilha');
                 }
                 
-            } catch (error) {
-                console.error('Erro ao carregar planilha:', error);
-                dadosGlobais = [...dadosExemplo];
-                document.getElementById('last-update').innerText = new Date().toLocaleString() + ' (dados de exemplo)';
+                if (novosDados.length === 0) {
+                    throw new Error('Nenhuma transação encontrada');
+                }
+                
+                dadosGlobais = novosDados;
+                const totalTransacoes = dadosGlobais.length;
+                const somaPositiva = dadosGlobais.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+                const somaNegativa = dadosGlobais.filter(d => d.valor < 0).reduce((s, d) => s + Math.abs(d.valor), 0);
+                
+                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ${totalTransacoes} transações carregadas ✓`;
+                document.getElementById('last-update').style.color = '#10B981';
+                
                 aplicarFiltros();
+                
+            } catch (error) {
+                console.error('Erro detalhado:', error);
+                document.getElementById('last-update').innerHTML = `${new Date().toLocaleString()} - ERRO: ${error.message}`;
+                document.getElementById('last-update').style.color = '#EF4444';
+                
+                // Mostra mensagem na tabela
+                const tbody = document.getElementById('transacoes-body');
+                if (tbody) tbody.innerHTML = `<tr><td colspan="5">⚠️ Erro ao carregar planilha: ${error.message}. Verifique se a planilha está publicada.</td></tr>`;
             }
         }
 
+        // ============================================
+        // APLICAR FILTROS
+        // ============================================
         function aplicarFiltros() {
-            const periodo = document.getElementById('periodo').value;
-            const categoria = document.getElementById('categoria').value;
-            const tipo = document.getElementById('tipo').value;
-            const busca = document.getElementById('busca').value.toLowerCase();
+            const mesSelecionado = document.getElementById('mes').value;
+            const categoriaSelecionada = document.getElementById('categoria').value;
+            const tipoSelecionado = document.getElementById('tipo').value;
+            const buscaTexto = document.getElementById('busca').value.toLowerCase();
             
             let dadosFiltrados = dadosGlobais.filter(t => {
-                if (periodo !== 'todas' && !t.data.includes(periodo)) return false;
-                if (categoria !== 'todas' && t.categoria !== categoria) return false;
-                if (tipo !== 'todas' && t.tipo !== tipo) return false;
-                if (busca && !t.descricao.toLowerCase().includes(busca)) return false;
+                // Filtro por mês
+                if (mesSelecionado !== 'todos') {
+                    const mesTransacao = t.data.substring(0, 7);
+                    if (mesTransacao !== mesSelecionado) return false;
+                }
+                
+                // Filtro por categoria
+                if (categoriaSelecionada !== 'todas' && t.categoria !== categoriaSelecionada) return false;
+                
+                // Filtro por tipo
+                if (tipoSelecionado !== 'todas' && t.tipo !== tipoSelecionado) return false;
+                
+                // Filtro por busca textual
+                if (buscaTexto && !t.descricao.toLowerCase().includes(buscaTexto)) return false;
+                
                 return true;
             });
             
@@ -478,44 +546,53 @@
         }
 
         function atualizarCards(dados) {
-            const receitas = dados.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
-            const despesas = dados.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
-            const economia = receitas - despesas;
+            const dataAtual = new Date();
+            const mesAtual = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2,'0')}`;
             
-            let saldo = 0;
-            dados.sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(t => { saldo += t.valor; });
+            // Filtra apenas transações do mês atual para os cards "do mês"
+            const transacoesMes = dadosGlobais.filter(t => t.data.substring(0, 7) === mesAtual);
+            const receitasMes = transacoesMes.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesasMes = transacoesMes.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const economiaMes = receitasMes - despesasMes;
             
-            document.getElementById('saldo-atual').innerHTML = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('receitas-mes').innerHTML = `R$ ${receitas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('despesas-mes').innerHTML = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-            document.getElementById('economia-mes').innerHTML = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            // Saldo total (todas transações)
+            let saldoTotal = 0;
+            [...dadosGlobais].sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(t => { saldoTotal += t.valor; });
             
-            const economiaStatus = economia >= 0 ? '✅ No verde' : '⚠️ No vermelho';
+            document.getElementById('saldo-atual').innerHTML = `R$ ${saldoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('receitas-mes').innerHTML = `R$ ${receitasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('despesas-mes').innerHTML = `R$ ${despesasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('economia-mes').innerHTML = `R$ ${economiaMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            
+            const economiaStatus = economiaMes >= 0 ? '✅ No verde' : '⚠️ No vermelho';
             document.getElementById('economia-status').innerHTML = economiaStatus;
-            document.getElementById('saldo-change').innerHTML = `${dados.length} transações no período`;
+            document.getElementById('saldo-change').innerHTML = `${dadosGlobais.length} transações no total`;
         }
 
         function atualizarTabela(dados) {
             const tbody = document.getElementById('transacoes-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
             
-            const dadosOrdenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data)).slice(0, 50);
+            // Mostra TODAS as transações filtradas (sem limite)
+            const dadosOrdenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data));
             
             for (let t of dadosOrdenados) {
                 const row = tbody.insertRow();
                 row.insertCell(0).innerHTML = new Date(t.data).toLocaleDateString('pt-BR');
-                row.insertCell(1).innerHTML = t.descricao.substring(0, 40);
+                row.insertCell(1).innerHTML = t.descricao.substring(0, 50);
                 row.insertCell(2).innerHTML = t.categoria || '-';
                 row.insertCell(3).innerHTML = `<span class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${Math.abs(t.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>`;
                 row.insertCell(4).innerHTML = t.tipo === 'extrato' ? '💳 Conta' : '💳 Cartão';
             }
             
             if (dadosOrdenados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">Nenhuma transação encontrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5">📭 Nenhuma transação encontrada com os filtros selecionados.</td></tr>';
             }
         }
 
         function atualizarGraficos(dados) {
+            // Gastos por categoria (apenas despesas)
             const catMap = new Map();
             dados.filter(t => t.valor < 0).forEach(t => {
                 const cat = t.categoria || 'Outros';
@@ -526,15 +603,19 @@
             const valores = Array.from(catMap.values());
             
             if (charts.categorias) charts.categorias.destroy();
-            const ctx1 = document.getElementById('categorias-chart').getContext('2d');
-            charts.categorias = new Chart(ctx1, {
-                type: 'doughnut',
-                data: { labels: categorias, datasets: [{ data: valores, backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'] }] },
-                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
-            });
+            const ctx1 = document.getElementById('categorias-chart');
+            if (ctx1) {
+                charts.categorias = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: { labels: categorias, datasets: [{ data: valores, backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1'] }] },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
+                });
+            }
             
+            // Evolução mensal
             const mesesMap = new Map();
-            dados.forEach(t => {
+            dadosGlobais.forEach(t => {
+                if (!t.data) return;
                 const mes = t.data.substring(0, 7);
                 if (!mesesMap.has(mes)) mesesMap.set(mes, { receitas: 0, despesas: 0 });
                 const m = mesesMap.get(mes);
@@ -544,20 +625,29 @@
             
             const mesesOrdenados = Array.from(mesesMap.keys()).sort();
             if (charts.evolucao) charts.evolucao.destroy();
-            const ctx2 = document.getElementById('evolucao-chart').getContext('2d');
-            charts.evolucao = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: mesesOrdenados,
-                    datasets: [
-                        { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981' },
-                        { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444' }
-                    ]
-                },
-                options: { responsive: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
-            });
+            const ctx2 = document.getElementById('evolucao-chart');
+            if (ctx2) {
+                charts.evolucao = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: mesesOrdenados.map(m => {
+                            const [ano, mes] = m.split('-');
+                            const nomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                            return `${nomes[parseInt(mes)-1]} ${ano}`;
+                        }),
+                        datasets: [
+                            { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981', borderRadius: 8 },
+                            { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444', borderRadius: 8 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
+                });
+            }
         }
 
+        // ============================================
+        // IA - PERGUNTAR PARA GROQ
+        // ============================================
         async function enviarPergunta() {
             const input = document.getElementById('chat-input');
             const pergunta = input.value.trim();
@@ -613,6 +703,13 @@
             return `Total receitas: R$ ${receitas}, Total despesas: R$ ${despesas}, Gastos por categoria: ${JSON.stringify(categorias)}`;
         }
         
+        // Event listeners para filtros
+        document.getElementById('mes').addEventListener('change', () => aplicarFiltros());
+        document.getElementById('categoria').addEventListener('change', () => aplicarFiltros());
+        document.getElementById('tipo').addEventListener('change', () => aplicarFiltros());
+        document.getElementById('busca').addEventListener('keyup', () => aplicarFiltros());
+        
+        // Inicializar
         carregarDadosPlanilha();
     </script>
 </body>
