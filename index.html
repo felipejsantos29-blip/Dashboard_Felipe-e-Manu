@@ -1,251 +1,79 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard - Felipe & Manu</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg: #0b0f19; --card: #161c2d; --text: #f1f5f9;
-            --blue: #3b82f6; --green: #10b981; --red: #ef4444; --gray: #94a3b8;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; }
-        
-        .grid-main { display: grid; grid-template-columns: 1fr 300px; gap: 20px; max-width: 1400px; margin: 0 auto; }
-        
-        /* Filtros */
-        .header-box { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
-        .f-group { display: flex; flex-direction: column; gap: 5px; }
-        .f-group label { font-size: 11px; color: var(--gray); text-transform: uppercase; }
-        select, input { background: #0b0f19; border: 1px solid #2d3748; color: white; padding: 10px; border-radius: 8px; }
-
-        /* Cards Superiores */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--card); padding: 20px; border-radius: 16px; border-bottom: 3px solid transparent; }
-        .stat-card.blue { border-color: var(--blue); }
-        .stat-card.green { border-color: var(--green); }
-        .stat-card.red { border-color: var(--red); }
-        .stat-label { font-size: 12px; color: var(--gray); }
-        .stat-val { font-size: 22px; font-weight: bold; margin-top: 5px; }
-
-        /* Empréstimo */
-        .loan-box { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; }
-        .progress-bg { background: #334155; height: 8px; border-radius: 4px; margin: 10px 0; }
-        .progress-fill { background: var(--blue); height: 100%; border-radius: 4px; transition: 0.5s; }
-
-        /* Gráficos */
-        .charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-box { background: var(--card); padding: 20px; border-radius: 16px; height: 400px; }
-        h3 { margin-bottom: 15px; font-size: 16px; color: var(--gray); }
-
-        /* Ranking Lateral */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .ranking-card { background: var(--card); padding: 20px; border-radius: 16px; }
-        .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2d3748; }
-        .rank-name { font-size: 13px; }
-        .rank-price { font-weight: bold; color: var(--red); }
-
-        @media (max-width: 900px) { .grid-main { grid-template-columns: 1fr; } .charts-container { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-    <div class="header-box">
-        <div class="f-group"><label>Mês</label><select id="f-mes"><option value="todos">Todos</option></select></div>
-        <div class="f-group">
-            <label>Pagamento</label>
-            <select id="f-tipo">
-                <option value="todos">Todos</option>
-                <option value="extrato">Dinheiro/Extrato</option>
-                <option value="cartao">Cartão de Crédito</option>
-            </select>
-        </div>
-        <button onclick="carregarDados()" style="background: var(--blue); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Sincronizar Planilha</button>
+<div class="stats-grid">
+    <div class="stat-card green">
+        <div class="stat-label">Saldo em Conta (Banco)</div>
+        <div class="stat-val" id="val-banco">R$ 0,00</div>
+        <div style="font-size: 10px; color: var(--gray);">Dinheiro real disponível</div>
     </div>
 
-    <div class="grid-main">
-        <main>
-            <div class="stats-grid">
-                <div class="stat-card blue"><div class="stat-label">Saldo no Filtro</div><div class="stat-val" id="val-saldo">R$ 0,00</div></div>
-                <div class="stat-card green"><div class="stat-label">Receitas</div><div class="stat-val" id="val-rec">R$ 0,00</div></div>
-                <div class="stat-card red"><div class="stat-label">Despesas</div><div class="stat-val" id="val-des">R$ 0,00</div></div>
-                <div class="stat-card blue"><div class="stat-label">Projeção Próx. Mês</div><div class="stat-val" id="val-proj">R$ 0,00</div></div>
-            </div>
-
-            <div class="loan-box">
-                <div style="display:flex; justify-content:space-between; font-size:13px;">
-                    <span>Dívida Empréstimo: R$ 35.000,00</span>
-                    <span id="loan-paid">Pago: R$ 0,00</span>
-                </div>
-                <div class="progress-bg"><div class="progress-fill" id="loan-bar" style="width: 0%"></div></div>
-                <p style="font-size: 11px; color: var(--gray);">Parcela: R$ 500,00/mês + R$ 4.000,00 semestral</p>
-            </div>
-
-            <div class="charts-container" style="margin-top:20px;">
-                <div class="chart-box"><h3>Despesas por Categoria (Filtro)</h3><canvas id="chart-cat-mes"></canvas></div>
-                <div class="chart-box"><h3>Evolução Mensal (Receita x Despesa)</h3><canvas id="chart-evo"></canvas></div>
-            </div>
-        </main>
-
-        <aside class="sidebar">
-            <div class="ranking-card">
-                <h3>Maiores Gastos</h3>
-                <div id="ranking-list"></div>
-            </div>
-            <div class="ranking-card" style="height: 300px;">
-                <h3>Categorias no Ano</h3>
-                <canvas id="chart-cat-ano"></canvas>
-            </div>
-        </aside>
+    <div class="stat-card red">
+        <div class="stat-label">Dívida Cartão (A pagar)</div>
+        <div class="stat-val" id="val-fatura">R$ 0,00</div>
+        <div style="font-size: 10px; color: var(--gray);">Soma de todas as compras no cartão</div>
     </div>
 
-    <script>
-        const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
-        let dadosGlobais = [];
-        let charts = {};
+    <div class="stat-card blue">
+        <div class="stat-label">Receitas (Mês)</div>
+        <div class="stat-val" id="val-rec">R$ 0,00</div>
+    </div>
 
-        async function carregarDados() {
-            try {
-                const resp = await fetch(URL_CSV);
-                const csv = await resp.text();
-                const linhas = csv.split('\n').filter(l => l.trim().length > 0);
-                
-                dadosGlobais = [];
-                const meses = new Set();
+    <div class="stat-card red">
+        <div class="stat-label">Despesas Reais (Mês)</div>
+        <div class="stat-val" id="val-des">R$ 0,00</div>
+        <div style="font-size: 10px; color: var(--gray);">Consumo total (Cartão + Pix)</div>
+    </div>
+</div>
 
-                for (let i = 1; i < linhas.length; i++) {
-                    const col = parseCSVLine(linhas[i]);
-                    if (col.length < 6) continue;
+<script>
+    // ... (mantenha a função carregarDados e parseCSVLine)
 
-                    const data = col[1].trim();
-                    const tipoOrigem = col[2].toLowerCase(); // 'extrato' ou 'cartao'
-                    const desc = col[3].trim();
-                    const cat = col[4].trim() || 'Outros';
-                    const valor = parseFloat(col[5].replace(/"/g, '').replace(',', '.')) || 0;
+    function atualizarDashboard() {
+        const mSel = document.getElementById('f-mes').value;
+        const tSel = document.getElementById('f-tipo').value;
 
-                    if (data.includes('-') && !desc.toUpperCase().includes("SALDO DO DIA")) {
-                        dadosGlobais.push({ data, tipoOrigem, desc, cat, valor });
-                        meses.add(data.substring(0, 7));
-                    }
-                }
+        // 1. FILTROS
+        const filtrados = dadosGlobais.filter(d => {
+            const bateMes = mSel === 'todos' || d.data.startsWith(mSel);
+            const bateTipo = tSel === 'todos' || d.tipoOrigem === tSel;
+            return bateMes && bateTipo;
+        });
 
-                popularMeses(Array.from(meses).sort().reverse());
-                atualizarDashboard();
-            } catch (e) { console.error("Erro ao carregar", e); }
-        }
+        // 2. LÓGICA DE SALDO BANCÁRIO (DINHEIRO QUE SAI DA CONTA)
+        // O saldo do banco diminui com: PIX, Débito e o PAGAMENTO DA FATURA.
+        const saldoBanco = dadosGlobais.filter(d => d.tipoOrigem === 'extrato')
+                                       .reduce((s, d) => s + d.valor, 0);
 
-        function parseCSVLine(t) {
-            const res = []; let c = '', q = false;
-            for (let char of t) { if (char === '"') q = !q; else if (char === ',' && !q) { res.push(c); c = ''; } else c += char; }
-            res.push(c); return res;
-        }
+        // 3. LÓGICA DE CARTÃO (DÍVIDA)
+        // A dívida aumenta com compras no cartão e diminui quando a fatura é paga.
+        const dividaCartao = dadosGlobais.reduce((s, d) => {
+            if (d.tipoOrigem === 'cartao') return s + d.valor; // Compras negativas
+            if (d.desc.toUpperCase().includes("FATURA PAGA") || d.desc.toUpperCase().includes("LATAM PASS")) {
+                return s + Math.abs(d.valor); // Pagamento "anula" a dívida
+            }
+            return s;
+        }, 0);
 
-        function popularMeses(meses) {
-            const f = document.getElementById('f-mes');
-            if(f.options.length > 1) return;
-            meses.forEach(m => f.add(new Option(m.split('-').reverse().join('/'), m)));
-        }
+        // 4. DESPESAS REAIS (CONSUMO)
+        // Aqui somamos o que você consumiu, mas ignoramos o "Pagamento de Fatura" para não contar duas vezes.
+        const receitasMes = filtrados.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+        const despesasMes = filtrados.filter(d => {
+            const ehNegativo = d.valor < 0;
+            const ehPagamentoFatura = d.desc.toUpperCase().includes("FATURA PAGA") || d.cat.toUpperCase().includes("PAGAMENTO");
+            return ehNegativo && !ehPagamentoFatura;
+        }).reduce((s, d) => s + Math.abs(d.valor), 0);
 
-        function atualizarDashboard() {
-            const mSel = document.getElementById('f-mes').value;
-            const tSel = document.getElementById('f-tipo').value;
+        // Interface
+        document.getElementById('val-banco').innerText = formatMoeda(saldoBanco);
+        document.getElementById('val-fatura').innerText = formatMoeda(dividaCartao);
+        document.getElementById('val-rec').innerText = formatMoeda(receitasMes);
+        document.getElementById('val-des').innerText = formatMoeda(despesasMes);
+        
+        // Cores de alerta para o cartão
+        document.getElementById('val-fatura').style.color = dividaCartao < 0 ? 'var(--red)' : 'var(--green)';
 
-            const filtrados = dadosGlobais.filter(d => {
-                const bateMes = mSel === 'todos' || d.data.startsWith(mSel);
-                const bateTipo = tSel === 'todos' || d.tipoOrigem === tSel;
-                return bateMes && bateTipo;
-            });
+        // Atualizar Ranking e Gráficos
+        renderRanking(filtrados);
+        renderCharts(filtrados, mSel);
+    }
 
-            // Cálculos
-            const rec = filtrados.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-            const des = filtrados.filter(d => d.valor < 0 && !d.cat.includes("Fatura")).reduce((s, d) => s + Math.abs(d.valor), 0);
-            
-            // Empréstimo (Soma parcelas pagas)
-            const pagoEmprestimo = Math.abs(dadosGlobais.filter(d => d.cat === "Empréstimo").reduce((s, d) => s + d.valor, 0));
-            const percLoan = (pagoEmprestimo / 35000) * 100;
-
-            // Interface
-            document.getElementById('val-rec').innerText = formatMoeda(rec);
-            document.getElementById('val-des').innerText = formatMoeda(des);
-            document.getElementById('val-saldo').innerText = formatMoeda(rec - des);
-            document.getElementById('val-proj').innerText = formatMoeda(des * 1.1); // Projeção: média + 10%
-            document.getElementById('loan-paid').innerText = `Pago: ${formatMoeda(pagoEmprestimo)}`;
-            document.getElementById('loan-bar').style.width = percLoan + '%';
-
-            renderRanking(filtrados);
-            renderCharts(filtrados, mSel);
-        }
-
-        function renderRanking(dados) {
-            const gastos = dados.filter(d => d.valor < 0 && !d.cat.includes("Fatura"))
-                               .sort((a,b) => a.valor - b.valor).slice(0, 5);
-            
-            document.getElementById('ranking-list').innerHTML = gastos.map(g => `
-                <div class="rank-item">
-                    <span class="rank-name">${g.desc.substring(0,20)}</span>
-                    <span class="rank-price">${formatMoeda(Math.abs(g.valor))}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderCharts(dados, mesAtivo) {
-            // Categorias Donut
-            const catData = {};
-            dados.filter(d => d.valor < 0 && !d.cat.includes("Fatura")).forEach(d => catData[d.cat] = (catData[d.cat] || 0) + Math.abs(d.valor));
-
-            createDonut('chart-cat-mes', Object.keys(catData), Object.values(catData));
-
-            // Evolução Barras
-            const evoRes = {};
-            dadosGlobais.forEach(d => {
-                const m = d.data.substring(0, 7);
-                if(!evoRes[m]) evoRes[m] = {r:0, d:0};
-                if(d.valor > 0) evoRes[m].r += d.valor; 
-                else if(!d.cat.includes("Fatura")) evoRes[m].d += Math.abs(d.valor);
-            });
-            const labels = Object.keys(evoRes).sort();
-            createBar('chart-evo', labels, labels.map(l => evoRes[l].r), labels.map(l => evoRes[l].d));
-            
-            // Categorias Ano
-            const anoData = {};
-            const anoAtual = new Date().getFullYear().toString();
-            dadosGlobais.filter(d => d.data.startsWith(anoAtual) && d.valor < 0 && !d.cat.includes("Fatura"))
-                       .forEach(d => anoData[d.cat] = (anoData[d.cat] || 0) + Math.abs(d.valor));
-            createDonut('chart-cat-ano', Object.keys(anoData), Object.values(anoData), true);
-        }
-
-        function createDonut(id, labels, data, mini = false) {
-            if(charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'] }] },
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { position: mini ? 'none' : 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } },
-                    cutout: '70%'
-                }
-            });
-        }
-
-        function createBar(id, labels, rec, des) {
-            if(charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: 'bar',
-                data: { labels, datasets: [
-                    { label: 'Receita', data: rec, backgroundColor: '#10b981' },
-                    { label: 'Despesa', data: des, backgroundColor: '#ef4444' }
-                ]},
-                options: { maintainAspectRatio: false, scales: { y: { grid: { color: '#2d3748' } } } }
-            });
-        }
-
-        function formatMoeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
-
-        document.getElementById('f-mes').addEventListener('change', atualizarDashboard);
-        document.getElementById('f-tipo').addEventListener('change', atualizarDashboard);
-        carregarDados();
-    </script>
-</body>
-</html>
+    // ... (mantenha as funções de gráficos e ranking)
+</script>
