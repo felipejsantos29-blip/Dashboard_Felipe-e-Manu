@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro - Felipe Santos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0F172A;
+            color: #F1F5F9;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1::before {
+            content: "💰";
+            font-size: 32px;
+        }
+
+        .update-info {
+            background: #1E293B;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #94A3B8;
+        }
+
+        /* Filtros */
+        .filters {
+            background: #1E293B;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select, input, button {
+            background: #0F172A;
+            border: 1px solid #334155;
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: #F1F5F9;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:hover, input:hover, button:hover {
+            border-color: #3B82F6;
+        }
+
+        button {
+            background: #3B82F6;
+            border-color: #3B82F6;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #2563EB;
+        }
+
+        input {
+            cursor: text;
+            min-width: 200px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: #1E293B;
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 4px solid;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #94A3B8;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .card-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .card.positive { border-left-color: #10B981; }
+        .card.negative { border-left-color: #EF4444; }
+        .card.neutral { border-left-color: #3B82F6; }
+
+        /* Gráficos */
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chart-container {
+            background: #1E293B;
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Tabela */
+        .table-container {
+            background: #1E293B;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: #0F172A;
+            color: #94A3B8;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background: #334155;
+        }
+
+        .valor-positivo {
+            color: #10B981;
+        }
+
+        .valor-negativo {
+            color: #EF4444;
+        }
+
+        /* Chat IA */
+        .chat-section {
+            background: #1E293B;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #0F172A;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .chat-header::before {
+            content: "🤖";
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+
+        .message.user {
+            background: #3B82F6;
+            align-self: flex-end;
+        }
+
+        .message.assistant {
+            background: #334155;
+            align-self: flex-start;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 16px;
+            gap: 12px;
+            border-top: 1px solid #334155;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+        }
+
+        .loading {
+            color: #94A3B8;
+            font-style: italic;
+            padding: 8px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .charts { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .filter-group select, .filter-group input { width: 100%; }
+            .message { max-width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Controle Financeiro</h1>
+            <div class="update-info">
+                📊 Dados carregados: <span id="last-update">--</span>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>📅 Período</label>
+                <select id="periodo">
+                    <option value="todas">Todas as transações</option>
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>📂 Categoria</label>
+                <select id="categoria">
+                    <option value="todas">Todas</option>
+                    <option value="Alimentação">🍔 Alimentação</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Saúde">🏥 Saúde</option>
+                    <option value="Educação">🎓 Educação</option>
+                    <option value="Pet">🐾 Pet</option>
+                    <option value="Serviços">📱 Serviços</option>
+                    <option value="Compras">🛍️ Compras</option>
+                    <option value="Investimento">📈 Investimento</option>
+                    <option value="Salário">💵 Salário</option>
+                    <option value="Empréstimo">🏦 Empréstimo</option>
+                    <option value="Pagamento Cartão">💳 Pagamento Cartão</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>💳 Tipo</label>
+                <select id="tipo">
+                    <option value="todas">Ambos</option>
+                    <option value="extrato">Extrato Conta</option>
+                    <option value="cartao">Cartão de Crédito</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🔍 Buscar</label>
+                <input type="text" id="busca" placeholder="Descrição..." onkeyup="aplicarFiltros()">
+            </div>
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button onclick="carregarDadosPlanilha()">🔄 Atualizar Dados</button>
+            </div>
+        </div>
+
+        <!-- Cards KPIs -->
+        <div class="cards" id="cards">
+            <div class="card neutral">
+                <div class="card-title">💰 SALDO ATUAL</div>
+                <div class="card-value" id="saldo-atual">R$ 0,00</div>
+                <div class="card-change" id="saldo-change">Carregando...</div>
+            </div>
+            <div class="card positive">
+                <div class="card-title">📈 RECEITAS (Mês)</div>
+                <div class="card-value" id="receitas-mes">R$ 0,00</div>
+                <div class="card-change" id="receitas-change">---</div>
+            </div>
+            <div class="card negative">
+                <div class="card-title">📉 DESPESAS (Mês)</div>
+                <div class="card-value" id="despesas-mes">R$ 0,00</div>
+                <div class="card-change" id="despesas-change">---</div>
+            </div>
+            <div class="card neutral">
+                <div class="card-title">🎯 ECONOMIA DO MÊS</div>
+                <div class="card-value" id="economia-mes">R$ 0,00</div>
+                <div class="card-change" id="economia-status">---</div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="charts">
+            <div class="chart-container">
+                <h3>📊 Gastos por Categoria</h3>
+                <canvas id="categorias-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>📈 Evolução Mensal</h3>
+                <canvas id="evolucao-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabela de Transações -->
+        <div class="table-container">
+            <table id="transacoes-table">
+                <thead>
+                    <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Tipo</th></tr>
+                </thead>
+                <tbody id="transacoes-body">
+                    <tr><td colspan="5">Carregando dados...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Chat IA -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <strong>Assistente Financeiro IA</strong>
+                <span style="font-size: 12px; color: #94A3B8;">Pergunte sobre seus gastos</span>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant">Olá! 👋 Sou seu assistente financeiro. Pergunte-me sobre seus gastos, como "Quanto gastei com alimentação?" ou "Qual foi minha maior despesa?"</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') enviarPergunta()">
+                <button onclick="enviarPergunta()">Enviar ➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ CHAVE API GROQ - VISÍVEL (uso apenas para teste)
+        const GROQ_API_KEY = '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';
+        
+        let dadosGlobais = [];
+        let charts = {};
+
+        // ============================================
+        // DADOS DA SUA PLANILHA (COPIE OS DADOS AQUI)
+        // ============================================
+        // PARA USAR COM GOOGLE SHEETS, SUBSTITUA PELO SEU ID
+        const GOOGLE_SHEETS_ID = 'SEU_ID_DA_PLANILHA_AQUI';
+        
+        // DADOS DE EXEMPLO (SUBSTITUA PELOS SEUS DADOS REAIS)
+        const dadosExemplo = [
+            { data: '2026-05-05', descricao: 'PIX TRANSF CIRLENE', categoria: 'Empréstimo', valor: 35000, tipo: 'extrato' },
+            { data: '2026-05-05', descricao: 'APLICACAO COFRINHOS', categoria: 'Investimento', valor: -34731.65, tipo: 'extrato' },
+            { data: '2026-05-04', descricao: 'FATURA PAGA LATAM PASS', categoria: 'Pagamento Cartão', valor: -1917.54, tipo: 'extrato' },
+            { data: '2026-04-29', descricao: 'TEF CREDITO SALARIO', categoria: 'Salário', valor: 1739.69, tipo: 'extrato' },
+            { data: '2026-04-20', descricao: 'PIX TRANSF Felipe', categoria: 'Transferência', valor: 9456.55, tipo: 'extrato' },
+            { data: '2026-04-20', descricao: 'FATURA PAGA ITAU', categoria: 'Pagamento Cartão', valor: -2222.45, tipo: 'extrato' },
+            { data: '2026-04-15', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 1761.48, tipo: 'extrato' },
+            { data: '2026-03-15', descricao: 'OUTBACK SHOPPING', categoria: 'Alimentação', valor: -203.28, tipo: 'cartao' },
+            { data: '2026-03-13', descricao: 'TEF CREDITO SALARIO', categoria: 'Salário', valor: 1761.48, tipo: 'extrato' },
+            { data: '2026-02-24', descricao: 'PAG BOLETO FACULDADES', categoria: 'Educação', valor: -328.67, tipo: 'extrato' },
+            { data: '2026-02-13', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 4399.24, tipo: 'extrato' },
+            { data: '2026-02-13', descricao: 'PIX TRANSF Felipe', categoria: 'Transferência', valor: -4600, tipo: 'extrato' },
+            { data: '2026-01-29', descricao: 'REMUNERACAO/SALARIO', categoria: 'Salário', valor: 1819.03, tipo: 'extrato' },
+        ];
+
+        // ============================================
+        // FUNÇÃO PARA CARREGAR DADOS
+        // ============================================
+        async function carregarDadosPlanilha() {
+            document.getElementById('transacoes-body').innerHTML = '<tr><td colspan="5">Carregando dados...</td></tr>';
+            
+            try {
+                // TENTA CARREGAR DO GOOGLE SHEETS
+                if (GOOGLE_SHEETS_ID !== 'SEU_ID_DA_PLANILHA_AQUI') {
+                    const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=movimentacoes`;
+                    const response = await fetch(url);
+                    const csvText = await response.text();
+                    const linhas = csvText.split('\n').slice(1);
+                    
+                    dadosGlobais = [];
+                    for (let linha of linhas) {
+                        const cols = linha.split(',');
+                        if (cols.length >= 5) {
+                            dadosGlobais.push({
+                                data: cols[0]?.replace(/"/g, ''),
+                                descricao: cols[2]?.replace(/"/g, ''),
+                                categoria: cols[4]?.replace(/"/g, ''),
+                                valor: parseFloat(cols[5]) || 0,
+                                tipo: cols[1]?.replace(/"/g, '')
+                            });
+                        }
+                    }
+                } else {
+                    // USA DADOS DE EXEMPLO
+                    dadosGlobais = [...dadosExemplo];
+                }
+                
+                document.getElementById('last-update').innerText = new Date().toLocaleString();
+                aplicarFiltros();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                dadosGlobais = [...dadosExemplo];
+                aplicarFiltros();
+            }
+        }
+
+        // ============================================
+        // APLICAR FILTROS
+        // ============================================
+        function aplicarFiltros() {
+            const periodo = document.getElementById('periodo').value;
+            const categoria = document.getElementById('categoria').value;
+            const tipo = document.getElementById('tipo').value;
+            const busca = document.getElementById('busca').value.toLowerCase();
+            
+            let dadosFiltrados = dadosGlobais.filter(t => {
+                if (periodo !== 'todas' && !t.data.includes(periodo)) return false;
+                if (categoria !== 'todas' && t.categoria !== categoria) return false;
+                if (tipo !== 'todas' && t.tipo !== tipo) return false;
+                if (busca && !t.descricao.toLowerCase().includes(busca)) return false;
+                return true;
+            });
+            
+            atualizarCards(dadosFiltrados);
+            atualizarTabela(dadosFiltrados);
+            atualizarGraficos(dadosFiltrados);
+        }
+
+        function atualizarCards(dados) {
+            const dataAtual = new Date();
+            const mesAtual = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2,'0')}`;
+            
+            const receitas = dados.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesas = dados.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const economia = receitas - despesas;
+            
+            let saldo = 0;
+            dados.sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(t => { saldo += t.valor; });
+            
+            document.getElementById('saldo-atual').innerHTML = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('receitas-mes').innerHTML = `R$ ${receitas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('despesas-mes').innerHTML = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            document.getElementById('economia-mes').innerHTML = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            
+            const economiaStatus = economia >= 0 ? '✅ No verde' : '⚠️ No vermelho';
+            document.getElementById('economia-status').innerHTML = economiaStatus;
+            document.getElementById('saldo-change').innerHTML = `${dadosFiltrados.length} transações no período`;
+        }
+
+        function atualizarTabela(dados) {
+            const tbody = document.getElementById('transacoes-body');
+            tbody.innerHTML = '';
+            
+            const dadosOrdenados = [...dados].sort((a,b) => new Date(b.data) - new Date(a.data)).slice(0, 50);
+            
+            for (let t of dadosOrdenados) {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerHTML = new Date(t.data).toLocaleDateString('pt-BR');
+                row.insertCell(1).innerHTML = t.descricao.substring(0, 40);
+                row.insertCell(2).innerHTML = t.categoria || '-';
+                row.insertCell(3).innerHTML = `<span class="${t.valor > 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${Math.abs(t.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>`;
+                row.insertCell(4).innerHTML = t.tipo === 'extrato' ? '💳 Conta' : '💳 Cartão';
+            }
+            
+            if (dadosOrdenados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">Nenhuma transação encontrada</td></tr>';
+            }
+        }
+
+        function atualizarGraficos(dados) {
+            // Gastos por categoria
+            const catMap = new Map();
+            dados.filter(t => t.valor < 0).forEach(t => {
+                const cat = t.categoria || 'Outros';
+                catMap.set(cat, (catMap.get(cat) || 0) + Math.abs(t.valor));
+            });
+            
+            const categorias = Array.from(catMap.keys());
+            const valores = Array.from(catMap.values());
+            
+            if (charts.categorias) charts.categorias.destroy();
+            const ctx1 = document.getElementById('categorias-chart').getContext('2d');
+            charts.categorias = new Chart(ctx1, {
+                type: 'doughnut',
+                data: { labels: categorias, datasets: [{ data: valores, backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'] }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#F1F5F9' } } } }
+            });
+            
+            // Evolução mensal
+            const mesesMap = new Map();
+            dados.forEach(t => {
+                const mes = t.data.substring(0, 7);
+                if (!mesesMap.has(mes)) mesesMap.set(mes, { receitas: 0, despesas: 0 });
+                const m = mesesMap.get(mes);
+                if (t.valor > 0) m.receitas += t.valor;
+                else m.despesas += Math.abs(t.valor);
+            });
+            
+            const mesesOrdenados = Array.from(mesesMap.keys()).sort();
+            if (charts.evolucao) charts.evolucao.destroy();
+            const ctx2 = document.getElementById('evolucao-chart').getContext('2d');
+            charts.evolucao = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: mesesOrdenados,
+                    datasets: [
+                        { label: 'Receitas', data: mesesOrdenados.map(m => mesesMap.get(m).receitas), backgroundColor: '#10B981' },
+                        { label: 'Despesas', data: mesesOrdenados.map(m => mesesMap.get(m).despesas), backgroundColor: '#EF4444' }
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { labels: { color: '#F1F5F9' } } } }
+            });
+        }
+
+        // ============================================
+        // IA - PERGUNTAR PARA GROQ
+        // ============================================
+        async function enviarPergunta() {
+            const input = document.getElementById('chat-input');
+            const pergunta = input.value.trim();
+            if (!pergunta) return;
+            
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `<div class="message user">${pergunta}</div>`;
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            messagesDiv.innerHTML += `<div class="loading" id="loading-ia">🤔 Analisando dados...</div>`;
+            
+            try {
+                const resumoDados = gerarResumoDados();
+                
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'llama3-8b-8192',
+                        messages: [
+                            { role: 'system', content: `Você é um assistente financeiro pessoal. Responda apenas sobre finanças baseado nos dados do usuário. Use linguagem clara e amigável. Dados resumidos: ${resumoDados}` },
+                            { role: 'user', content: pergunta }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 500
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById('loading-ia')?.remove();
+                
+                const resposta = data.choices?.[0]?.message?.content || 'Desculpe, não consegui processar sua pergunta.';
+                messagesDiv.innerHTML += `<div class="message assistant">${resposta}</div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                
+            } catch (error) {
+                document.getElementById('loading-ia')?.remove();
+                messagesDiv.innerHTML += `<div class="message assistant">⚠️ Erro ao conectar com IA. Verifique sua chave API.</div>`;
+            }
+        }
+        
+        function gerarResumoDados() {
+            const receitas = dadosGlobais.filter(t => t.valor > 0).reduce((s, t) => s + t.valor, 0);
+            const despesas = dadosGlobais.filter(t => t.valor < 0).reduce((s, t) => s + Math.abs(t.valor), 0);
+            const categorias = {};
+            dadosGlobais.filter(t => t.valor < 0).forEach(t => {
+                const cat = t.categoria || 'Outros';
+                categorias[cat] = (categorias[cat] || 0) + Math.abs(t.valor);
+            });
+            
+            return `Total receitas: R$ ${receitas}, Total despesas: R$ ${despesas}, Gastos por categoria: ${JSON.stringify(categorias)}`;
+        }
+        
+        // Inicializar
+        carregarDadosPlanilha();
+    </script>
+</body>
+</html>
