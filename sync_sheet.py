@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 # ID DA SUA PLANILHA
-SHEET_ID = "1cLj_Yel7CEhkHMnReQhxnKcvVieLXv0Q"
+SHEET_ID = "SHEET_ID = "1BGYyMz9BZ0ypEaJfv5InDWwVZ73iK58p9W-QOsBY3Gk"
 
 def process_sheet():
     # Autenticar usando o secret do GitHub
