@@ -1,7 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro - Controle de Casa</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a; --card: #1e293b; --text: #f8fafc;
+            --blue: #3b82f6; --green: #10b981; --red: #ef4444; --gray: #94a3b8;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .filters { display: flex; gap: 10px; }
+        select { background: var(--card); color: white; border: 1px solid var(--gray); padding: 8px; border-radius: 6px; outline: none; }
+        
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 4px solid var(--blue); }
+        .card h3 { margin: 0; font-size: 0.85rem; color: var(--gray); text-transform: uppercase; }
+        .card .value { font-size: 1.5rem; font-weight: bold; margin-top: 10px; display: block; }
+        
+        .main-content { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .chart-container { background: var(--card); padding: 20px; border-radius: 12px; height: 350px; }
+        .ranking { background: var(--card); padding: 20px; border-radius: 12px; }
+        .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; }
+        
+        @media (max-width: 768px) { .main-content { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Fluxo de Caixa Real</h1>
+        <div class="filters">
+            <select id="f-mes"><option value="todos">Todos os Meses</option></select>
+            <select id="f-tipo">
+                <option value="todos">Todos os Tipos</option>
+                <option value="extrato">Débito/Conta</option>
+                <option value="cartao">Cartão de Crédito</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="grid-cards">
+        <div class="card" style="border-color: var(--blue);">
+            <h3>Saldo em Conta (Real)</h3>
+            <span id="val-banco" class="value">R$ 0,00</span>
+        </div>
+        <div class="card" style="border-color: var(--red);">
+            <h3>Dívida Cartão (Fatura)</h3>
+            <span id="val-fatura" class="value">R$ 0,00</span>
+        </div>
+        <div class="card" style="border-color: var(--green);">
+            <h3>Receitas do Mês</h3>
+            <span id="val-rec" class="value">R$ 0,00</span>
+        </div>
+        <div class="card" style="border-color: var(--red);">
+            <h3>Despesa Real (Consumo)</h3>
+            <span id="val-des" class="value">R$ 0,00</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="chart-container">
+            <h3>Evolução Mensal (Receita vs Gasto Real)</h3>
+            <canvas id="chart-evo"></canvas>
+        </div>
+        <div class="ranking">
+            <h3>Top 5 Gastos Reais</h3>
+            <div id="ranking-list"></div>
+        </div>
+    </div>
+
 <script>
     const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
     let dadosGlobais = [];
     let charts = {};
+
+    // Configurações Fixas para Projeção
+    const SALARIO_ESTIMADO = 1740.00; 
 
     async function carregarDados() {
         try {
@@ -24,7 +101,6 @@
                 let vLimpo = col[5].replace(/"/g, '').replace(/\s/g, '').replace(',', '.');
                 const valor = parseFloat(vLimpo) || 0;
 
-                // Ignora linhas de conferência de saldo
                 if (data && data.includes('-') && !desc.toUpperCase().includes("SALDO DO DIA")) {
                     dadosGlobais.push({ data, tipoOrigem, desc, cat, valor });
                     meses.add(data.substring(0, 7));
@@ -36,7 +112,7 @@
                 Array.from(meses).sort().reverse().forEach(m => fMes.add(new Option(m.split('-').reverse().join('/'), m)));
             }
             atualizarDashboard();
-        } catch (e) { console.error("Erro ao sincronizar dados", e); }
+        } catch (e) { console.error("Erro", e); }
     }
 
     function parseCSVLine(t) {
@@ -49,79 +125,48 @@
         const mSel = document.getElementById('f-mes').value;
         const tSel = document.getElementById('f-tipo').value;
 
-        // --- LÓGICA ANTI-DUPLICIDADE ---
-        // Identifica se um lançamento é pagamento de fatura
+        // Lógica Anti-Duplicidade
         const ehPagamentoFatura = (d) => {
-            const termo = d.desc.toUpperCase() + d.cat.toUpperCase();
-            return termo.includes("FATURA") || 
-                   termo.includes("PAGAMENTO CARTÃO") || 
-                   termo.includes("PAGAMENTO CARTAO") ||
-                   termo.includes("LATAM PASS") || 
-                   termo.includes("ITAU PLATINU");
+            const termo = (d.desc + d.cat).toUpperCase();
+            return termo.includes("FATURA") || termo.includes("PAGAMENTO CART") || termo.includes("LATAM PASS") || termo.includes("PLATINU");
         };
 
-        // 1. SALDO EM CONTA (Dinheiro Real no Banco)
-        const saldoBanco = dadosGlobais.filter(d => d.tipoOrigem.includes('extrato'))
-                                       .reduce((s, d) => s + d.valor, 0);
-
-        // 2. DÍVIDA ATUAL DO CARTÃO
-        // Compras no cartão (valor negativo) são abatidas pelos pagamentos de fatura
+        // Cálculos Financeiros
+        const saldoBanco = dadosGlobais.filter(d => d.tipoOrigem.includes('extrato')).reduce((s, d) => s + d.valor, 0);
+        
         const dividaCartao = dadosGlobais.reduce((s, d) => {
-            if (d.tipoOrigem.includes('cartao')) return s + d.valor; 
+            if (d.tipoOrigem.includes('cartao')) return s + d.valor;
             if (ehPagamentoFatura(d) && d.valor < 0) return s + Math.abs(d.valor);
             return s;
         }, 0);
 
-        // 3. FILTROS PARA O MÊS SELECIONADO
         const filtrados = dadosGlobais.filter(d => {
             const bateMes = mSel === 'todos' || d.data.startsWith(mSel);
             const bateTipo = tSel === 'todos' || d.tipoOrigem.includes(tSel);
             return bateMes && bateTipo;
         });
 
-        // 4. CÁLCULO DE RECEITA E DESPESA REAL DO MÊS
         const receitasMes = filtrados.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-        
-        // AQUI ESTÁ O TRUQUE: Ignoramos os pagamentos de fatura para não contar 2x
-        const despesasMes = filtrados.filter(d => {
-            return d.valor < 0 && !ehPagamentoFatura(d);
-        }).reduce((s, d) => s + Math.abs(d.valor), 0);
+        const despesasMes = filtrados.filter(d => d.valor < 0 && !ehPagamentoFatura(d)).reduce((s, d) => s + Math.abs(d.valor), 0);
 
-        // Atualização da Interface
+        // UI
         document.getElementById('val-banco').innerText = formatMoeda(saldoBanco);
         document.getElementById('val-fatura').innerText = formatMoeda(dividaCartao);
         document.getElementById('val-rec').innerText = formatMoeda(receitasMes);
         document.getElementById('val-des').innerText = formatMoeda(despesasMes);
-        
-        // Projeção baseada na despesa real
-        document.getElementById('val-proj').innerText = formatMoeda(despesasMes * 1.1);
-
-        // Cores de Alerta
-        document.getElementById('val-banco').style.color = saldoBanco < 0 ? 'var(--red)' : 'var(--green)';
-        document.getElementById('val-fatura').style.color = dividaCartao < 0 ? 'var(--red)' : 'var(--green)';
 
         renderRanking(filtrados, ehPagamentoFatura);
         renderCharts(filtrados, ehPagamentoFatura);
     }
 
     function renderRanking(dados, filtroFatura) {
-        // Mostra os 5 maiores gastos reais (comida, mercado, etc), ignorando a fatura
-        const gastos = dados.filter(d => d.valor < 0 && !filtroFatura(d))
-                           .sort((a,b) => a.valor - b.valor).slice(0, 5);
+        const gastos = dados.filter(d => d.valor < 0 && !filtroFatura(d)).sort((a,b) => a.valor - b.valor).slice(0, 5);
         document.getElementById('ranking-list').innerHTML = gastos.map(g => `
-            <div class="rank-item"><span class="rank-name">${g.desc.substring(0,20)}</span><span class="rank-price">${formatMoeda(Math.abs(g.valor))}</span></div>
+            <div class="rank-item"><span>${g.desc.substring(0,18)}</span><span style="color:var(--red)">${formatMoeda(Math.abs(g.valor))}</span></div>
         `).join('');
     }
 
     function renderCharts(dados, filtroFatura) {
-        // Gráfico de categorias apenas com gastos reais
-        const catData = {};
-        dados.filter(d => d.valor < 0 && !filtroFatura(d)).forEach(d => {
-            catData[d.cat] = (catData[d.cat] || 0) + Math.abs(d.valor);
-        });
-        createDonut('chart-cat-mes', Object.keys(catData), Object.values(catData));
-
-        // Gráfico de evolução mensal ignorando duplicidades
         const evoRes = {};
         dadosGlobais.forEach(d => {
             const m = d.data.substring(0, 7);
@@ -130,24 +175,18 @@
             else if(!filtroFatura(d)) evoRes[m].d += Math.abs(d.valor);
         });
         const labels = Object.keys(evoRes).sort();
-        createBar('chart-evo', labels, labels.map(l => evoRes[l].r), labels.map(l => evoRes[l].d));
-    }
-
-    function createDonut(id, labels, data) {
-        if(charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), {
-            type: 'doughnut',
-            data: { labels, datasets: [{ data, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'] }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } }, cutout: '70%' }
-        });
-    }
-
-    function createBar(id, labels, rec, des) {
-        if(charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), {
+        
+        if(charts['evo']) charts['evo'].destroy();
+        charts['evo'] = new Chart(document.getElementById('chart-evo'), {
             type: 'bar',
-            data: { labels, datasets: [{ label: 'Receita', data: rec, backgroundColor: '#10b981' }, { label: 'Despesa Real', data: des, backgroundColor: '#ef4444' }]},
-            options: { maintainAspectRatio: false, scales: { y: { grid: { color: '#2d3748' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } }
+            data: { 
+                labels: labels.map(l => l.split('-').reverse().join('/')), 
+                datasets: [
+                    { label: 'Receitas', data: labels.map(l => evoRes[l].r), backgroundColor: '#10b981' },
+                    { label: 'Despesas Reais', data: labels.map(l => evoRes[l].d), backgroundColor: '#ef4444' }
+                ]
+            },
+            options: { maintainAspectRatio: false, scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } }
         });
     }
 
@@ -156,3 +195,5 @@
     document.getElementById('f-tipo').addEventListener('change', atualizarDashboard);
     carregarDados();
 </script>
+</body>
+</html>
