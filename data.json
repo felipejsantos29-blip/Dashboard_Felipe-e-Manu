@@ -1,241 +1,59 @@
 {
-  "lastUpdate": "2026-05-08T17:40:12.781833",
-  "totalIncome": 1689104.0,
-  "totalExpense": 569300.0,
-  "balance": 1119804.0,
-  "avgDailyExpense": 679.77,
-  "categories": {
-    "Alimentação": 235502.0,
-    "Saúde": 84488.0,
-    "Compras": 52864.0,
-    "Educação": 34164.0,
-    "Pet": 33714.0,
-    "Serviços": 33588.0,
-    "Transporte": 25977.0,
-    "Vestuário": 14070.0,
-    "Eletrônicos": 13454.0,
-    "Multa": 12848.0,
-    "Lazer": 8808.0,
-    "Juros": 8054.0,
-    "Imposto": 5310.0,
-    "Viagem": 3062.0,
+  "lastUpdate": "2026-05-08T18:26:12.480048",
+  "rendaLiquida": 3500,
+  "totalReceitas": 27380.0,
+  "totalGastos": 86611.0,
+  "saldoTotal": -59231.0,
+  "mediaDiaria": 217.5,
+  "taxaEsforco": 316.3,
+  "diasReserva": -272.3,
+  "gastosMensais": {
+    "2026-01": 20255.0,
+    "2026-02": 16461.0,
+    "2026-03": 8730.0,
+    "2026-04": 12234.0,
+    "2026-05": 1433.0,
+    "2026-06": 219.0
+  },
+  "receitasMensais": {
+    "2026-01": 90.0,
+    "2026-02": 23852.0,
+    "2026-03": 3430.0,
+    "2026-04": 7.0,
+    "2026-05": 1.0
+  },
+  "gastosPorCategoria": {
+    "Alimentação": 35649.0,
+    "Transporte": 22050.0,
+    "Serviços": 7425.0,
+    "Saúde": 7087.0,
+    "Juros": 4022.0,
+    "Imposto": 2629.0,
     "Transferência": 2145.0,
+    "Compras": 1396.0,
+    "Educação": 1297.0,
+    "Pet": 1118.0,
+    "Lazer": 997.0,
     "Pagamento Conta": 750.0,
-    "Empréstimo": 500.0,
+    "Vestuário": 44.0,
     "Seguro": 2.0
   },
-  "topCategories": [
-    [
-      "Alimentação",
-      235502.0
-    ],
-    [
-      "Saúde",
-      84488.0
-    ],
-    [
-      "Compras",
-      52864.0
-    ],
-    [
-      "Educação",
-      34164.0
-    ],
-    [
-      "Pet",
-      33714.0
-    ],
-    [
-      "Serviços",
-      33588.0
-    ]
-  ],
-  "monthlyData": {
-    "expense": {
-      "2026-01": 79081.0,
-      "2026-02": 182672.0,
-      "2026-03": 134282.0,
-      "2026-04": 52829.0,
-      "2026-05": 1433.0,
-      "2026-06": 719.0
-    },
-    "income": {
-      "2026-01": 351927.0,
-      "2026-02": 625541.0,
-      "2026-03": 361511.0,
-      "2026-04": 350124.0,
-      "2026-05": 1.0
-    }
+  "limitesSugeridos": {
+    "Alimentação": 770.0,
+    "Transporte": 350.0,
+    "Saúde": 280.0,
+    "Pet": 175.0,
+    "Educação": 280.0,
+    "Lazer": 245.0,
+    "Compras": 175.0,
+    "Serviços": 105.0
   },
   "debt": {
-    "credor": "Cirlene",
     "valor_total": 35000,
     "saldo_devedor": 35000,
     "parcela_mensal": 500,
     "parcela_semestral": 4000,
     "amortizacao": [
-      {
-        "data": "2026-06-05",
-        "parcela": 1,
-        "valor_mensal": -500.0,
-        "valor_semestral": -4000.0,
-        "valor_total": -4500.0,
-        "saldo_apos": 30500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2026-07-05",
-        "parcela": 2,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 30000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2026-08-05",
-        "parcela": 3,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 29500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2026-09-05",
-        "parcela": 4,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 29000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2026-10-05",
-        "parcela": 5,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 28500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2026-11-05",
-        "parcela": 6,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 28000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-12-05",
-        "parcela": 7,
-        "valor_mensal": -500.0,
-        "valor_semestral": -4000.0,
-        "valor_total": -4500.0,
-        "saldo_apos": 23500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-01-05",
-        "parcela": 8,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 23000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-02-05",
-        "parcela": 9,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 22500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-03-05",
-        "parcela": 10,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 22000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-04-05",
-        "parcela": 11,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 21500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-05-05",
-        "parcela": 12,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 21000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-06-05",
-        "parcela": 13,
-        "valor_mensal": -500.0,
-        "valor_semestral": -4000.0,
-        "valor_total": -4500.0,
-        "saldo_apos": 16500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-07-05",
-        "parcela": 14,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 16000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-08-05",
-        "parcela": 15,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 15500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-09-05",
-        "parcela": 16,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 15000.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-10-05",
-        "parcela": 17,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 14500.0,
-        "status": "Pendente"
-      },
-      {
-        "data": "2027-11-05",
-        "parcela": 18,
-        "valor_mensal": -500.0,
-        "valor_semestral": 0.0,
-        "valor_total": -500.0,
-        "saldo_apos": 14000.0,
-        "status": "Pendente"
-      },
       {
         "data": "2028-12-05",
         "parcela": 19,
@@ -346,109 +164,697 @@
       }
     ]
   },
-  "fixedPlaning": {
-    "receitas_fixas": [],
-    "despesas_recorrentes": [],
-    "projecao_mensal": [
-      {
-        "mes": "2026-01",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-02",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-03",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-04",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-05",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-06",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": -4000.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-07",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-08",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-09",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-10",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-11",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": 0.0,
-        "saldo_projetado": 0.0
-      },
-      {
-        "mes": "2026-12",
-        "salario_previsto": 346082.0,
-        "despesas_recorrentes": -46496.0,
-        "parcela_emprestimo": -500.0,
-        "parcela_semestral": -4000.0,
-        "saldo_projetado": 0.0
-      }
-    ]
-  },
-  "essentialExpenses": {
+  "extrato": [
+    {
+      "data": "2026-06-05",
+      "descricao": "PIX QRS 121 SMART S05/06",
+      "valor": 219.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "PIX QRS 121 SMART S05/05",
+      "valor": 219.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "PAG BOLETO CAIXA ECONOMICA FEDERAL",
+      "valor": 750.0,
+      "categoria": "Pagamento Conta"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "PIX QRS 121 SMART S05/05",
+      "valor": 379.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "IOF",
+      "valor": 15.0,
+      "categoria": "Imposto"
+    },
+    {
+      "data": "2026-05-04",
+      "descricao": "PIX CARTAO EMANUEL02/05",
+      "valor": 70.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-04-30",
+      "descricao": "PIX QRS 121 SMART S30/04",
+      "valor": 899.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-29",
+      "descricao": "PIX QRS 121 SMART S29/04",
+      "valor": 1199.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-27",
+      "descricao": "PIX QRS RICARDO DUA25/04",
+      "valor": 10.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-04-20",
+      "descricao": "PIX QRS STAFEBANK18/04",
+      "valor": 10.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-13",
+      "descricao": "PIX QRS MERCADO POR11/04",
+      "valor": 495.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-10",
+      "descricao": "PIX QRS ESQUINA DO 10/04",
+      "valor": 315.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-10",
+      "descricao": "PIX QRS MERCADO POR10/04",
+      "valor": 305.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-10",
+      "descricao": "PIX QRS MERCADO POR10/04",
+      "valor": 1495.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-07",
+      "descricao": "PIX QRS SCARLLET RO07/04",
+      "valor": 9.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "PIX QRS ADEGA SAO C03/04",
+      "valor": 9.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "PIX QRS UBER DO BRA04/04",
+      "valor": 1225.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "PIX QRS UBER DO BRA04/04",
+      "valor": 1226.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "PIX QRS MERCADO POR04/04",
+      "valor": 595.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "PIX QRS MERCADO POR06/04",
+      "valor": 1125.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "PIX QRS UBER DO BRA02/04",
+      "valor": 1101.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "PIX QRS UBER DO BRA02/04",
+      "valor": 1701.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "IOF",
+      "valor": 33.0,
+      "categoria": "Imposto"
+    },
+    {
+      "data": "2026-04-01",
+      "descricao": "PIX QRS 121 SMART S01/04",
+      "valor": 219.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-26",
+      "descricao": "SEGURO LIS ITAU 26030",
+      "valor": 2.0,
+      "categoria": "Seguro"
+    },
+    {
+      "data": "2026-03-25",
+      "descricao": "JUROS LIMITE DA CONTA",
+      "valor": 1469.0,
+      "categoria": "Juros"
+    },
+    {
+      "data": "2026-03-20",
+      "descricao": "PIX QRS CASA DO PAO20/03",
+      "valor": 9.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-19",
+      "descricao": "PIX QRS 121 SMART S19/03",
+      "valor": 699.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-17",
+      "descricao": "PIX QRS 121 SMART S17/03",
+      "valor": 449.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-16",
+      "descricao": "PIX QRS LEITURA OSA15/03",
+      "valor": 448.0,
+      "categoria": "Serviços"
+    },
+    {
+      "data": "2026-03-13",
+      "descricao": "PIX QRS ESQUINA DO 13/03",
+      "valor": 72.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-12",
+      "descricao": "PIX QRS 121 SMART S12/03",
+      "valor": 485.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-11",
+      "descricao": "PIX QRS 121 SMART S11/03",
+      "valor": 219.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-03",
+      "descricao": "IOF",
+      "valor": 65.0,
+      "categoria": "Imposto"
+    },
+    {
+      "data": "2026-03-02",
+      "descricao": "PIX QRS MERCADO POR01/03",
+      "valor": 454.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-03-02",
+      "descricao": "PIX QRS MERCADO POR02/03",
+      "valor": 1464.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-27",
+      "descricao": "PIX QRS SUPERMERCAD27/02",
+      "valor": 1107.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-27",
+      "descricao": "PIX QRS RESTAURANTE25/02",
+      "valor": 4.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-23",
+      "descricao": "PIX QRS MERCADO POR21/02",
+      "valor": 8.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-23",
+      "descricao": "PIX QRS MERCADO POR21/02",
+      "valor": 1195.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-23",
+      "descricao": "PIX QRS BRAHMAN ATA21/02",
+      "valor": 249.0,
+      "categoria": "Lazer"
+    },
+    {
+      "data": "2026-02-23",
+      "descricao": "PIX QRS 121 SMART S23/02",
+      "valor": 659.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS ESQUINA DO 14/02",
+      "valor": 596.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS MERCADO POR14/02",
+      "valor": 1195.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS PASTEL FAMI14/02",
+      "valor": 14.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS CAIK VELOSO14/02",
+      "valor": 20.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS EMERSON FEL14/02",
+      "valor": 17.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS BRUNO JOAQU14/02",
+      "valor": 5.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS BRUNO JOAQU 14/02",
+      "valor": 10.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS AUTOPASS S.14/02",
+      "valor": 54.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS DROGARIA SA16/02",
+      "valor": 1499.0,
+      "categoria": "Saúde"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS MERCADINHO 16/02",
+      "valor": 35.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS ESQUINA DO 17/02",
+      "valor": 653.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "PIX QRS MERCADO POR18/02",
+      "valor": 1676.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-13",
+      "descricao": "PIX QRS ESQUINA DO 13/02",
+      "valor": 495.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-12",
+      "descricao": "PIX QRS ESQUINA DO 12/02",
+      "valor": 315.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-12",
+      "descricao": "PIX QRS AUTOPASS S.12/02",
+      "valor": 108.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-02-12",
+      "descricao": "PIX QRS RONNY REIS 12/02",
+      "valor": 5.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-02-11",
+      "descricao": "PIX QRS MERCADO POR11/02",
+      "valor": 129.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-10",
+      "descricao": "PIX QRS MERCADO POR10/02",
+      "valor": 519.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-10",
+      "descricao": "PIX QRS MERCADO POR10/02",
+      "valor": 467.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-09",
+      "descricao": "PIX QRS BRAHMAN ATA07/02",
+      "valor": 748.0,
+      "categoria": "Lazer"
+    },
+    {
+      "data": "2026-02-09",
+      "descricao": "PIX QRS MERCADO POR07/02",
+      "valor": 879.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-02-09",
+      "descricao": "PIX QRS MERCADO POR07/02",
+      "valor": 1095.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-30",
+      "descricao": "PIX QRS MERCADO POR30/01",
+      "valor": 571.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-29",
+      "descricao": "PIX QRS DROGARIA SA29/01",
+      "valor": 1259.0,
+      "categoria": "Saúde"
+    },
+    {
+      "data": "2026-01-29",
+      "descricao": "PIX QRS RESTAURANTE29/01",
+      "valor": 4.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-29",
+      "descricao": "PIX QRS MERCADO POR29/01",
+      "valor": 1994.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-27",
+      "descricao": "PIX QRS R & R DROGA27/01",
+      "valor": 1899.0,
+      "categoria": "Saúde"
+    },
+    {
+      "data": "2026-01-27",
+      "descricao": "PIX QRS MERCADO POR27/01",
+      "valor": 1395.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-26",
+      "descricao": "PIX QRS MERCADO POR24/01",
+      "valor": 541.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-26",
+      "descricao": "PIX QRS CLAUDIA COR26/01",
+      "valor": 115.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-26",
+      "descricao": "PIX QRS MERCADO POR26/01",
+      "valor": 744.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-19",
+      "descricao": "PIX QRS PASTEL FAMI17/01",
+      "valor": 7.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-19",
+      "descricao": "PIX QRS CARREFOUR17/01",
+      "valor": 823.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-14",
+      "descricao": "PIX QRS 121 SMART S14/01",
+      "valor": 219.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-14",
+      "descricao": "PIX QRS MERCADO POR14/01",
+      "valor": 399.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-12",
+      "descricao": "PIX QRS NIEDJA HORT11/01",
+      "valor": 10.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-12",
+      "descricao": "PIX QRS 40.848.018 11/01",
+      "valor": 14.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-09",
+      "descricao": "PIX QRS MERCADO POR09/01",
+      "valor": 1362.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-08",
+      "descricao": "PIX QRS SCARLLET RO08/01",
+      "valor": 8.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-07",
+      "descricao": "PIX QRS AUTOPASS S.07/01",
+      "valor": 199.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-01-07",
+      "descricao": "PIX QRS 121 SMART S07/01",
+      "valor": 699.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-06",
+      "descricao": "PIX QRS SCARLLET RO06/01",
+      "valor": 8.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS CAROLINE FE03/01",
+      "valor": 1302.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS JULIANA MAN03/01",
+      "valor": 54.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS RODOSNACK C04/01",
+      "valor": 16.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS MERCADO POR04/01",
+      "valor": 1656.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS CARREFOUR04/01",
+      "valor": 1185.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-01-05",
+      "descricao": "PIX QRS WILTON DOS 05/01",
+      "valor": 249.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-02",
+      "descricao": "PIX QRS MARIA NEVES02/01",
+      "valor": 166.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2026-01-02",
+      "descricao": "PIX QRS DROGAFARMA 02/01",
+      "valor": 1299.0,
+      "categoria": "Saúde"
+    },
+    {
+      "data": "2026-01-02",
+      "descricao": "PIX QRS 51.672.698 02/01",
+      "valor": 108.0,
+      "categoria": "Transferência"
+    },
+    {
+      "data": "2025-12-22",
+      "descricao": "RAIA386ORLNDIABR",
+      "valor": 87.0,
+      "categoria": "Saúde"
+    },
+    {
+      "data": "2025-12-20",
+      "descricao": "UBER * PENDING",
+      "valor": 24.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2025-12-20",
+      "descricao": "PASTEL DO ZE",
+      "valor": 79.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2025-12-20",
+      "descricao": "99APP *99AppSaO",
+      "valor": 199.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2025-12-20",
+      "descricao": "99Food *Bello Burger",
+      "valor": 205.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2025-12-20",
+      "descricao": "99SAO PAULOBR",
+      "valor": 218.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2025-12-19",
+      "descricao": "SEG CARTAO PROTEGIDO",
+      "valor": 1041.0,
+      "categoria": "Serviços"
+    }
+  ],
+  "receitasFixas": [],
+  "despesasRecorrentes": [],
+  "projecaoMensal": [
+    {
+      "mes": "2026-01",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-02",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-03",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-04",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-05",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-06",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 4000.0
+    },
+    {
+      "mes": "2026-07",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-08",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-09",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-10",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-11",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 0.0
+    },
+    {
+      "mes": "2026-12",
+      "salario_previsto": 346082.0,
+      "despesas_recorrentes": 46496.0,
+      "parcela_emprestimo": 500.0,
+      "parcela_semestral": 4000.0
+    }
+  ],
+  "custosEssenciais": {
     "ana_lua": [
       {
         "nome": "Leite Nan",
@@ -483,8 +889,8 @@
     ]
   },
   "stats": {
-    "total_transactions": 275,
-    "total_gastos": 255,
-    "total_receitas": 20
+    "total_gastos": 187,
+    "total_receitas": 12,
+    "total_transacoes": 199
   }
 }
