@@ -20,6 +20,12 @@
     .progress-fill { transition: width 0.4s ease; }
     .loading-spinner { border: 3px solid rgba(45,212,191,0.1); border-top: 3px solid #2DD4BF; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .essential-card { background: linear-gradient(135deg, rgba(15,35,45,0.7), rgba(10,20,35,0.7)); border-left: 3px solid #F59E0B; }
+    .extrato-table { max-height: 500px; overflow-y: auto; display: block; }
+    .extrato-table table { width: 100%; border-collapse: collapse; }
+    .extrato-table th { position: sticky; top: 0; background: #0F172A; z-index: 10; }
+    .simulador-input { transition: all 0.2s; }
+    .simulador-input:focus { outline: none; border-color: #2DD4BF; box-shadow: 0 0 0 2px rgba(45,212,191,0.2); }
   </style>
 </head>
 <body class="text-slate-200 antialiased p-4 md:p-7">
@@ -33,7 +39,7 @@
         </div>
         <div>
           <h1 class="text-2xl font-extrabold bg-gradient-to-r from-white to-teal-300 bg-clip-text text-transparent">Wealth<span class="text-teal-400">Aurora</span></h1>
-          <p class="text-xs text-slate-400"><i class="fas fa-database"></i> Dashboard com todas as abas da planilha</p>
+          <p class="text-xs text-slate-400"><i class="fas fa-database"></i> Dashboard completo • 6 abas da planilha</p>
         </div>
       </div>
       <div class="glass-card px-5 py-2 rounded-full text-sm">
@@ -45,152 +51,125 @@
     <!-- Loading -->
     <div id="loadingState" class="glass-card rounded-2xl p-12 text-center">
       <div class="loading-spinner"></div>
-      <p class="mt-4">Carregando dados da planilha...</p>
-      <p class="text-xs text-slate-500 mt-2">Processando 6 abas (movimentações, empréstimo, categorias, receitas, despesas, projeção)</p>
+      <p class="mt-4">Carregando dados financeiros...</p>
+      <p class="text-xs text-slate-500 mt-2">Processando movimentações, dívidas, receitas e projeções</p>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboardContent" style="display: none;">
-      <!-- Abas -->
-      <div class="flex flex-wrap gap-1 border-b border-white/10 mb-8">
-        <button id="tab360Btn" class="tab-active px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-pie"></i> Visão 360°</button>
-        <button id="tabDebtBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-hand-holding-usd"></i> Planejamento de Dívidas</button>
-        <button id="tabBudgetBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-wallet"></i> Orçamento + Essenciais</button>
-        <button id="tabProjBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-line"></i> Projeção Futura</button>
+      <!-- Abas de navegação -->
+      <div class="flex flex-wrap gap-1 border-b border-white/10 mb-8 overflow-x-auto">
+        <button id="tabResultsBtn" class="tab-active px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-pie"></i> Resultados</button>
+        <button id="tabExtratoBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-list-ul"></i> Extrato</button>
+        <button id="TabDebtBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-hand-holding-usd"></i> Dívidas</button>
+        <button id="TabPlanejamentoBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-line"></i> Planejamento</button>
       </div>
 
-      <!-- PANEL 1 - VISÃO 360° -->
-      <div id="panel360" class="tab-panel">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="glass-card rounded-2xl p-6 border-l-4 border-l-teal-400">
-            <p class="text-slate-300 text-sm uppercase tracking-wide">Saldo Total</p>
-            <p class="text-3xl font-bold" id="balanceTotal">R$ 0,00</p>
+      <!-- Layout de 2 colunas: Conteúdo principal + Sidebar Essenciais -->
+      <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Conteúdo principal (70%) -->
+        <div class="flex-1 min-w-0">
+          <!-- ABA 1: RESULTADOS -->
+          <div id="panelResults" class="tab-panel">
+            <!-- Cards superiores -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="glass-card rounded-xl p-4 border-l-4 border-l-teal-400"><p class="text-slate-400 text-xs uppercase">Saldo atual</p><p class="text-xl font-bold" id="saldoTotal">R$ 0,00</p></div>
+              <div class="glass-card rounded-xl p-4 border-l-4 border-l-emerald-400"><p class="text-slate-400 text-xs uppercase">Receitas</p><p class="text-xl font-bold text-emerald-300" id="totalReceitas">R$ 0,00</p></div>
+              <div class="glass-card rounded-xl p-4 border-l-4 border-l-rose-400"><p class="text-slate-400 text-xs uppercase">Despesas</p><p class="text-xl font-bold text-rose-300" id="totalDespesas">R$ 0,00</p></div>
+              <div class="glass-card rounded-xl p-4 border-l-4 border-l-amber-400"><p class="text-slate-400 text-xs uppercase">Taxa Esforço</p><p class="text-xl font-bold text-amber-300" id="taxaEsforco">0%</p></div>
+            </div>
+
+            <!-- Gráfico Evolução Mensal -->
+            <div class="glass-card rounded-2xl p-5 mb-6">
+              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Evolução Mensal (Receitas vs Despesas)</h3>
+              <canvas id="monthlyChart" height="200"></canvas>
+            </div>
+
+            <!-- Gastos por Categoria + Limites -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div class="glass-card rounded-2xl p-5">
+                <h3 class="font-semibold mb-3"><i class="fas fa-chart-pie text-teal-300 mr-2"></i> Gastos por Categoria</h3>
+                <canvas id="categoryChart" height="200"></canvas>
+                <div id="categoryLegend" class="mt-3 text-xs space-y-1"></div>
+              </div>
+              <div class="glass-card rounded-2xl p-5">
+                <h3 class="font-semibold mb-3"><i class="fas fa-chart-simple text-teal-300 mr-2"></i> Limites vs Gasto Real</h3>
+                <div id="limitesList" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
+                <p class="text-xs text-slate-400 mt-3"><i class="fas fa-lightbulb"></i> Limites sugeridos com base na sua renda de R$ 3.500</p>
+              </div>
+            </div>
+
+            <!-- Saúde Financeira -->
+            <div class="glass-card rounded-2xl p-5">
+              <h3 class="font-semibold mb-3"><i class="fas fa-heartbeat text-teal-300 mr-2"></i> Saúde Financeira</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><p class="text-slate-400 text-xs">Capacidade de Poupança</p><p class="text-lg font-bold" id="capPoupanca">0%</p><div class="progress-bar-bg h-1.5 mt-1"><div id="poupancaBar" class="progress-fill bg-emerald-500 h-1.5 rounded-full w-0"></div></div></div>
+                <div><p class="text-slate-400 text-xs">Dias de Reserva</p><p class="text-lg font-bold" id="diasReserva">0</p><p class="text-xs text-slate-500">Sem renda</p></div>
+                <div><p class="text-slate-400 text-xs">Média Gasto Diário</p><p class="text-lg font-bold" id="mediaDiaria">R$ 0,00</p></div>
+              </div>
+            </div>
           </div>
-          <div class="glass-card rounded-2xl p-6 border-l-4 border-l-emerald-400">
-            <p class="text-slate-300 text-sm uppercase tracking-wide">Total Receitas</p>
-            <p class="text-3xl font-bold text-emerald-300" id="totalIncome">R$ 0,00</p>
+
+          <!-- ABA 2: EXTRATO -->
+          <div id="panelExtrato" class="tab-panel hidden">
+            <div class="glass-card rounded-2xl p-5">
+              <div class="flex flex-wrap gap-3 mb-4 items-center justify-between">
+                <div class="flex gap-2">
+                  <select id="filtroMes" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700"><option value="todos">Todos os meses</option></select>
+                  <select id="filtroCategoria" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700"><option value="todas">Todas categorias</option></select>
+                </div>
+                <div><input type="text" id="buscaExtrato" placeholder="🔍 Buscar..." class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700 w-48"></div>
+              </div>
+              <div class="extrato-table">
+                <table class="w-full text-sm">
+                  <thead class="text-slate-400 border-b border-slate-700"><tr><th class="text-left py-2">Data</th><th class="text-left">Descrição</th><th class="text-left">Categoria</th><th class="text-right">Valor</th></tr></thead>
+                  <tbody id="extratoBody"></tbody>
+                </table>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-700 flex justify-between font-semibold"><span>Total do filtro:</span><span id="totalFiltro" class="text-teal-300">R$ 0,00</span></div>
+            </div>
           </div>
-          <div class="glass-card rounded-2xl p-6 border-l-4 border-l-rose-400">
-            <p class="text-slate-300 text-sm uppercase tracking-wide">Total Despesas</p>
-            <p class="text-3xl font-bold text-rose-300" id="totalExpense">R$ 0,00</p>
+
+          <!-- ABA 3: DÍVIDAS -->
+          <div id="panelDebt" class="tab-panel hidden">
+            <div class="glass-card rounded-2xl p-5">
+              <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4"><i class="fas fa-hand-holding-usd text-teal-300 text-xl"></i><h2 class="text-xl font-semibold">Empréstimo - Cirlene</h2></div>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <div><p class="text-slate-400 text-xs">Valor Total</p><p class="text-xl font-bold text-amber-300">R$ 35.000</p></div>
+                <div><p class="text-slate-400 text-xs">Saldo Devedor</p><p class="text-2xl font-bold text-rose-300" id="debtSaldo">R$ 0</p><div class="progress-bar-bg h-2 mt-1"><div id="debtProgressFill" class="progress-fill bg-teal-400 h-2 rounded-full w-0"></div></div></div>
+                <div><p class="text-slate-400 text-xs">Status</p><p class="text-lg font-bold text-teal-300">Em andamento</p></div>
+              </div>
+              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Evolução da Dívida (próximos meses)</h3>
+              <canvas id="amortizationChart" height="200"></canvas>
+              <!-- Simulador -->
+              <div class="mt-6 bg-slate-800/50 rounded-xl p-4">
+                <p class="font-semibold mb-2"><i class="fas fa-calculator text-teal-300 mr-2"></i> Simulador de Amortização Extra</p>
+                <div class="flex flex-wrap gap-3 items-end"><div><label class="text-xs text-slate-400">Valor extra por mês (R$)</label><input type="number" id="extraAmort" class="simulador-input bg-slate-800 rounded-lg px-3 py-2 border border-slate-600 w-36" value="0" step="100"></div><div><button id="calcularSimulacao" class="bg-teal-600 hover:bg-teal-500 px-4 py-2 rounded-lg text-sm transition">Calcular impacto</button></div></div>
+                <div id="simulacaoResultado" class="mt-3 text-sm text-teal-300"></div>
+              </div>
+            </div>
           </div>
-          <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-400">
-            <p class="text-slate-300 text-sm uppercase tracking-wide">Média Gasto Diário</p>
-            <p class="text-3xl font-bold text-amber-300" id="avgDaily">R$ 0,00</p>
+
+          <!-- ABA 4: PLANEJAMENTO -->
+          <div id="panelPlanejamento" class="tab-panel hidden">
+            <div class="glass-card rounded-2xl p-5 mb-6">
+              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Projeção de Saldo Mensal (2026)</h3>
+              <canvas id="projecaoChart" height="200"></canvas>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="glass-card rounded-2xl p-5"><h3 class="font-semibold mb-3"><i class="fas fa-arrow-up text-emerald-300 mr-2"></i> Receitas Fixas</h3><div id="receitasFixasList" class="space-y-2 text-sm"></div></div>
+              <div class="glass-card rounded-2xl p-5"><h3 class="font-semibold mb-3"><i class="fas fa-arrow-down text-rose-300 mr-2"></i> Despesas Recorrentes</h3><div id="despesasFixasList" class="space-y-2 text-sm"></div></div>
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div class="glass-card rounded-2xl p-6">
-            <h3 class="font-bold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Fluxo de Caixa Mensal</h3>
-            <canvas id="monthlyChart" height="200"></canvas>
-          </div>
-          <div class="glass-card rounded-2xl p-6">
-            <h3 class="font-bold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Projeção de Final de Mês</h3>
-            <p class="text-4xl font-bold text-teal-300" id="forecastBalance">R$ 0,00</p>
-            <p class="text-xs text-slate-400 mt-2">Saldo Atual - (Média Diária × Dias Restantes)</p>
-            <div class="mt-4 pt-3 border-t border-slate-700/50">
-              <p class="text-sm"><span class="text-slate-400">Total de transações:</span> <span id="totalTransactions" class="text-teal-300 font-bold">0</span></p>
-              <p class="text-sm"><span class="text-slate-400">Gastos registrados:</span> <span id="totalGastos" class="text-teal-300 font-bold">0</span></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card rounded-2xl p-6">
-          <h3 class="font-semibold flex items-center gap-2 mb-4"><i class="fas fa-chart-pie text-teal-300"></i> Gastos por Categoria</h3>
-          <div id="categoryList" class="space-y-3"></div>
-        </div>
-      </div>
-
-      <!-- PANEL 2 - PLANEJAMENTO DE DÍVIDAS -->
-      <div id="panelDebt" class="tab-panel hidden">
-        <div class="glass-card rounded-2xl p-6">
-          <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4">
-            <i class="fas fa-hand-holding-usd text-teal-300 text-xl"></i>
-            <h2 class="text-xl font-semibold">Empréstimo - Cirlene</h2>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div>
-              <p class="text-slate-400 text-sm">Valor Total</p>
-              <p class="text-2xl font-bold text-amber-300" id="debtTotal">R$ 35.000</p>
-            </div>
-            <div>
-              <p class="text-slate-400 text-sm">Saldo Devedor</p>
-              <p class="text-3xl font-bold text-rose-300" id="debtBalance">R$ 35.000</p>
-              <div class="progress-bar-bg w-full h-2 mt-2"><div id="debtProgressFill" class="progress-fill bg-teal-400 h-2 rounded-full w-0"></div></div>
-            </div>
-            <div>
-              <p class="text-slate-400 text-sm">Status</p>
-              <p class="text-xl font-bold text-teal-300" id="debtStatus">Em andamento</p>
-            </div>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="bg-slate-800/40 rounded-xl p-3">
-              <p class="text-slate-400 text-sm"><i class="fas fa-calendar-month text-teal-300 mr-1"></i> Pagamento Mensal</p>
-              <p class="text-xl font-bold text-teal-300">R$ 500</p>
-            </div>
-            <div class="bg-slate-800/40 rounded-xl p-3">
-              <p class="text-slate-400 text-sm"><i class="fas fa-calendar-week text-teal-300 mr-1"></i> Pagamento Semestral</p>
-              <p class="text-xl font-bold text-teal-300">R$ 4.000 <span class="text-xs text-slate-400">(jun/dez)</span></p>
-            </div>
-          </div>
-          
-          <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Evolução da Dívida (Amortização)</h3>
-          <canvas id="amortizationChart" height="250"></canvas>
-          
-          <div class="mt-4 bg-teal-500/10 rounded-xl p-3 text-xs text-teal-200">
-            <i class="fas fa-lightbulb mr-1"></i> Com os pagamentos de R$ 500 + R$ 4.000 semestrais, a dívida será quitada em aproximadamente 30 meses (novembro/2028)
-          </div>
-        </div>
-      </div>
-
-      <!-- PANEL 3 - ORÇAMENTO + ESSENCIAIS -->
-      <div id="panelBudget" class="tab-panel hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div class="glass-card rounded-2xl p-6">
-            <h3 class="font-bold mb-3"><i class="fas fa-chart-simple text-teal-300 mr-2"></i> Detalhamento por Categoria</h3>
-            <div id="categoriesDetailList" class="space-y-3 max-h-96 overflow-y-auto pr-2"></div>
-          </div>
-          <div class="glass-card rounded-2xl p-6 essential-card" style="background: linear-gradient(135deg, rgba(15,35,45,0.7), rgba(10,20,35,0.7)); border-left: 3px solid #F59E0B;">
-            <h3 class="text-lg font-bold flex items-center gap-2"><i class="fas fa-baby-carriage text-teal-300"></i> Custos Essenciais - Ana Lua</h3>
-            <div id="anaLuaList" class="space-y-2 mt-3"></div>
-            <div class="mt-3 pt-2 border-t border-white/20 flex justify-between font-bold">
-              <span>Total Ana Lua</span>
-              <span id="anaLuaTotal" class="text-teal-300">R$ 0</span>
-            </div>
-            
-            <div class="flex items-center gap-2 mt-5 border-b border-white/10 pb-2 mb-2"><i class="fas fa-dog text-amber-300"></i><h3 class="text-lg font-bold">Custos Essenciais - Mandelinha</h3></div>
-            <div id="mandelinhaList" class="space-y-2"></div>
-            <div class="mt-3 pt-2 border-t border-white/20 flex justify-between font-bold">
-              <span>Total Mandelinha</span>
-              <span id="mandelinhaTotal" class="text-teal-300">R$ 0</span>
-            </div>
+        <!-- Sidebar Direita: Custos Essenciais (fixa) -->
+        <div class="lg:w-80">
+          <div class="glass-card rounded-2xl p-5 essential-card sticky top-4">
+            <h3 class="font-bold text-lg mb-3 border-b border-white/20 pb-2"><i class="fas fa-baby-carriage text-teal-300 mr-2"></i> Custos Essenciais</h3>
+            <div class="mb-4"><p class="font-semibold text-teal-300 text-sm">👶 Ana Lua</p><div id="anaLuaSidebar" class="space-y-1 text-sm mt-2"></div><div class="flex justify-between font-semibold mt-2 pt-2 border-t border-white/10"><span>Total</span><span id="anaLuaSidebarTotal" class="text-teal-300">R$ 0</span></div></div>
+            <div><p class="font-semibold text-amber-300 text-sm">🐾 Mandelinha</p><div id="mandelinhaSidebar" class="space-y-1 text-sm mt-2"></div><div class="flex justify-between font-semibold mt-2 pt-2 border-t border-white/10"><span>Total</span><span id="mandelinhaSidebarTotal" class="text-teal-300">R$ 0</span></div></div>
             <div class="mt-4 bg-amber-500/10 rounded-lg p-2 text-xs text-amber-200"><i class="fas fa-envelope"></i> Envelope virtual sugerido: R$ 760/mês</div>
-          </div>
-        </div>
-        
-        <div class="glass-card rounded-2xl p-6">
-          <h3 class="font-bold mb-3"><i class="fas fa-clipboard-list text-teal-300 mr-2"></i> Despesas Recorrentes (Fixas)</h3>
-          <div id="despesasFixasList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-        </div>
-      </div>
-
-      <!-- PANEL 4 - PROJEÇÃO FUTURA -->
-      <div id="panelProj" class="tab-panel hidden">
-        <div class="glass-card rounded-2xl p-6">
-          <h3 class="font-bold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Projeção de Saldo Mensal</h3>
-          <canvas id="projecaoChart" height="250"></canvas>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <div class="glass-card rounded-2xl p-6">
-            <h3 class="font-bold mb-3"><i class="fas fa-arrow-up text-emerald-300 mr-2"></i> Receitas Fixas</h3>
-            <div id="receitasFixasList" class="space-y-2"></div>
-          </div>
-          <div class="glass-card rounded-2xl p-6">
-            <h3 class="font-bold mb-3"><i class="fas fa-arrow-down text-rose-300 mr-2"></i> Despesas Recorrentes</h3>
-            <div id="despesasRecorrentesList" class="space-y-2"></div>
           </div>
         </div>
       </div>
@@ -199,186 +178,128 @@
 
   <script>
     let financeData = null;
+    let amortizationChart, monthlyChart, categoryChart, projecaoChart;
 
     async function loadData() {
       try {
         const response = await fetch('data.json?v=' + Date.now());
         if (!response.ok) throw new Error('data.json não encontrado');
         financeData = await response.json();
-        
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('dashboardContent').style.display = 'block';
-        
-        updatePanel360();
-        updatePanelDebt();
-        updatePanelBudget();
-        updatePanelProjecao();
+        updateAll();
         initTabs();
+        initFilters();
       } catch (error) {
-        document.getElementById('loadingState').innerHTML = `
-          <div class="text-center p-8"><i class="fas fa-exclamation-triangle text-amber-400 text-4xl mb-3"></i>
-          <p class="text-red-300">Erro ao carregar dados da planilha</p>
-          <p class="text-xs text-slate-400 mt-2">Verifique se o GitHub Actions já rodou</p>
-          <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-teal-500 rounded-lg text-sm">Tentar novamente</button></div>`;
+        document.getElementById('loadingState').innerHTML = `<div class="text-center p-8"><i class="fas fa-exclamation-triangle text-amber-400 text-4xl mb-3"></i><p class="text-red-300">Erro ao carregar dados</p><button onclick="location.reload()" class="mt-4 px-4 py-2 bg-teal-500 rounded-lg">Tentar novamente</button></div>`;
       }
     }
 
-    function updatePanel360() {
+    function updateAll() {
       if (!financeData) return;
-      
-      document.getElementById('balanceTotal').innerText = `R$ ${financeData.balance.toFixed(2)}`;
-      document.getElementById('totalIncome').innerText = `R$ ${financeData.totalIncome.toFixed(2)}`;
-      document.getElementById('totalExpense').innerText = `R$ ${financeData.totalExpense.toFixed(2)}`;
-      document.getElementById('avgDaily').innerText = `R$ ${financeData.avgDailyExpense.toFixed(2)}`;
+      // Cards
+      document.getElementById('saldoTotal').innerText = `R$ ${financeData.saldoTotal?.toFixed(2) || 0}`;
+      document.getElementById('totalReceitas').innerText = `R$ ${financeData.totalReceitas?.toFixed(2) || 0}`;
+      document.getElementById('totalDespesas').innerText = `R$ ${financeData.totalGastos?.toFixed(2) || 0}`;
+      document.getElementById('taxaEsforco').innerText = `${financeData.taxaEsforco || 0}%`;
+      document.getElementById('mediaDiaria').innerText = `R$ ${financeData.mediaDiaria?.toFixed(2) || 0}`;
+      document.getElementById('diasReserva').innerText = financeData.diasReserva || 0;
       document.getElementById('lastUpdate').innerHTML = `<i class="far fa-clock"></i> ${new Date(financeData.lastUpdate).toLocaleString('pt-BR')}`;
-      document.getElementById('totalTransactions').innerText = financeData.stats?.total_transactions || 0;
-      document.getElementById('totalGastos').innerText = financeData.stats?.total_gastos || 0;
       
-      // Previsão
-      const today = new Date();
-      const daysLeft = 30 - today.getDate();
-      const projection = financeData.balance - (financeData.avgDailyExpense * daysLeft);
-      const forecastElem = document.getElementById('forecastBalance');
-      forecastElem.innerText = `R$ ${projection.toFixed(2)}`;
-      forecastElem.className = projection >= 0 ? 'text-4xl font-bold text-teal-300' : 'text-4xl font-bold text-rose-300';
-      
+      // Capacidade de poupança
+      const poupanca = (financeData.saldoTotal / financeData.totalReceitas) * 100;
+      document.getElementById('capPoupanca').innerText = `${poupanca.toFixed(1)}%`;
+      document.getElementById('poupancaBar').style.width = `${Math.min(100, poupanca)}%`;
+
       // Gráfico mensal
-      const monthlyExpense = financeData.monthlyData?.expense || {};
-      const monthlyIncome = financeData.monthlyData?.income || {};
-      const months = Object.keys({...monthlyExpense, ...monthlyIncome}).sort().slice(-6);
+      const meses = Object.keys(financeData.gastosMensais || {}).slice(-6);
       const ctx = document.getElementById('monthlyChart')?.getContext('2d');
-      if (ctx) {
-        if (window.monthlyChart) window.monthlyChart.destroy();
-        window.monthlyChart = new Chart(ctx, {
-          type: 'bar',
-          data: { labels: months, datasets: [
-            { label: 'Despesas', data: months.map(m => monthlyExpense[m] || 0), backgroundColor: '#FB7185', borderRadius: 8 },
-            { label: 'Receitas', data: months.map(m => monthlyIncome[m] || 0), backgroundColor: '#34D399', borderRadius: 8 }
-          ] },
-          options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#CBD5E1' } } } }
-        });
-      }
-      
-      // Lista de categorias
-      const cats = Object.entries(financeData.categories || {}).slice(0, 10);
-      const categoryContainer = document.getElementById('categoryList');
-      categoryContainer.innerHTML = cats.map(([name, val]) => {
-        const percent = (val / financeData.totalExpense) * 100;
-        return `<div><div class="flex justify-between text-sm"><span>${name}</span><span>R$ ${val.toFixed(2)} (${percent.toFixed(1)}%)</span></div><div class="progress-bar-bg h-2 mt-1"><div class="bg-teal-400 h-2 rounded-full" style="width: ${Math.min(100, percent)}%"></div></div></div>`;
+      if (ctx) { if (monthlyChart) monthlyChart.destroy(); monthlyChart = new Chart(ctx, { type: 'line', data: { labels: meses, datasets: [{ label: 'Despesas', data: meses.map(m => financeData.gastosMensais?.[m] || 0), borderColor: '#FB7185', backgroundColor: 'rgba(251,113,133,0.1)', fill: true }, { label: 'Receitas', data: meses.map(m => financeData.receitasMensais?.[m] || 0), borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } }); }
+
+      // Gráfico de categorias
+      const categorias = financeData.gastosPorCategoria || {};
+      const catLabels = Object.keys(categorias).slice(0, 6);
+      const catValues = catLabels.map(c => categorias[c]);
+      const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
+      if (ctxCat) { if (categoryChart) categoryChart.destroy(); categoryChart = new Chart(ctxCat, { type: 'doughnut', data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: ['#2DD4BF', '#FB7185', '#FBBF24', '#A78BFA', '#34D399', '#F97316'] }] }, options: { responsive: true, maintainAspectRatio: true } }); }
+
+      // Limites vs Real
+      const limites = financeData.limitesSugeridos || {};
+      const limitesContainer = document.getElementById('limitesList');
+      limitesContainer.innerHTML = Object.entries(limites).map(([cat, limite]) => {
+        const gasto = categorias[cat] || 0;
+        const percent = Math.min(100, (gasto / limite) * 100);
+        let color = percent >= 100 ? 'bg-red-500' : (percent >= 80 ? 'bg-yellow-500' : 'bg-teal-500');
+        return `<div><div class="flex justify-between text-sm"><span>${cat}</span><span>R$ ${gasto.toFixed(2)} / R$ ${limite}</span></div><div class="progress-bar-bg h-2 mt-1"><div class="${color} h-2 rounded-full" style="width: ${percent}%"></div></div></div>`;
       }).join('');
+
+      // Dívida
+      const debt = financeData.debt || { saldo_devedor: 35000 };
+      document.getElementById('debtSaldo').innerHTML = `R$ ${debt.saldo_devedor?.toFixed(2) || 35000}`;
+      const percentPago = ((35000 - (debt.saldo_devedor || 35000)) / 35000) * 100;
+      document.getElementById('debtProgressFill').style.width = `${percentPago}%`;
+      
+      // Gráfico amortização
+      const amort = debt.amortizacao || [];
+      const amortLabels = amort.map(a => a.parcela);
+      const amortValues = amort.map(a => a.saldo_apos);
+      const ctxAmort = document.getElementById('amortizationChart')?.getContext('2d');
+      if (ctxAmort && amort.length) { if (amortizationChart) amortizationChart.destroy(); amortizationChart = new Chart(ctxAmort, { type: 'line', data: { labels: amortLabels, datasets: [{ label: 'Saldo Devedor', data: amortValues, borderColor: '#2DD4BF', backgroundColor: 'rgba(45,212,191,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } }); }
+
+      // Simulador
+      document.getElementById('calcularSimulacao').onclick = () => { const extra = parseFloat(document.getElementById('extraAmort').value) || 0; const saldo = debt.saldo_devedor || 35000; const parcelas = Math.ceil(saldo / (500 + extra)); document.getElementById('simulacaoResultado').innerHTML = `💰 Com +R$${extra}/mês, quitação em ${parcelas} meses (antes ${amort.length} meses). Economia: ~R$${((amort.length - parcelas) * 500).toFixed(0)}`; };
+
+      // Planejamento
+      const proj = financeData.projecaoMensal || [];
+      const projLabels = proj.map(p => p.mes);
+      const saldoProj = proj.map(p => (p.salario_previsto || 0) - (p.despesas_recorrentes || 0) - (p.parcela_emprestimo || 0) - (p.parcela_semestral || 0));
+      const ctxProj = document.getElementById('projecaoChart')?.getContext('2d');
+      if (ctxProj && proj.length) { if (projecaoChart) projecaoChart.destroy(); projecaoChart = new Chart(ctxProj, { type: 'bar', data: { labels: projLabels, datasets: [{ label: 'Saldo Projetado', data: saldoProj, backgroundColor: '#2DD4BF' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
+
+      // Receitas e despesas fixas
+      document.getElementById('receitasFixasList').innerHTML = (financeData.receitasFixas || []).map(r => `<div class="flex justify-between"><span>${r.descricao}</span><span class="text-emerald-300">R$ ${r.valor.toFixed(2)}</span></div>`).join('');
+      document.getElementById('despesasFixasList').innerHTML = (financeData.despesasRecorrentes || []).map(d => `<div class="flex justify-between"><span>${d.descricao}</span><span class="text-rose-300">R$ ${d.valor.toFixed(2)}</span></div>`).join('');
+
+      // Essenciais sidebar
+      const ess = financeData.custosEssenciais || { ana_lua: [], mandelinha: [] };
+      let anaTotal = 0; let mandiTotal = 0;
+      document.getElementById('anaLuaSidebar').innerHTML = ess.ana_lua.map(i => { anaTotal += i.valor; return `<div class="flex justify-between"><span>${i.nome}</span><span>R$ ${i.valor}</span></div>`; }).join('');
+      document.getElementById('anaLuaSidebarTotal').innerHTML = `R$ ${anaTotal}`;
+      document.getElementById('mandelinhaSidebar').innerHTML = ess.mandelinha.map(i => { mandiTotal += i.valor; return `<div class="flex justify-between"><span>${i.nome}</span><span>R$ ${i.valor}</span></div>`; }).join('');
+      document.getElementById('mandelinhaSidebarTotal').innerHTML = `R$ ${mandiTotal}`;
+
+      // Extrato
+      const extrato = financeData.extrato || [];
+      const uniqueCats = [...new Set(extrato.map(e => e.categoria))];
+      const catFilter = document.getElementById('filtroCategoria');
+      catFilter.innerHTML = '<option value="todas">Todas categorias</option>' + uniqueCats.map(c => `<option value="${c}">${c}</option>`).join('');
+      renderExtrato();
     }
 
-    function updatePanelDebt() {
-      const debt = financeData?.debt || { valor_total: 35000, saldo_devedor: 35000, parcela_mensal: 500, parcela_semestral: 4000, amortizacao: [] };
-      const paidPercent = ((debt.valor_total - debt.saldo_devedor) / debt.valor_total) * 100;
-      document.getElementById('debtTotal').innerHTML = `R$ ${debt.valor_total.toLocaleString('pt-BR')}`;
-      document.getElementById('debtBalance').innerHTML = `R$ ${debt.saldo_devedor.toLocaleString('pt-BR')}`;
-      document.getElementById('debtProgressFill').style.width = `${paidPercent}%`;
-      
-      // Gráfico de amortização
-      const amortizacao = debt.amortizacao || [];
-      const labels = amortizacao.map(p => p.parcela);
-      const saldos = amortizacao.map(p => p.saldo_apos);
-      const ctx = document.getElementById('amortizationChart')?.getContext('2d');
-      if (ctx && amortizacao.length > 0) {
-        if (window.amortChart) window.amortChart.destroy();
-        window.amortChart = new Chart(ctx, {
-          type: 'line',
-          data: { labels: labels, datasets: [{ label: 'Saldo Devedor', data: saldos, borderColor: '#2DD4BF', backgroundColor: 'rgba(45,212,191,0.1)', fill: true, tension: 0.3 }] },
-          options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#CBD5E1' } } }, scales: { y: { title: { display: true, text: 'Saldo (R$)', color: '#94A3B8' } }, x: { title: { display: true, text: 'Parcela', color: '#94A3B8' } } } }
-        });
-      }
+    function renderExtrato() {
+      const extrato = financeData?.extrato || [];
+      const mes = document.getElementById('filtroMes').value;
+      const categoria = document.getElementById('filtroCategoria').value;
+      const busca = document.getElementById('buscaExtrato').value.toLowerCase();
+      let filtered = extrato;
+      if (mes !== 'todos') filtered = filtered.filter(e => e.data?.startsWith(mes));
+      if (categoria !== 'todas') filtered = filtered.filter(e => e.categoria === categoria);
+      if (busca) filtered = filtered.filter(e => e.descricao.toLowerCase().includes(busca) || e.categoria.toLowerCase().includes(busca));
+      const tbody = document.getElementById('extratoBody');
+      tbody.innerHTML = filtered.slice(0, 100).map(e => `<tr class="border-b border-slate-700/50"><td class="py-2">${e.data || '-'}</td><td>${e.descricao || '-'}</td><td><span class="bg-slate-700/50 px-2 py-0.5 rounded-full text-xs">${e.categoria || 'Outros'}</span></td><td class="text-right text-rose-300">-R$ ${e.valor?.toFixed(2) || 0}</td></tr>`).join('');
+      const total = filtered.reduce((s, e) => s + (e.valor || 0), 0);
+      document.getElementById('totalFiltro').innerHTML = `R$ ${total.toFixed(2)}`;
     }
 
-    function updatePanelBudget() {
-      // Detalhamento categorias
-      const cats = Object.entries(financeData.categories || {}).slice(0, 15);
-      const detailContainer = document.getElementById('categoriesDetailList');
-      detailContainer.innerHTML = cats.map(([name, val]) => {
-        const percent = (val / financeData.totalExpense) * 100;
-        return `<div><div class="flex justify-between text-sm"><span class="font-medium">${name}</span><span>R$ ${val.toFixed(2)}</span></div><div class="progress-bar-bg h-1.5 mt-1"><div class="bg-teal-400 h-1.5 rounded-full" style="width: ${Math.min(100, percent)}%"></div></div></div>`;
-      }).join('');
-      
-      // Custos essenciais
-      const essenciais = financeData.essentialExpenses || { ana_lua: [], mandelinha: [] };
-      let anaTotal = 0;
-      const anaContainer = document.getElementById('anaLuaList');
-      anaContainer.innerHTML = (essenciais.ana_lua || []).map(item => {
-        anaTotal += item.valor;
-        return `<div class="flex justify-between text-sm"><span><i class="fas fa-baby text-teal-300 mr-2"></i>${item.nome}</span><span>R$ ${item.valor}</span></div>`;
-      }).join('');
-      document.getElementById('anaLuaTotal').innerHTML = `R$ ${anaTotal}`;
-      
-      let mandiTotal = 0;
-      const mandiContainer = document.getElementById('mandelinhaList');
-      mandiContainer.innerHTML = (essenciais.mandelinha || []).map(item => {
-        mandiTotal += item.valor;
-        return `<div class="flex justify-between text-sm"><span><i class="fas ${item.nome === 'Fralda pet' ? 'fa-paw' : 'fa-heartbeat'} text-amber-300 mr-2"></i>${item.nome}</span><span>R$ ${item.valor}</span></div>`;
-      }).join('');
-      document.getElementById('mandelinhaTotal').innerHTML = `R$ ${mandiTotal}`;
-      
-      // Despesas fixas
-      const despesasFixas = financeData.fixedPlaning?.despesas_recorrentes || [];
-      const fixasContainer = document.getElementById('despesasFixasList');
-      fixasContainer.innerHTML = despesasFixas.map(d => `<div class="glass-card rounded-xl p-2 flex justify-between items-center"><span><i class="fas fa-receipt text-teal-300 mr-2"></i>${d.descricao}</span><span class="text-rose-300">R$ ${Math.abs(d.valor).toFixed(2)}</span></div>`).join('');
-    }
-
-    function updatePanelProjecao() {
-      const projecao = financeData.fixedPlaning?.projecao_mensal || [];
-      const meses = projecao.map(p => p.mes).slice(0, 12);
-      const saldos = projecao.map(p => p.saldo_projetado).slice(0, 12);
-      
-      const ctx = document.getElementById('projecaoChart')?.getContext('2d');
-      if (ctx && projecao.length > 0) {
-        if (window.projChart) window.projChart.destroy();
-        window.projChart = new Chart(ctx, {
-          type: 'bar',
-          data: { labels: meses, datasets: [{ label: 'Saldo Projetado', data: saldos, backgroundColor: '#2DD4BF', borderRadius: 8 }] },
-          options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#CBD5E1' } } } }
-        });
-      }
-      
-      const receitasFixas = financeData.fixedPlaning?.receitas_fixas || [];
-      const receitasContainer = document.getElementById('receitasFixasList');
-      receitasContainer.innerHTML = receitasFixas.map(r => `<div class="flex justify-between"><span><i class="fas fa-money-bill-wave text-emerald-300 mr-2"></i>${r.descricao}</span><span>R$ ${r.valor.toFixed(2)}</span></div>`).join('');
-      
-      const despesasRec = financeData.fixedPlaning?.despesas_recorrentes || [];
-      const despesasContainer = document.getElementById('despesasRecorrentesList');
-      despesasContainer.innerHTML = despesasRec.map(d => `<div class="flex justify-between"><span><i class="fas fa-credit-card text-rose-300 mr-2"></i>${d.descricao}</span><span>R$ ${Math.abs(d.valor).toFixed(2)}</span></div>`).join('');
-    }
-
+    function initFilters() { document.getElementById('filtroMes').addEventListener('change', () => renderExtrato()); document.getElementById('filtroCategoria').addEventListener('change', () => renderExtrato()); document.getElementById('buscaExtrato').addEventListener('input', () => renderExtrato()); }
     function initTabs() {
-      const tabs = [
-        { btn: 'tab360Btn', panel: 'panel360' },
-        { btn: 'tabDebtBtn', panel: 'panelDebt' },
-        { btn: 'tabBudgetBtn', panel: 'panelBudget' },
-        { btn: 'tabProjBtn', panel: 'panelProj' }
-      ];
-      
-      const setActive = (activePanel) => {
-        tabs.forEach(t => {
-          const btn = document.getElementById(t.btn);
-          const panel = document.getElementById(t.panel);
-          btn.classList.remove('tab-active');
-          btn.classList.add('tab-inactive');
-          panel.classList.add('hidden');
-        });
-        const active = tabs.find(t => t.panel === activePanel);
-        if (active) {
-          document.getElementById(active.btn).classList.remove('tab-inactive');
-          document.getElementById(active.btn).classList.add('tab-active');
-          document.getElementById(active.panel).classList.remove('hidden');
-        }
+      const setActive = (active) => {
+        ['Results', 'Extrato', 'Debt', 'Planejamento'].forEach(p => { document.getElementById(`panel${p}`)?.classList.add('hidden'); document.getElementById(`tab${p}Btn`)?.classList.remove('tab-active'); document.getElementById(`tab${p}Btn`)?.classList.add('tab-inactive'); });
+        document.getElementById(`panel${active}`)?.classList.remove('hidden'); document.getElementById(`tab${active}Btn`)?.classList.add('tab-active'); document.getElementById(`tab${active}Btn`)?.classList.remove('tab-inactive');
       };
-      
-      document.getElementById('tab360Btn').onclick = () => setActive('panel360');
-      document.getElementById('tabDebtBtn').onclick = () => setActive('panelDebt');
-      document.getElementById('tabBudgetBtn').onclick = () => setActive('panelBudget');
-      document.getElementById('tabProjBtn').onclick = () => setActive('panelProj');
-      
-      setActive('panel360');
+      document.getElementById('tabResultsBtn').onclick = () => setActive('Results'); document.getElementById('tabExtratoBtn').onclick = () => setActive('Extrato'); document.getElementById('TabDebtBtn').onclick = () => setActive('Debt'); document.getElementById('TabPlanejamentoBtn').onclick = () => setActive('Planejamento');
+      setActive('Results');
     }
-    
     document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
     loadData();
   </script>
