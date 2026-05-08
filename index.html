@@ -4,304 +4,277 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>WealthAurora • Dashboard Financeiro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fontes e ícones -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    * { font-family: 'Inter', sans-serif; }
-    body { background: radial-gradient(ellipse at 20% 30%, #0B1120, #050A14); min-height: 100vh; }
-    .glass-card { background: rgba(15, 25, 45, 0.55); backdrop-filter: blur(16px); border: 1px solid rgba(45, 212, 191, 0.2); transition: all 0.25s ease; }
-    .glass-card:hover { border-color: rgba(45, 212, 191, 0.5); transform: translateY(-2px); }
-    .tab-active { background: rgba(45, 212, 191, 0.18); border-bottom: 2px solid #2DD4BF; color: #E2E8F0; }
-    .tab-inactive { color: #94A3B8; transition: all 0.2s; }
-    .tab-inactive:hover { color: #CBD5E1; background: rgba(255,255,255,0.03); }
-    .progress-bar-bg { background-color: #1E293B; border-radius: 40px; }
-    .progress-fill { transition: width 0.4s ease; }
-    .loading-spinner { border: 3px solid rgba(45,212,191,0.1); border-top: 3px solid #2DD4BF; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .essential-card { background: linear-gradient(135deg, rgba(15,35,45,0.7), rgba(10,20,35,0.7)); border-left: 3px solid #F59E0B; }
-    .extrato-table { max-height: 500px; overflow-y: auto; display: block; }
-    .extrato-table table { width: 100%; border-collapse: collapse; }
-    .extrato-table th { position: sticky; top: 0; background: #0F172A; z-index: 10; }
-    .simulador-input { transition: all 0.2s; }
-    .simulador-input:focus { outline: none; border-color: #2DD4BF; box-shadow: 0 0 0 2px rgba(45,212,191,0.2); }
-  </style>
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
 </head>
-<body class="text-slate-200 antialiased p-4 md:p-7">
-
-  <div class="max-w-7xl mx-auto">
+<body>
+  <div class="app-container">
     <!-- Header -->
-    <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
-      <div class="flex items-center gap-3">
-        <div class="h-11 w-11 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg">
-          <i class="fas fa-chart-line text-white text-xl"></i>
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fas fa-chart-line"></i>
         </div>
         <div>
-          <h1 class="text-2xl font-extrabold bg-gradient-to-r from-white to-teal-300 bg-clip-text text-transparent">Wealth<span class="text-teal-400">Aurora</span></h1>
-          <p class="text-xs text-slate-400"><i class="fas fa-database"></i> Dashboard completo • 6 abas da planilha</p>
+          <h1 class="logo-text">Wealth<span class="logo-accent">Aurora</span></h1>
+          <p class="logo-sub">Planejamento Felipe & Manu</p>
         </div>
       </div>
-      <div class="glass-card px-5 py-2 rounded-full text-sm">
-        <i class="fas fa-calendar-alt text-teal-300 mr-2"></i> <span id="currentDate"></span>
-        <span id="lastUpdate" class="ml-2 text-xs text-slate-400"></span>
+      <div class="header-actions">
+        <button id="refreshBtn" class="icon-btn" title="Atualizar dados">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button id="darkModeToggle" class="icon-btn" title="Modo escuro">
+          <i class="fas fa-moon"></i>
+        </button>
+        <div class="update-info">
+          <i class="far fa-clock"></i>
+          <span id="lastUpdateTime">--:--</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Score de Saúde Financeira (topo) -->
+    <div class="score-container" id="scoreContainer">
+      <div class="score-card">
+        <div class="score-header">
+          <i class="fas fa-heartbeat"></i>
+          <span>Score de Saúde Financeira</span>
+        </div>
+        <div class="score-value">
+          <span id="healthScore">0</span><span class="score-max">/100</span>
+        </div>
+        <div class="score-bar">
+          <div id="healthScoreBar" class="score-bar-fill" style="width: 0%"></div>
+        </div>
+        <div class="score-status" id="healthStatus">Calculando...</div>
       </div>
     </div>
 
-    <!-- Loading -->
-    <div id="loadingState" class="glass-card rounded-2xl p-12 text-center">
+    <!-- Insights Automáticos -->
+    <div class="insights-container" id="insightsContainer">
+      <div class="insight-card">
+        <i class="fas fa-lightbulb"></i>
+        <div class="insight-content" id="insightText">Carregando insights...</div>
+      </div>
+    </div>
+
+    <!-- Navegação por Abas -->
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="results">
+        <i class="fas fa-chart-pie"></i>
+        <span>Resultados</span>
+      </button>
+      <button class="tab-btn" data-tab="extrato">
+        <i class="fas fa-list-ul"></i>
+        <span>Extrato</span>
+      </button>
+      <button class="tab-btn" data-tab="debt" id="debtTabBtn">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span>Dívidas</span>
+        <span id="debtBadge" class="tab-badge hidden">⚠️</span>
+      </button>
+      <button class="tab-btn" data-tab="planejamento">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Planejamento</span>
+      </button>
+      <button class="tab-btn" data-tab="casal">
+        <i class="fas fa-users"></i>
+        <span>Casal</span>
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-container">
       <div class="loading-spinner"></div>
-      <p class="mt-4">Carregando dados financeiros...</p>
-      <p class="text-xs text-slate-500 mt-2">Processando movimentações, dívidas, receitas e projeções</p>
+      <p>Conectando à planilha...</p>
+      <p class="loading-sub">Buscando dados financeiros atualizados</p>
     </div>
 
-    <!-- Dashboard -->
-    <div id="dashboardContent" style="display: none;">
-      <!-- Abas de navegação -->
-      <div class="flex flex-wrap gap-1 border-b border-white/10 mb-8 overflow-x-auto">
-        <button id="tabResultsBtn" class="tab-active px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-pie"></i> Resultados</button>
-        <button id="tabExtratoBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-list-ul"></i> Extrato</button>
-        <button id="TabDebtBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-hand-holding-usd"></i> Dívidas</button>
-        <button id="TabPlanejamentoBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-line"></i> Planejamento</button>
-      </div>
+    <!-- Empty State (quando não há dados) -->
+    <div id="emptyState" class="empty-state hidden">
+      <i class="fas fa-cloud-upload-alt empty-icon"></i>
+      <h3>Bem-vindo ao WealthAurora!</h3>
+      <p>Para começar, conecte sua planilha do Google Sheets.</p>
+      <ol class="empty-instructions">
+        <li>1. Publique sua planilha como JSON (Google Apps Script)</li>
+        <li>2. Atualize a URL no arquivo <code>js/data.js</code></li>
+        <li>3. Clique em <strong>Atualizar dados</strong> no menu</li>
+      </ol>
+      <button id="emptyRetryBtn" class="btn-primary">Tentar novamente</button>
+    </div>
 
-      <!-- Layout de 2 colunas: Conteúdo principal + Sidebar Essenciais -->
-      <div class="flex flex-col lg:flex-row gap-6">
-        <!-- Conteúdo principal (70%) -->
-        <div class="flex-1 min-w-0">
-          <!-- ABA 1: RESULTADOS -->
-          <div id="panelResults" class="tab-panel">
-            <!-- Cards superiores -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div class="glass-card rounded-xl p-4 border-l-4 border-l-teal-400"><p class="text-slate-400 text-xs uppercase">Saldo atual</p><p class="text-xl font-bold" id="saldoTotal">R$ 0,00</p></div>
-              <div class="glass-card rounded-xl p-4 border-l-4 border-l-emerald-400"><p class="text-slate-400 text-xs uppercase">Receitas</p><p class="text-xl font-bold text-emerald-300" id="totalReceitas">R$ 0,00</p></div>
-              <div class="glass-card rounded-xl p-4 border-l-4 border-l-rose-400"><p class="text-slate-400 text-xs uppercase">Despesas</p><p class="text-xl font-bold text-rose-300" id="totalDespesas">R$ 0,00</p></div>
-              <div class="glass-card rounded-xl p-4 border-l-4 border-l-amber-400"><p class="text-slate-400 text-xs uppercase">Taxa Esforço</p><p class="text-xl font-bold text-amber-300" id="taxaEsforco">0%</p></div>
-            </div>
-
-            <!-- Gráfico Evolução Mensal -->
-            <div class="glass-card rounded-2xl p-5 mb-6">
-              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Evolução Mensal (Receitas vs Despesas)</h3>
-              <canvas id="monthlyChart" height="200"></canvas>
-            </div>
-
-            <!-- Gastos por Categoria + Limites -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div class="glass-card rounded-2xl p-5">
-                <h3 class="font-semibold mb-3"><i class="fas fa-chart-pie text-teal-300 mr-2"></i> Gastos por Categoria</h3>
-                <canvas id="categoryChart" height="200"></canvas>
-                <div id="categoryLegend" class="mt-3 text-xs space-y-1"></div>
-              </div>
-              <div class="glass-card rounded-2xl p-5">
-                <h3 class="font-semibold mb-3"><i class="fas fa-chart-simple text-teal-300 mr-2"></i> Limites vs Gasto Real</h3>
-                <div id="limitesList" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
-                <p class="text-xs text-slate-400 mt-3"><i class="fas fa-lightbulb"></i> Limites sugeridos com base na sua renda de R$ 3.500</p>
-              </div>
-            </div>
-
-            <!-- Saúde Financeira -->
-            <div class="glass-card rounded-2xl p-5">
-              <h3 class="font-semibold mb-3"><i class="fas fa-heartbeat text-teal-300 mr-2"></i> Saúde Financeira</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div><p class="text-slate-400 text-xs">Capacidade de Poupança</p><p class="text-lg font-bold" id="capPoupanca">0%</p><div class="progress-bar-bg h-1.5 mt-1"><div id="poupancaBar" class="progress-fill bg-emerald-500 h-1.5 rounded-full w-0"></div></div></div>
-                <div><p class="text-slate-400 text-xs">Dias de Reserva</p><p class="text-lg font-bold" id="diasReserva">0</p><p class="text-xs text-slate-500">Sem renda</p></div>
-                <div><p class="text-slate-400 text-xs">Média Gasto Diário</p><p class="text-lg font-bold" id="mediaDiaria">R$ 0,00</p></div>
-              </div>
-            </div>
+    <!-- Dashboard Principal -->
+    <main id="dashboardContent" class="dashboard hidden">
+      <!-- ==================== ABA: RESULTADOS ==================== -->
+      <div id="tab-results" class="tab-content active">
+        <!-- Cards de resumo -->
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><i class="fas fa-coins text-teal"></i> Saldo Atual</div>
+            <div class="card-value" id="saldoAtual">R$ 0,00</div>
+            <div class="card-footer"></div>
           </div>
-
-          <!-- ABA 2: EXTRATO -->
-          <div id="panelExtrato" class="tab-panel hidden">
-            <div class="glass-card rounded-2xl p-5">
-              <div class="flex flex-wrap gap-3 mb-4 items-center justify-between">
-                <div class="flex gap-2">
-                  <select id="filtroMes" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700"><option value="todos">Todos os meses</option></select>
-                  <select id="filtroCategoria" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700"><option value="todas">Todas categorias</option></select>
-                </div>
-                <div><input type="text" id="buscaExtrato" placeholder="🔍 Buscar..." class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700 w-48"></div>
-              </div>
-              <div class="extrato-table">
-                <table class="w-full text-sm">
-                  <thead class="text-slate-400 border-b border-slate-700"><tr><th class="text-left py-2">Data</th><th class="text-left">Descrição</th><th class="text-left">Categoria</th><th class="text-right">Valor</th></tr></thead>
-                  <tbody id="extratoBody"></tbody>
-                </table>
-              </div>
-              <div class="mt-4 pt-3 border-t border-slate-700 flex justify-between font-semibold"><span>Total do filtro:</span><span id="totalFiltro" class="text-teal-300">R$ 0,00</span></div>
-            </div>
+          <div class="card">
+            <div class="card-header"><i class="fas fa-arrow-up text-emerald"></i> Receitas</div>
+            <div class="card-value text-emerald" id="totalReceitas">R$ 0,00</div>
+            <div class="card-footer" id="receitasVariacao"></div>
           </div>
-
-          <!-- ABA 3: DÍVIDAS -->
-          <div id="panelDebt" class="tab-panel hidden">
-            <div class="glass-card rounded-2xl p-5">
-              <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4"><i class="fas fa-hand-holding-usd text-teal-300 text-xl"></i><h2 class="text-xl font-semibold">Empréstimo - Cirlene</h2></div>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                <div><p class="text-slate-400 text-xs">Valor Total</p><p class="text-xl font-bold text-amber-300">R$ 35.000</p></div>
-                <div><p class="text-slate-400 text-xs">Saldo Devedor</p><p class="text-2xl font-bold text-rose-300" id="debtSaldo">R$ 0</p><div class="progress-bar-bg h-2 mt-1"><div id="debtProgressFill" class="progress-fill bg-teal-400 h-2 rounded-full w-0"></div></div></div>
-                <div><p class="text-slate-400 text-xs">Status</p><p class="text-lg font-bold text-teal-300">Em andamento</p></div>
-              </div>
-              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Evolução da Dívida (próximos meses)</h3>
-              <canvas id="amortizationChart" height="200"></canvas>
-              <!-- Simulador -->
-              <div class="mt-6 bg-slate-800/50 rounded-xl p-4">
-                <p class="font-semibold mb-2"><i class="fas fa-calculator text-teal-300 mr-2"></i> Simulador de Amortização Extra</p>
-                <div class="flex flex-wrap gap-3 items-end"><div><label class="text-xs text-slate-400">Valor extra por mês (R$)</label><input type="number" id="extraAmort" class="simulador-input bg-slate-800 rounded-lg px-3 py-2 border border-slate-600 w-36" value="0" step="100"></div><div><button id="calcularSimulacao" class="bg-teal-600 hover:bg-teal-500 px-4 py-2 rounded-lg text-sm transition">Calcular impacto</button></div></div>
-                <div id="simulacaoResultado" class="mt-3 text-sm text-teal-300"></div>
-              </div>
-            </div>
+          <div class="card">
+            <div class="card-header"><i class="fas fa-arrow-down text-rose"></i> Despesas</div>
+            <div class="card-value text-rose" id="totalDespesas">R$ 0,00</div>
+            <div class="card-footer" id="despesasVariacao"></div>
           </div>
-
-          <!-- ABA 4: PLANEJAMENTO -->
-          <div id="panelPlanejamento" class="tab-panel hidden">
-            <div class="glass-card rounded-2xl p-5 mb-6">
-              <h3 class="font-semibold mb-3"><i class="fas fa-chart-line text-teal-300 mr-2"></i> Projeção de Saldo Mensal (2026)</h3>
-              <canvas id="projecaoChart" height="200"></canvas>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="glass-card rounded-2xl p-5"><h3 class="font-semibold mb-3"><i class="fas fa-arrow-up text-emerald-300 mr-2"></i> Receitas Fixas</h3><div id="receitasFixasList" class="space-y-2 text-sm"></div></div>
-              <div class="glass-card rounded-2xl p-5"><h3 class="font-semibold mb-3"><i class="fas fa-arrow-down text-rose-300 mr-2"></i> Despesas Recorrentes</h3><div id="despesasFixasList" class="space-y-2 text-sm"></div></div>
-            </div>
+          <div class="card">
+            <div class="card-header"><i class="fas fa-chart-line text-amber"></i> Taxa Esforço</div>
+            <div class="card-value" id="taxaEsforco">0%</div>
+            <div class="card-footer"></div>
           </div>
         </div>
 
-        <!-- Sidebar Direita: Custos Essenciais (fixa) -->
-        <div class="lg:w-80">
-          <div class="glass-card rounded-2xl p-5 essential-card sticky top-4">
-            <h3 class="font-bold text-lg mb-3 border-b border-white/20 pb-2"><i class="fas fa-baby-carriage text-teal-300 mr-2"></i> Custos Essenciais</h3>
-            <div class="mb-4"><p class="font-semibold text-teal-300 text-sm">👶 Ana Lua</p><div id="anaLuaSidebar" class="space-y-1 text-sm mt-2"></div><div class="flex justify-between font-semibold mt-2 pt-2 border-t border-white/10"><span>Total</span><span id="anaLuaSidebarTotal" class="text-teal-300">R$ 0</span></div></div>
-            <div><p class="font-semibold text-amber-300 text-sm">🐾 Mandelinha</p><div id="mandelinhaSidebar" class="space-y-1 text-sm mt-2"></div><div class="flex justify-between font-semibold mt-2 pt-2 border-t border-white/10"><span>Total</span><span id="mandelinhaSidebarTotal" class="text-teal-300">R$ 0</span></div></div>
-            <div class="mt-4 bg-amber-500/10 rounded-lg p-2 text-xs text-amber-200"><i class="fas fa-envelope"></i> Envelope virtual sugerido: R$ 760/mês</div>
+        <!-- Reserva de Emergência -->
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-shield-alt text-teal"></i> Reserva de Emergência</div>
+          <div class="reserve-container">
+            <div class="reserve-stats">
+              <div>Você tem: <strong id="reservaAtual">R$ 0,00</strong></div>
+              <div>Meta (6 meses): <strong id="reservaMeta">R$ 0,00</strong></div>
+            </div>
+            <div class="progress-bar-container">
+              <div id="reservaProgress" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="reserve-message" id="reservaMsg">Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Gráfico Evolução Mensal -->
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-chart-line text-teal"></i> Evolução Mensal (Receitas vs Despesas)</div>
+          <canvas id="monthlyChart" height="250"></canvas>
+        </div>
+
+        <!-- Limites vs Gasto Real -->
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-chart-simple text-teal"></i> Limites vs Gasto Real</div>
+          <div id="limitesList" class="limits-list"></div>
+        </div>
+
+        <!-- Gastos por Categoria (Gráfico Interativo) -->
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-chart-pie text-teal"></i> Gastos por Categoria (clique na fatia para filtrar)</div>
+          <div class="chart-row">
+            <canvas id="categoryChart" width="200" height="200" style="max-width: 250px; margin: 0 auto;"></canvas>
+            <div id="categoryLegend" class="category-legend"></div>
+          </div>
+        </div>
+
+        <!-- Indicadores de Saúde Financeira -->
+        <div class="cards-grid two-cols">
+          <div class="card">
+            <div class="card-header"><i class="fas fa-piggy-bank text-teal"></i> Capacidade de Poupança</div>
+            <div class="card-value" id="capPoupanca">0%</div>
+            <div class="progress-bar-container"><div id="poupancaBar" class="progress-fill" style="width: 0%"></div></div>
+            <div class="card-footer text-xs">Ideal: acima de 20%</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i class="fas fa-umbrella text-teal"></i> Dias de Reserva</div>
+            <div class="card-value" id="diasReserva">0</div>
+            <div class="card-footer text-xs">Meta: 180 dias (6 meses)</div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- ==================== ABA: EXTRATO ==================== -->
+      <div id="tab-extrato" class="tab-content hidden">
+        <div class="card full-width">
+          <div class="card-header">📋 Extrato de Transações</div>
+          <div class="filter-bar">
+            <select id="filtroMes" class="filter-select"></select>
+            <select id="filtroCategoria" class="filter-select"></select>
+            <input type="text" id="buscaExtrato" placeholder="🔍 Buscar..." class="filter-input">
+            <button id="limparFiltros" class="btn-secondary">Limpar</button>
+          </div>
+          <div class="extrato-table-container">
+            <table class="extrato-table">
+              <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th></tr>
+              </thead>
+              <tbody id="extratoBody"></tbody>
+            </table>
+          </div>
+          <div class="extrato-total">Total filtrado: <strong id="totalFiltro">R$ 0,00</strong></div>
+        </div>
+      </div>
+
+      <!-- ==================== ABA: DÍVIDAS ==================== -->
+      <div id="tab-debt" class="tab-content hidden">
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-hand-holding-usd"></i> Empréstimo - Cirlene</div>
+          <div class="debt-summary" id="debtSummary"></div>
+          <div class="progress-bar-container">
+            <div id="debtProgressFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="debt-stats" id="debtStats"></div>
+          
+          <h4 class="section-title">📅 Próximas Parcelas</h4>
+          <div id="parcelasList" class="parcelas-list"></div>
+          
+          <h4 class="section-title">🚀 Simulador de Amortização Extra</h4>
+          <div class="simulator-box">
+            <div class="simulator-input-group">
+              <label>Valor extra por mês (R$)</label>
+              <input type="number" id="extraAmort" class="simulator-input" value="0" step="100">
+              <button id="calcularSimulacao" class="btn-primary">Calcular impacto</button>
+            </div>
+            <div id="simulacaoResultado" class="simulator-result"></div>
+          </div>
+          
+          <div class="alert-box" id="parcelaPesadaAlert"></div>
+        </div>
+      </div>
+
+      <!-- ==================== ABA: PLANEJAMENTO ==================== -->
+      <div id="tab-planejamento" class="tab-content hidden">
+        <div class="cards-grid two-cols">
+          <div class="card"><div class="card-header">💰 Receitas Fixas</div><div id="receitasFixasList"></div></div>
+          <div class="card"><div class="card-header">💸 Despesas Recorrentes</div><div id="despesasFixasList"></div></div>
+        </div>
+        <div class="card full-width">
+          <div class="card-header">📅 Calendário de Contas</div>
+          <div id="calendarioContas" class="calendario-grid"></div>
+        </div>
+        <div class="card full-width">
+          <div class="card-header">🎯 Metas Financeiras</div>
+          <div id="metasList"></div>
+          <div class="add-meta"><input type="text" id="novaMetaNome" placeholder="Nome da meta"><input type="number" id="novaMetaValor" placeholder="Valor alvo"><input type="date" id="novaMetaData"><button id="addMetaBtn" class="btn-secondary">Adicionar meta</button></div>
+        </div>
+      </div>
+
+      <!-- ==================== ABA: CASAL ==================== -->
+      <div id="tab-casal" class="tab-content hidden">
+        <div class="card full-width">
+          <div class="card-header"><i class="fas fa-users"></i> Felipe & Manu</div>
+          <div class="coual-grid">
+            <div class="person-card"><h4>👨 Felipe</h4><div id="felipeGastos"></div></div>
+            <div class="person-card"><h4>👩 Manu</h4><div id="manuGastos"></div></div>
+          </div>
+          <div class="info-note"><i class="fas fa-info-circle"></i> Para ativar esta seção, adicione uma tag "responsavel" na planilha (coluna "responsavel" com valores "Felipe" ou "Manu").</div>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <script>
-    let financeData = null;
-    let amortizationChart, monthlyChart, categoryChart, projecaoChart;
-
-    async function loadData() {
-      try {
-        const response = await fetch('data.json?v=' + Date.now());
-        if (!response.ok) throw new Error('data.json não encontrado');
-        financeData = await response.json();
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('dashboardContent').style.display = 'block';
-        updateAll();
-        initTabs();
-        initFilters();
-      } catch (error) {
-        document.getElementById('loadingState').innerHTML = `<div class="text-center p-8"><i class="fas fa-exclamation-triangle text-amber-400 text-4xl mb-3"></i><p class="text-red-300">Erro ao carregar dados</p><button onclick="location.reload()" class="mt-4 px-4 py-2 bg-teal-500 rounded-lg">Tentar novamente</button></div>`;
-      }
-    }
-
-    function updateAll() {
-      if (!financeData) return;
-      // Cards
-      document.getElementById('saldoTotal').innerText = `R$ ${financeData.saldoTotal?.toFixed(2) || 0}`;
-      document.getElementById('totalReceitas').innerText = `R$ ${financeData.totalReceitas?.toFixed(2) || 0}`;
-      document.getElementById('totalDespesas').innerText = `R$ ${financeData.totalGastos?.toFixed(2) || 0}`;
-      document.getElementById('taxaEsforco').innerText = `${financeData.taxaEsforco || 0}%`;
-      document.getElementById('mediaDiaria').innerText = `R$ ${financeData.mediaDiaria?.toFixed(2) || 0}`;
-      document.getElementById('diasReserva').innerText = financeData.diasReserva || 0;
-      document.getElementById('lastUpdate').innerHTML = `<i class="far fa-clock"></i> ${new Date(financeData.lastUpdate).toLocaleString('pt-BR')}`;
-      
-      // Capacidade de poupança
-      const poupanca = (financeData.saldoTotal / financeData.totalReceitas) * 100;
-      document.getElementById('capPoupanca').innerText = `${poupanca.toFixed(1)}%`;
-      document.getElementById('poupancaBar').style.width = `${Math.min(100, poupanca)}%`;
-
-      // Gráfico mensal
-      const meses = Object.keys(financeData.gastosMensais || {}).slice(-6);
-      const ctx = document.getElementById('monthlyChart')?.getContext('2d');
-      if (ctx) { if (monthlyChart) monthlyChart.destroy(); monthlyChart = new Chart(ctx, { type: 'line', data: { labels: meses, datasets: [{ label: 'Despesas', data: meses.map(m => financeData.gastosMensais?.[m] || 0), borderColor: '#FB7185', backgroundColor: 'rgba(251,113,133,0.1)', fill: true }, { label: 'Receitas', data: meses.map(m => financeData.receitasMensais?.[m] || 0), borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } }); }
-
-      // Gráfico de categorias
-      const categorias = financeData.gastosPorCategoria || {};
-      const catLabels = Object.keys(categorias).slice(0, 6);
-      const catValues = catLabels.map(c => categorias[c]);
-      const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
-      if (ctxCat) { if (categoryChart) categoryChart.destroy(); categoryChart = new Chart(ctxCat, { type: 'doughnut', data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: ['#2DD4BF', '#FB7185', '#FBBF24', '#A78BFA', '#34D399', '#F97316'] }] }, options: { responsive: true, maintainAspectRatio: true } }); }
-
-      // Limites vs Real
-      const limites = financeData.limitesSugeridos || {};
-      const limitesContainer = document.getElementById('limitesList');
-      limitesContainer.innerHTML = Object.entries(limites).map(([cat, limite]) => {
-        const gasto = categorias[cat] || 0;
-        const percent = Math.min(100, (gasto / limite) * 100);
-        let color = percent >= 100 ? 'bg-red-500' : (percent >= 80 ? 'bg-yellow-500' : 'bg-teal-500');
-        return `<div><div class="flex justify-between text-sm"><span>${cat}</span><span>R$ ${gasto.toFixed(2)} / R$ ${limite}</span></div><div class="progress-bar-bg h-2 mt-1"><div class="${color} h-2 rounded-full" style="width: ${percent}%"></div></div></div>`;
-      }).join('');
-
-      // Dívida
-      const debt = financeData.debt || { saldo_devedor: 35000 };
-      document.getElementById('debtSaldo').innerHTML = `R$ ${debt.saldo_devedor?.toFixed(2) || 35000}`;
-      const percentPago = ((35000 - (debt.saldo_devedor || 35000)) / 35000) * 100;
-      document.getElementById('debtProgressFill').style.width = `${percentPago}%`;
-      
-      // Gráfico amortização
-      const amort = debt.amortizacao || [];
-      const amortLabels = amort.map(a => a.parcela);
-      const amortValues = amort.map(a => a.saldo_apos);
-      const ctxAmort = document.getElementById('amortizationChart')?.getContext('2d');
-      if (ctxAmort && amort.length) { if (amortizationChart) amortizationChart.destroy(); amortizationChart = new Chart(ctxAmort, { type: 'line', data: { labels: amortLabels, datasets: [{ label: 'Saldo Devedor', data: amortValues, borderColor: '#2DD4BF', backgroundColor: 'rgba(45,212,191,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } }); }
-
-      // Simulador
-      document.getElementById('calcularSimulacao').onclick = () => { const extra = parseFloat(document.getElementById('extraAmort').value) || 0; const saldo = debt.saldo_devedor || 35000; const parcelas = Math.ceil(saldo / (500 + extra)); document.getElementById('simulacaoResultado').innerHTML = `💰 Com +R$${extra}/mês, quitação em ${parcelas} meses (antes ${amort.length} meses). Economia: ~R$${((amort.length - parcelas) * 500).toFixed(0)}`; };
-
-      // Planejamento
-      const proj = financeData.projecaoMensal || [];
-      const projLabels = proj.map(p => p.mes);
-      const saldoProj = proj.map(p => (p.salario_previsto || 0) - (p.despesas_recorrentes || 0) - (p.parcela_emprestimo || 0) - (p.parcela_semestral || 0));
-      const ctxProj = document.getElementById('projecaoChart')?.getContext('2d');
-      if (ctxProj && proj.length) { if (projecaoChart) projecaoChart.destroy(); projecaoChart = new Chart(ctxProj, { type: 'bar', data: { labels: projLabels, datasets: [{ label: 'Saldo Projetado', data: saldoProj, backgroundColor: '#2DD4BF' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
-
-      // Receitas e despesas fixas
-      document.getElementById('receitasFixasList').innerHTML = (financeData.receitasFixas || []).map(r => `<div class="flex justify-between"><span>${r.descricao}</span><span class="text-emerald-300">R$ ${r.valor.toFixed(2)}</span></div>`).join('');
-      document.getElementById('despesasFixasList').innerHTML = (financeData.despesasRecorrentes || []).map(d => `<div class="flex justify-between"><span>${d.descricao}</span><span class="text-rose-300">R$ ${d.valor.toFixed(2)}</span></div>`).join('');
-
-      // Essenciais sidebar
-      const ess = financeData.custosEssenciais || { ana_lua: [], mandelinha: [] };
-      let anaTotal = 0; let mandiTotal = 0;
-      document.getElementById('anaLuaSidebar').innerHTML = ess.ana_lua.map(i => { anaTotal += i.valor; return `<div class="flex justify-between"><span>${i.nome}</span><span>R$ ${i.valor}</span></div>`; }).join('');
-      document.getElementById('anaLuaSidebarTotal').innerHTML = `R$ ${anaTotal}`;
-      document.getElementById('mandelinhaSidebar').innerHTML = ess.mandelinha.map(i => { mandiTotal += i.valor; return `<div class="flex justify-between"><span>${i.nome}</span><span>R$ ${i.valor}</span></div>`; }).join('');
-      document.getElementById('mandelinhaSidebarTotal').innerHTML = `R$ ${mandiTotal}`;
-
-      // Extrato
-      const extrato = financeData.extrato || [];
-      const uniqueCats = [...new Set(extrato.map(e => e.categoria))];
-      const catFilter = document.getElementById('filtroCategoria');
-      catFilter.innerHTML = '<option value="todas">Todas categorias</option>' + uniqueCats.map(c => `<option value="${c}">${c}</option>`).join('');
-      renderExtrato();
-    }
-
-    function renderExtrato() {
-      const extrato = financeData?.extrato || [];
-      const mes = document.getElementById('filtroMes').value;
-      const categoria = document.getElementById('filtroCategoria').value;
-      const busca = document.getElementById('buscaExtrato').value.toLowerCase();
-      let filtered = extrato;
-      if (mes !== 'todos') filtered = filtered.filter(e => e.data?.startsWith(mes));
-      if (categoria !== 'todas') filtered = filtered.filter(e => e.categoria === categoria);
-      if (busca) filtered = filtered.filter(e => e.descricao.toLowerCase().includes(busca) || e.categoria.toLowerCase().includes(busca));
-      const tbody = document.getElementById('extratoBody');
-      tbody.innerHTML = filtered.slice(0, 100).map(e => `<tr class="border-b border-slate-700/50"><td class="py-2">${e.data || '-'}</td><td>${e.descricao || '-'}</td><td><span class="bg-slate-700/50 px-2 py-0.5 rounded-full text-xs">${e.categoria || 'Outros'}</span></td><td class="text-right text-rose-300">-R$ ${e.valor?.toFixed(2) || 0}</td></tr>`).join('');
-      const total = filtered.reduce((s, e) => s + (e.valor || 0), 0);
-      document.getElementById('totalFiltro').innerHTML = `R$ ${total.toFixed(2)}`;
-    }
-
-    function initFilters() { document.getElementById('filtroMes').addEventListener('change', () => renderExtrato()); document.getElementById('filtroCategoria').addEventListener('change', () => renderExtrato()); document.getElementById('buscaExtrato').addEventListener('input', () => renderExtrato()); }
-    function initTabs() {
-      const setActive = (active) => {
-        ['Results', 'Extrato', 'Debt', 'Planejamento'].forEach(p => { document.getElementById(`panel${p}`)?.classList.add('hidden'); document.getElementById(`tab${p}Btn`)?.classList.remove('tab-active'); document.getElementById(`tab${p}Btn`)?.classList.add('tab-inactive'); });
-        document.getElementById(`panel${active}`)?.classList.remove('hidden'); document.getElementById(`tab${active}Btn`)?.classList.add('tab-active'); document.getElementById(`tab${active}Btn`)?.classList.remove('tab-inactive');
-      };
-      document.getElementById('tabResultsBtn').onclick = () => setActive('Results'); document.getElementById('tabExtratoBtn').onclick = () => setActive('Extrato'); document.getElementById('TabDebtBtn').onclick = () => setActive('Debt'); document.getElementById('TabPlanejamentoBtn').onclick = () => setActive('Planejamento');
-      setActive('Results');
-    }
-    document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
-    loadData();
-  </script>
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/debt.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
