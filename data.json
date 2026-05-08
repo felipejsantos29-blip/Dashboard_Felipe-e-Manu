@@ -1,69 +1,490 @@
 {
-  "lastUpdate": "2026-05-08T17:07:58.258762",
-  "totalIncome": 1688995.0,
-  "totalExpense": 77063.0,
-  "balance": 1611932.0,
-  "avgDailyExpense": 189.33,
+  "lastUpdate": "2026-05-08T17:40:12.781833",
+  "totalIncome": 1689104.0,
+  "totalExpense": 569300.0,
+  "balance": 1119804.0,
+  "avgDailyExpense": 679.77,
   "categories": {
-    "Alimentação": 35649.0,
-    "Transporte": 22050.0,
-    "Serviços": 7425.0,
-    "Lazer": 997.0,
-    "Saúde": 7087.0,
-    "Pet": 1118.0,
-    "Compras": 1396.0,
-    "Vestuário": 44.0,
-    "Educação": 1297.0
+    "Alimentação": 235502.0,
+    "Saúde": 84488.0,
+    "Compras": 52864.0,
+    "Educação": 34164.0,
+    "Pet": 33714.0,
+    "Serviços": 33588.0,
+    "Transporte": 25977.0,
+    "Vestuário": 14070.0,
+    "Eletrônicos": 13454.0,
+    "Multa": 12848.0,
+    "Lazer": 8808.0,
+    "Juros": 8054.0,
+    "Imposto": 5310.0,
+    "Viagem": 3062.0,
+    "Transferência": 2145.0,
+    "Pagamento Conta": 750.0,
+    "Empréstimo": 500.0,
+    "Seguro": 2.0
   },
   "topCategories": [
     [
       "Alimentação",
-      35649.0
-    ],
-    [
-      "Transporte",
-      22050.0
-    ],
-    [
-      "Serviços",
-      7425.0
+      235502.0
     ],
     [
       "Saúde",
-      7087.0
+      84488.0
     ],
     [
       "Compras",
-      1396.0
+      52864.0
     ],
     [
       "Educação",
-      1297.0
+      34164.0
+    ],
+    [
+      "Pet",
+      33714.0
+    ],
+    [
+      "Serviços",
+      33588.0
     ]
   ],
   "monthlyData": {
     "expense": {
-      "2026-01": 18247.0,
-      "2026-02": 15310.0,
-      "2026-03": 7194.0,
-      "2026-04": 12191.0,
-      "2026-05": 598.0,
-      "2026-06": 219.0
+      "2026-01": 79081.0,
+      "2026-02": 182672.0,
+      "2026-03": 134282.0,
+      "2026-04": 52829.0,
+      "2026-05": 1433.0,
+      "2026-06": 719.0
     },
     "income": {
-      "2026-01": 351837.0,
-      "2026-02": 625531.0,
-      "2026-03": 361510.0,
-      "2026-04": 350117.0
+      "2026-01": 351927.0,
+      "2026-02": 625541.0,
+      "2026-03": 361511.0,
+      "2026-04": 350124.0,
+      "2026-05": 1.0
     }
   },
   "debt": {
     "credor": "Cirlene",
     "valor_total": 35000,
+    "saldo_devedor": 35000,
     "parcela_mensal": 500,
     "parcela_semestral": 4000,
-    "proximo_semestre": "2026-08",
-    "pago_total": 0,
-    "saldo_devedor": 35000
+    "amortizacao": [
+      {
+        "data": "2026-06-05",
+        "parcela": 1,
+        "valor_mensal": -500.0,
+        "valor_semestral": -4000.0,
+        "valor_total": -4500.0,
+        "saldo_apos": 30500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2026-07-05",
+        "parcela": 2,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 30000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2026-08-05",
+        "parcela": 3,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 29500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2026-09-05",
+        "parcela": 4,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 29000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2026-10-05",
+        "parcela": 5,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 28500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2026-11-05",
+        "parcela": 6,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 28000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-12-05",
+        "parcela": 7,
+        "valor_mensal": -500.0,
+        "valor_semestral": -4000.0,
+        "valor_total": -4500.0,
+        "saldo_apos": 23500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-01-05",
+        "parcela": 8,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 23000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-02-05",
+        "parcela": 9,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 22500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-03-05",
+        "parcela": 10,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 22000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-04-05",
+        "parcela": 11,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 21500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-05-05",
+        "parcela": 12,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 21000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-06-05",
+        "parcela": 13,
+        "valor_mensal": -500.0,
+        "valor_semestral": -4000.0,
+        "valor_total": -4500.0,
+        "saldo_apos": 16500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-07-05",
+        "parcela": 14,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 16000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-08-05",
+        "parcela": 15,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 15500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-09-05",
+        "parcela": 16,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 15000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-10-05",
+        "parcela": 17,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 14500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2027-11-05",
+        "parcela": 18,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 14000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-12-05",
+        "parcela": 19,
+        "valor_mensal": -500.0,
+        "valor_semestral": -4000.0,
+        "valor_total": -4500.0,
+        "saldo_apos": 9500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-01-05",
+        "parcela": 20,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 9000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-02-05",
+        "parcela": 21,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 8500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-03-05",
+        "parcela": 22,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 8000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-04-05",
+        "parcela": 23,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 7500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-05-05",
+        "parcela": 24,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 7000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-06-05",
+        "parcela": 25,
+        "valor_mensal": -500.0,
+        "valor_semestral": -4000.0,
+        "valor_total": -4500.0,
+        "saldo_apos": 2500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-07-05",
+        "parcela": 26,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 2000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-08-05",
+        "parcela": 27,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 1500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-09-05",
+        "parcela": 28,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 1000.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-10-05",
+        "parcela": 29,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 500.0,
+        "status": "Pendente"
+      },
+      {
+        "data": "2028-11-05",
+        "parcela": 30,
+        "valor_mensal": -500.0,
+        "valor_semestral": 0.0,
+        "valor_total": -500.0,
+        "saldo_apos": 0.0,
+        "status": "Pendente"
+      }
+    ]
+  },
+  "fixedPlaning": {
+    "receitas_fixas": [],
+    "despesas_recorrentes": [],
+    "projecao_mensal": [
+      {
+        "mes": "2026-01",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-02",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-03",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-04",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-05",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-06",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": -4000.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-07",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-08",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-09",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-10",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-11",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": 0.0,
+        "saldo_projetado": 0.0
+      },
+      {
+        "mes": "2026-12",
+        "salario_previsto": 346082.0,
+        "despesas_recorrentes": -46496.0,
+        "parcela_emprestimo": -500.0,
+        "parcela_semestral": -4000.0,
+        "saldo_projetado": 0.0
+      }
+    ]
+  },
+  "essentialExpenses": {
+    "ana_lua": [
+      {
+        "nome": "Leite Nan",
+        "valor": 280
+      },
+      {
+        "nome": "Pomada",
+        "valor": 40
+      },
+      {
+        "nome": "Lenço umedecido",
+        "valor": 60
+      },
+      {
+        "nome": "Farmácia",
+        "valor": 150
+      },
+      {
+        "nome": "Comida (papinha)",
+        "valor": 50
+      }
+    ],
+    "mandelinha": [
+      {
+        "nome": "Fralda pet",
+        "valor": 120
+      },
+      {
+        "nome": "Plano Pet Love",
+        "valor": 59
+      }
+    ]
+  },
+  "stats": {
+    "total_transactions": 275,
+    "total_gastos": 255,
+    "total_receitas": 20
   }
 }
