@@ -9,19 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { font-family: 'Inter', sans-serif; }
         body { background: radial-gradient(ellipse at 20% 30%, #0B1120, #050A14); min-height: 100vh; }
         .glass-card { background: rgba(15, 25, 45, 0.55); backdrop-filter: blur(16px); border: 1px solid rgba(45, 212, 191, 0.2); transition: all 0.25s ease; }
-        .glass-card:hover { border-color: rgba(45, 212, 191, 0.5); transform: translateY(-2px); }
         .tab-active { background: rgba(45, 212, 191, 0.18); border-bottom: 2px solid #2DD4BF; color: #E2E8F0; }
         .tab-inactive { color: #94A3B8; }
         .progress-bar-bg { background-color: #1E293B; border-radius: 40px; }
         .progress-fill { transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
-        .info-hint { border-bottom: 1px dashed rgba(45,212,191,0.5); cursor: help; }
-        input[type="range"] { -webkit-appearance: none; background: #1E293B; height: 4px; border-radius: 6px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #2DD4BF; cursor: pointer; box-shadow: 0 0 6px #2DD4BF; }
-        .badge-alert { background: rgba(251, 113, 133, 0.18); color: #FECDD3; }
-        .badge-warning { background: rgba(251, 191, 36, 0.15); color: #FDE68A; }
     </style>
 </head>
 <body class="text-slate-200 antialiased p-5 md:p-7">
@@ -34,7 +28,7 @@
                 </div>
                 <div>
                     <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-teal-300 bg-clip-text text-transparent">Wealth<span class="text-teal-400">Aurora</span></h1>
-                    <p class="text-xs text-slate-400 flex items-center gap-1"><i class="fas fa-baby-carriage"></i> Planejamento Felipe • Família + Pet</p>
+                    <p class="text-xs text-slate-400 flex items-center gap-1"><i class="fas fa-baby-carriage"></i> Planejamento Felipe • Filha + Pet</p>
                 </div>
             </div>
             <div class="glass-card px-5 py-2 rounded-full text-sm font-mono border-teal-500/20">
@@ -43,172 +37,170 @@
         </div>
 
         <div class="flex flex-wrap gap-1 border-b border-white/10 mb-8">
-            <button id="tab360Btn" class="tab-active px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-chart-pie"></i> Visão 360°</button>
-            <button id="tabDebtBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-hand-holding-usd"></i> Planejamento de Dívidas</button>
-            <button id="tabBudgetBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2"><i class="fas fa-wallet"></i> Orçamento + Essenciais</button>
+            <button id="tab360Btn" class="tab-active px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2" onclick="setActive('360')"><i class="fas fa-chart-pie"></i> Visão 360°</button>
+            <button id="tabDebtBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2" onclick="setActive('debt')"><i class="fas fa-hand-holding-usd"></i> Planejamento de Dívidas</button>
+            <button id="tabBudgetBtn" class="tab-inactive px-5 py-2.5 rounded-t-xl text-sm font-medium transition flex items-center gap-2" onclick="setActive('budget')"><i class="fas fa-wallet"></i> Orçamento + Essenciais</button>
         </div>
 
-        <div id="panel360" class="tab-panel transition-all duration-300">
+        <div id="panel360" class="tab-panel">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="glass-card rounded-2xl p-6 border-l-4 border-l-teal-400">
-                    <p class="text-slate-300 text-sm uppercase tracking-wide">Saldo em Conta</p>
-                    <p class="text-4xl font-bold mt-1" id="balanceTotal">R$ 0,00</p>
-                </div>
-                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-emerald-400">
-                    <p class="text-slate-300 text-sm uppercase tracking-wide">Disponível Real</p>
-                    <p class="text-4xl font-bold mt-1" id="availableToSpend">R$ 0,00</p>
+                    <p class="text-slate-300 text-sm uppercase tracking-wide">Disponível em Conta</p>
+                    <p class="text-3xl font-bold mt-1" id="val-banco">R$ 0,00</p>
                 </div>
                 <div class="glass-card rounded-2xl p-6 border-l-4 border-l-rose-400">
-                    <p class="text-slate-300 text-sm uppercase tracking-wide">Dívidas Cartões</p>
-                    <p class="text-4xl font-bold mt-1" id="totalDebts">R$ 0,00</p>
+                    <p class="text-slate-300 text-sm uppercase tracking-wide">Gastos Reais (Mês)</p>
+                    <p class="text-3xl font-bold mt-1" id="val-despesas">R$ 0,00</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-emerald-400">
+                    <p class="text-slate-300 text-sm uppercase tracking-wide">Salário + PLR</p>
+                    <p class="text-3xl font-bold mt-1" id="val-receitas">R$ 0,00</p>
                 </div>
                 <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-400">
-                    <p class="text-slate-300 text-sm uppercase tracking-wide">Índice Saúde</p>
-                    <p class="text-4xl font-bold mt-1" id="healthScore">--%</p>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-6 mb-6">
-                <div class="flex flex-wrap justify-between items-center gap-3">
-                    <div><i class="fas fa-chart-line text-teal-300 mr-2"></i><span class="font-semibold text-md info-hint" title="Projeção baseada no consumo atual">Previsão de Saldo Final</span></div>
-                    <div class="bg-black/40 px-5 py-2 rounded-full text-teal-300 font-mono text-xl font-bold" id="forecastBalance">R$ 0,00</div>
+                    <p class="text-slate-300 text-sm uppercase tracking-wide">Dívida Cartão</p>
+                    <p class="text-3xl font-bold mt-1" id="val-fatura">R$ 0,00</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass-card rounded-2xl p-6">
-                    <h3 class="font-semibold text-white flex items-center gap-2 mb-4"><i class="fas fa-chart-simple text-teal-300"></i> Limites por Categoria</h3>
-                    <div id="categoryMiniPreview" class="space-y-4"></div>
+                    <h3 class="font-semibold text-white mb-4">Fluxo de Caixa Operacional</h3>
+                    <div class="h-[300px]"><canvas id="chart-op"></canvas></div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-400">
-                    <div class="flex items-center gap-2 mb-3"><i class="fas fa-exclamation-triangle text-amber-400"></i><span class="font-bold">Gastos Essenciais (Ana Lua + Mandelinha)</span></div>
-                    <div class="text-2xl font-bold text-amber-300" id="miniEssentialTotal">R$ 0,00</div>
-                    <p class="text-xs text-slate-300 mt-1">Impacto direto no seu fluxo mensal.</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="panelDebt" class="tab-panel hidden transition-all duration-300">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4"><i class="fas fa-handshake text-teal-300"></i><h2 class="text-xl font-semibold">Empréstimo Cirlene</h2></div>
-                    <div class="mb-2 flex justify-between"><span class="text-slate-300">Saldo Remanescente</span><span class="font-mono text-lg" id="loanBalanceDisplay">R$ 35.000,00</span></div>
-                    <div class="progress-bar-bg w-full h-2 mb-5"><div id="loanProgressFill" class="progress-fill bg-teal-400 h-2 rounded-full" style="width: 0%"></div></div>
-                    <p class="text-xs text-slate-400">Este valor está isolado do cálculo de dívidas de consumo da Home.</p>
-                </div>
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4"><i class="fas fa-credit-card text-rose-300"></i><h2 class="text-xl font-semibold">Faturas de Cartão</h2></div>
-                    <div id="cardDetailsList" class="space-y-4"></div>
+                <div class="glass-card rounded-2xl p-6 border-l-4 border-l-teal-400">
+                    <h3 class="font-bold text-teal-300 mb-2">Projeção de Final de Mês</h3>
+                    <div class="text-4xl font-bold" id="val-proj">R$ 0,00</div>
+                    <p class="text-xs text-slate-400 mt-2">Cálculo: Saldo Atual - (Média de Gasto Diário × Dias Restantes)</p>
                 </div>
             </div>
         </div>
 
-        <div id="panelBudget" class="tab-panel hidden transition-all duration-300">
-            <div class="glass-card rounded-2xl p-6 mb-6">
-                <h2 class="text-xl font-bold mb-5 flex items-center gap-2"><i class="fas fa-wallet text-teal-300"></i> Limites de Gastos</h2>
-                <div id="categoriesBudgetList" class="space-y-4"></div>
+        <div id="panelDebt" class="tab-panel hidden">
+            <div class="glass-card rounded-2xl p-6 border-t-4 border-t-teal-500">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-handshake text-teal-400 text-2xl"></i>
+                    <h2 class="text-xl font-bold">Empréstimo Cirlene (Imóvel)</h2>
+                </div>
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <p class="text-slate-400 text-sm">Saldo Devedor</p>
+                        <p class="text-3xl font-bold" id="val-cirlene">R$ 35.000,00</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-teal-400 font-bold">Sem Juros</p>
+                        <p class="text-xs text-slate-400">Pagamento: R$ 500/mês + PLR</p>
+                    </div>
+                </div>
+                <div class="progress-bar-bg w-full h-3 mb-2">
+                    <div id="bar-cirlene" class="progress-fill bg-teal-400 h-3 rounded-full" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-slate-500 italic">* Este valor não é somado às dívidas de consumo da página principal.</p>
+            </div>
+        </div>
+
+        <div id="panelBudget" class="tab-panel hidden">
+            <div class="glass-card rounded-2xl p-6">
+                <h2 class="text-xl font-bold mb-4">Orçamento por Categoria</h2>
+                <div id="budget-list" class="space-y-4"></div>
             </div>
         </div>
     </div>
 
-    <script>
-        const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
-        let dadosGlobais = [];
+<script>
+    const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsLc59dPTESRnZSBy17eECrYtZcerEjsL75UTjBIU5ELxtrdzM5bjtdRSqDjPreA/pub?output=csv';
+    let dadosGlobais = [];
+    let charts = {};
 
-        async function carregarDados() {
-            try {
-                const resp = await fetch(URL_CSV);
-                const csv = await resp.text();
-                const linhas = csv.split('\n').slice(1);
-                
-                dadosGlobais = linhas.map(l => {
-                    const c = l.split(',');
-                    if (c.length < 6) return null;
-                    return {
-                        data: c[1]?.trim(),
-                        origem: c[2]?.trim().toLowerCase(),
-                        desc: c[3]?.trim().toUpperCase(),
-                        cat: c[4]?.trim(),
-                        valor: parseFloat(c[5]?.replace(/"/g, '').replace(',', '.')) || 0
-                    };
-                }).filter(d => d);
-
-                processarDashboard();
-            } catch (e) { console.error("Erro ao carregar:", e); }
-        }
-
-        function processarDashboard() {
-            const mAtual = new Date().toISOString().substring(0, 7);
-            const dadosMes = dadosGlobais.filter(d => d.data.startsWith(mAtual));
-
-            // REGRA CIRLENE: Isolamento
-            const valorCirleneTotal = 35000;
-            const pagoCirlene = Math.abs(dadosGlobais.filter(d => d.desc.includes("CIRLENE") && d.valor < 0).reduce((s, d) => s + d.valor, 0));
-            const saldoCirlene = valorCirleneTotal - pagoCirlene;
-
-            // SALDOS HOME
-            const saldoConta = dadosGlobais.filter(d => d.origem === 'extrato').reduce((s, d) => s + d.valor, 0);
-            
-            // Dívida de consumo (Exclui Cirlene por regra do usuário)
-            const dividaCartao = Math.abs(dadosGlobais.filter(d => d.origem === 'cartao' && !d.desc.includes("CIRLENE")).reduce((s, d) => s + d.valor, 0));
-            
-            const receitasMes = dadosMes.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-            const gastosMes = Math.abs(dadosMes.filter(d => d.valor < 0 && !d.desc.includes("FATURA")).reduce((s, d) => s + d.valor, 0));
-            
-            // UI HOME
-            document.getElementById('balanceTotal').innerText = formatMoeda(saldoConta);
-            document.getElementById('availableToSpend').innerText = formatMoeda(receitasMes - gastosMes);
-            document.getElementById('totalDebts').innerText = formatMoeda(dividaCartao);
-            
-            const saude = Math.min(100, Math.max(0, ((receitasMes - gastosMes) / (receitasMes || 1)) * 100));
-            document.getElementById('healthScore').innerText = `${Math.round(saude)}%`;
-            document.getElementById('forecastBalance').innerText = formatMoeda(saldoConta - (gastosMes * 0.2)); // Projeção simples
-
-            // UI DIVIDAS
-            document.getElementById('loanBalanceDisplay').innerText = formatMoeda(saldoCirlene);
-            document.getElementById('loanProgressFill').style.width = `${(pagoCirlene / valorCirleneTotal) * 100}%`;
-
-            renderCategorias(dadosMes);
-        }
-
-        function renderCategorias(dados) {
-            const limites = { "Alimentação": 1000, "Transporte": 500, "Lazer": 400, "Saúde": 300 };
-            const gatosPorCat = {};
-            
-            dados.forEach(d => {
-                if(limites[d.cat]) gatosPorCat[d.cat] = (gatosPorCat[d.cat] || 0) + Math.abs(d.valor);
-            });
-
-            let html = "";
-            for (let cat in limites) {
-                const gasto = gatosPorCat[cat] || 0;
-                const perc = Math.min(100, (gasto / limites[cat]) * 100);
-                const cor = perc > 90 ? 'bg-rose-500' : 'bg-teal-400';
-                html += `<div>
-                    <div class="flex justify-between text-sm"><span>${cat}</span><span>R$ ${gasto.toFixed(0)} / ${limites[cat]}</span></div>
-                    <div class="progress-bar-bg h-1.5 mt-1"><div class="${cor} h-1.5 rounded-full" style="width: ${perc}%"></div></div>
-                </div>`;
-            }
-            document.getElementById('categoryMiniPreview').innerHTML = html;
-            document.getElementById('categoriesBudgetList').innerHTML = html;
-        }
-
-        function formatMoeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    async function carregarDados() {
+        const resp = await fetch(URL_CSV);
+        const csv = await resp.text();
+        const linhas = csv.split('\n').slice(1);
         
-        // TABS
-        document.getElementById('tab360Btn').onclick = () => switchTab('360');
-        document.getElementById('tabDebtBtn').onclick = () => switchTab('Debt');
-        document.getElementById('tabBudgetBtn').onclick = () => switchTab('Budget');
+        dadosGlobais = linhas.map(l => {
+            const c = l.split(',');
+            if (c.length < 6) return null;
+            return {
+                data: c[1]?.trim(),
+                origem: c[2]?.trim().toLowerCase(),
+                desc: (c[3] || "").toUpperCase(),
+                cat: c[4]?.trim() || "Outros",
+                valor: parseFloat(c[5]?.replace(/"/g, '').replace(',', '.')) || 0
+            };
+        }).filter(d => d);
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-            document.querySelectorAll('button[id^="tab"]').forEach(b => { b.classList.remove('tab-active'); b.classList.add('tab-inactive'); });
-            document.getElementById('panel' + tab).classList.remove('hidden');
-            document.getElementById('tab' + tab + 'Btn').classList.add('tab-active');
-        }
+        atualizarDashboard();
+    }
 
-        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
-        carregarDados();
-    </script>
+    function atualizarDashboard() {
+        const agora = new Date();
+        const mAtual = agora.toISOString().substring(0, 7);
+        const diaAtual = agora.getDate();
+        const diasNoMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
+
+        // 1. ISOLAMENTO CIRLENE
+        const valorOriginalCirlene = 35000;
+        const pagoCirlene = Math.abs(dadosGlobais.filter(d => d.desc.includes("CIRLENE") && d.valor < 0).reduce((s, d) => s + d.valor, 0));
+        const saldoCirlene = valorOriginalCirlene - pagoCirlene;
+
+        // 2. DADOS OPERACIONAIS (HOME)
+        const dadosMes = dadosGlobais.filter(d => d.data.startsWith(mAtual));
+        
+        const saldoConta = dadosGlobais.filter(d => d.origem === 'extrato').reduce((s, d) => s + d.valor, 0);
+        const receitasMes = dadosMes.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+        
+        // Despesa Real: Ignora pagamentos de fatura e o empréstimo Cirlene para não poluir
+        const despesasMes = Math.abs(dadosMes.filter(d => 
+            d.valor < 0 && 
+            !d.desc.includes("FATURA") && 
+            !d.desc.includes("CIRLENE")
+        ).reduce((s, d) => s + d.valor, 0));
+
+        const dividaCartao = Math.abs(dadosGlobais.filter(d => d.origem === 'cartao' && !d.desc.includes("CIRLENE")).reduce((s, d) => s + d.valor, 0));
+
+        // UI CARDS
+        document.getElementById('val-banco').innerText = format(saldoConta);
+        document.getElementById('val-despesas').innerText = format(despesasMes);
+        document.getElementById('val-receitas').innerText = format(receitasMes);
+        document.getElementById('val-fatura').innerText = format(dividaCartao);
+        
+        // PROJEÇÃO
+        const gastoDiario = despesasMes / diaAtual;
+        const previsaoFinal = saldoConta - (gastoDiario * (diasNoMes - diaAtual));
+        document.getElementById('val-proj').innerText = format(previsaoFinal);
+        document.getElementById('val-proj').style.color = previsaoFinal < 0 ? '#fb7185' : '#2dd4bf';
+
+        // UI DÍVIDAS
+        document.getElementById('val-cirlene').innerText = format(saldoCirlene);
+        document.getElementById('bar-cirlene').style.width = `${(pagoCirlene / valorOriginalCirlene) * 100}%`;
+
+        renderChart(receitasMes, despesasMes);
+    }
+
+    function renderChart(r, d) {
+        if (charts.op) charts.op.destroy();
+        charts.op = new Chart(document.getElementById('chart-op'), {
+            type: 'bar',
+            data: {
+                labels: ['Fluxo Mensal'],
+                datasets: [
+                    { label: 'Renda', data: [r], backgroundColor: '#10b981' },
+                    { label: 'Consumo', data: [d], backgroundColor: '#fb7185' }
+                ]
+            },
+            options: { maintainAspectRatio: false, scales: { y: { grid: { color: '#1e293b' } } } }
+        });
+    }
+
+    function setActive(tab) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('button[id^="tab"]').forEach(b => { b.classList.remove('tab-active'); b.classList.add('tab-inactive'); });
+        document.getElementById('panel' + tab).classList.remove('hidden');
+        document.getElementById('tab' + tab + 'Btn').classList.add('tab-active');
+    }
+
+    function format(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+    carregarDados();
+</script>
 </body>
 </html>
