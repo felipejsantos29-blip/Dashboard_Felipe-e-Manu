@@ -1,13 +1,13 @@
 {
-  "lastUpdate": "2026-05-09T09:03:00.604364",
+  "lastUpdate": "2026-05-09T15:15:39.057732",
   "rendaLiquida": 3500,
   "totalReceitas": 564849.0,
-  "totalGastos": 242369.0,
-  "saldoTotal": 322480.0,
+  "totalGastos": 242669.0,
+  "saldoTotal": 322180.0,
   "mediaDiaria": 507.73,
-  "taxaEsforco": 42.9,
-  "capPoupanca": 57.1,
-  "diasReserva": 635.1,
+  "taxaEsforco": 43.0,
+  "capPoupanca": 57.0,
+  "diasReserva": 634.5,
   "scoreFinanceiro": 80,
   "variacaoGastoMes": -84.9,
   "gastosMensais": {
@@ -45,7 +45,8 @@
     "Seguro": 1043.0,
     "Assinatura": 999.0,
     "Pagamento Conta": 750.0,
-    "Streaming": 409.0
+    "Streaming": 409.0,
+    "tranferencia": 300.0
   },
   "limitesSugeridos": {
     "Alimentação": 700,
@@ -1581,8 +1582,8 @@
     ]
   },
   "stats": {
-    "total_gastos": 259,
+    "total_gastos": 260,
     "total_receitas": 29,
-    "total_transacoes": 288
+    "total_transacoes": 289
   }
 }
