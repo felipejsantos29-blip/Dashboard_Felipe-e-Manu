@@ -16,6 +16,8 @@
   --rose: #FB7185;
   --amber: #FBBF24;
   --red: #EF4444;
+  --blue: #5097FF;
+  --purple: #A78BFA;
   --slate-800: #1E293B;
   --slate-700: #334155;
   --transition: all 0.25s ease;
@@ -85,8 +87,6 @@ body {
 .logo-accent {
   color: var(--teal);
   background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
 }
 
 .logo-sub {
@@ -207,7 +207,7 @@ body {
   line-height: 1.4;
 }
 
-/* ===== Loading e Empty State ===== */
+/* ===== Loading ===== */
 .loading-container {
   text-align: center;
   padding: 3rem;
@@ -238,6 +238,7 @@ body {
   margin-top: 0.5rem;
 }
 
+/* ===== Empty State ===== */
 .empty-state {
   text-align: center;
   padding: 3rem;
@@ -253,19 +254,6 @@ body {
   margin-bottom: 1rem;
 }
 
-.empty-instructions {
-  text-align: left;
-  max-width: 400px;
-  margin: 1.5rem auto;
-  padding-left: 1.5rem;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.empty-instructions li {
-  margin: 0.5rem 0;
-}
-
 /* ===== Dashboard ===== */
 .dashboard {
   display: block;
@@ -274,6 +262,90 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ===== Cards Grid ===== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cards-grid.two-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Card ===== */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--teal);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(0,0,0,0.3);
+}
+
+.card.full-width {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.card-footer {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar-container {
+  background: var(--slate-800);
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-fill {
+  background: var(--teal);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* ===== Text Colors ===== */
+.text-teal { color: var(--teal); }
+.text-emerald { color: var(--emerald); }
+.text-rose { color: var(--rose); }
+.text-amber { color: var(--amber); }
+.text-blue { color: var(--blue); }
 
 /* ===== Responsividade ===== */
 @media (max-width: 768px) {
@@ -289,6 +361,10 @@ body {
   .cards-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 0.75rem !important;
+  }
+  
+  .grid2 {
+    grid-template-columns: 1fr;
   }
   
   .card {
@@ -316,11 +392,6 @@ body {
   
   .tab-btn i {
     margin-right: 0 !important;
-    font-size: 1.1rem;
-  }
-  
-  .extrato-table th:nth-child(3),
-  .extrato-table td:nth-child(3) {
-    display: none;
+    font-size: 1rem;
   }
 }
