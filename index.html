@@ -4,19 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>WealthAurora • Felipe & Manu</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- CSS -->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
   <div class="app-container">
     
-    <!-- Header -->
     <header class="app-header">
       <div class="logo-area">
         <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
@@ -32,7 +28,6 @@
       </div>
     </header>
 
-    <!-- Score de Saúde Financeira -->
     <div class="score-container" id="scoreContainer">
       <div class="score-card">
         <div class="score-header"><i class="fas fa-heartbeat"></i> <span>Score de Saúde Financeira</span></div>
@@ -42,12 +37,10 @@
       </div>
     </div>
 
-    <!-- Insights Automáticos -->
     <div class="insights-container" id="insightsContainer">
       <div class="insight-card"><i class="fas fa-lightbulb"></i><div class="insight-content" id="insightText">Carregando insights...</div></div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs-container">
       <button class="tab-btn active" data-tab="results"><i class="fas fa-chart-pie"></i><span>Resultados</span></button>
       <button class="tab-btn" data-tab="extrato"><i class="fas fa-list-ul"></i><span>Extrato</span></button>
@@ -55,16 +48,12 @@
       <button class="tab-btn" data-tab="planejamento"><i class="fas fa-calendar-alt"></i><span>Planejamento</span></button>
     </div>
 
-    <!-- Loading -->
-    <div id="loadingState" class="loading-container"><div class="loading-spinner"></div><p>Conectando à planilha...</p><p class="loading-sub">Buscando dados financeiros atualizados</p></div>
+    <div id="loadingState" class="loading-container"><div class="loading-spinner"></div><p>Carregando dados financeiros...</p><p class="loading-sub">Conectando à planilha...</p></div>
 
-    <!-- Empty State -->
     <div id="emptyState" class="empty-state hidden"><i class="fas fa-cloud-upload-alt empty-icon"></i><h3>Bem-vindo ao WealthAurora!</h3><p>Para começar, conecte sua planilha do Google Sheets.</p><button id="emptyRetryBtn" class="btn-primary">Tentar novamente</button></div>
 
-    <!-- Dashboard Principal -->
     <main id="dashboardContent" class="dashboard hidden">
       
-      <!-- ABA RESULTADOS -->
       <div id="tab-results" class="tab-content active">
         <div class="cards-grid">
           <div class="card"><div class="card-header"><i class="fas fa-coins text-teal"></i> Saldo Atual</div><div class="card-value" id="saldoAtual">R$ 0,00</div></div>
@@ -91,7 +80,6 @@
         </div>
       </div>
 
-      <!-- ABA EXTRATO -->
       <div id="tab-extrato" class="tab-content hidden">
         <div class="card full-width">
           <div class="card-header">📋 Extrato de Transações</div>
@@ -101,7 +89,6 @@
         </div>
       </div>
 
-      <!-- ABA DÍVIDAS -->
       <div id="tab-debt" class="tab-content hidden">
         <div class="card full-width">
           <div class="card-header"><i class="fas fa-hand-holding-usd"></i> Empréstimo - Cirlene</div>
@@ -116,7 +103,6 @@
         </div>
       </div>
 
-      <!-- ABA PLANEJAMENTO -->
       <div id="tab-planejamento" class="tab-content hidden">
         <div class="cards-grid two-cols">
           <div class="card"><div class="card-header">💰 Receitas Fixas</div><div id="receitasFixasList"></div></div>
@@ -128,11 +114,324 @@
     </main>
   </div>
 
-  <script src="js/data.js"></script>
-  <script src="js/debt.js"></script>
-  <script src="js/charts.js"></script>
-  <script src="js/insights.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/main.js"></script>
+  <script>
+    // ============================================
+    // MOCK DATA (enquanto a planilha não conecta)
+    // ============================================
+    const MOCK_DATA = {
+      saldoAtual: 4230.50,
+      totalReceitas: 7000.00,
+      totalDespesas: 5840.00,
+      taxaEsforco: 83.4,
+      mediaDiaria: 194.67,
+      reservaEmergencia: 8500,
+      capPoupanca: 18.5,
+      diasReserva: 22,
+      scoreFinanceiro: 65,
+      variacaoGastoMes: -5.2,
+      categorias: [
+        { nome: "Alimentação", gasto: 1240, limite: 1400 },
+        { nome: "Transporte", gasto: 620, limite: 600 },
+        { nome: "Lazer", gasto: 480, limite: 550 },
+        { nome: "Saúde", gasto: 310, limite: 400 }
+      ],
+      evolucaoMensal: [
+        { mes: "Jan/26", receita: 6800, despesa: 5200 },
+        { mes: "Fev/26", receita: 6800, despesa: 5600 },
+        { mes: "Mar/26", receita: 7200, despesa: 6100 },
+        { mes: "Abr/26", receita: 7000, despesa: 5400 },
+        { mes: "Mai/26", receita: 7000, despesa: 5840 }
+      ],
+      emprestimo: {
+        nomeCredor: "Cirlene",
+        valorOriginal: 35000,
+        parcelasPagas: 0,
+        totalParcelas: 30,
+        parcelaMensal: 500,
+        extraSemestral: 4000,
+        saldoDevedor: 35000
+      },
+      receitasFixas: [
+        { descricao: "Salário Principal", valor: 1761.48 },
+        { descricao: "Salário Complementar", valor: 1699.34 }
+      ],
+      despesasRecorrentes: [
+        { descricao: "Faculdade", valor: 328.67 },
+        { descricao: "Claro Flex", valor: 39.99 }
+      ],
+      custosEssenciais: {
+        ana_lua: [
+          { nome: "Leite Nan", valor: 280 },
+          { nome: "Pomada", valor: 40 },
+          { nome: "Lenço", valor: 60 },
+          { nome: "Farmácia", valor: 150 },
+          { nome: "Comida", valor: 50 }
+        ],
+        mandelinha: [
+          { nome: "Fralda pet", valor: 120 },
+          { nome: "Plano Pet Love", valor: 59 }
+        ]
+      },
+      limitesSugeridos: {
+        "Alimentação": 1400, "Transporte": 600, "Saúde": 400, "Lazer": 550
+      },
+      gastosMensais: { "2026-01": 5200, "2026-02": 5600, "2026-03": 6100, "2026-04": 5400, "2026-05": 5840 },
+      receitasMensais: { "2026-01": 6800, "2026-02": 6800, "2026-03": 7200, "2026-04": 7000, "2026-05": 7000 }
+    };
+
+    let currentData = MOCK_DATA;
+    let charts = {};
+
+    // ============================================
+    // FUNÇÕES AUXILIARES
+    // ============================================
+    function formatMoney(value) {
+      return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ============================================
+    // RENDERIZAÇÃO PRINCIPAL
+    // ============================================
+    function renderAll() {
+      renderMainCards();
+      renderMonthlyChart();
+      renderCategoryChart();
+      renderLimitsList();
+      renderDebtSection();
+      renderEssenciais();
+      renderReservaEmergencia();
+      renderReceitasDespesasFixas();
+      calculateHealthScore();
+      generateInsights();
+      updateLastUpdateTime();
+    }
+
+    function renderMainCards() {
+      document.getElementById('saldoAtual').innerHTML = formatMoney(currentData.saldoAtual);
+      document.getElementById('totalReceitas').innerHTML = formatMoney(currentData.totalReceitas);
+      document.getElementById('totalDespesas').innerHTML = formatMoney(currentData.totalDespesas);
+      document.getElementById('taxaEsforco').innerHTML = currentData.taxaEsforco.toFixed(1) + '%';
+      
+      const poupanca = currentData.capPoupanca || 0;
+      document.getElementById('capPoupanca').innerHTML = poupanca.toFixed(1) + '%';
+      document.getElementById('poupancaBar').style.width = Math.min(100, poupanca) + '%';
+      document.getElementById('diasReserva').innerHTML = Math.floor(currentData.diasReserva || 0);
+    }
+
+    function renderMonthlyChart() {
+      const ctx = document.getElementById('monthlyChart')?.getContext('2d');
+      if (!ctx) return;
+      if (charts.monthly) charts.monthly.destroy();
+      
+      const evolucao = currentData.evolucaoMensal || [];
+      charts.monthly = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: evolucao.map(e => e.mes),
+          datasets: [
+            { label: 'Receitas', data: evolucao.map(e => e.receita), borderColor: '#34D399', backgroundColor: 'rgba(52,211,153,0.1)', fill: true, tension: 0.3 },
+            { label: 'Despesas', data: evolucao.map(e => e.despesa), borderColor: '#FB7185', backgroundColor: 'rgba(251,113,133,0.1)', fill: true, tension: 0.3 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#94A3B8' } } } }
+      });
+    }
+
+    function renderCategoryChart() {
+      const ctx = document.getElementById('categoryChart')?.getContext('2d');
+      if (!ctx) return;
+      if (charts.category) charts.category.destroy();
+      
+      const categorias = currentData.categorias || [];
+      const cores = ['#2DD4BF', '#FB7185', '#FBBF24', '#34D399'];
+      
+      charts.category = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: categorias.map(c => c.nome), datasets: [{ data: categorias.map(c => c.gasto), backgroundColor: cores, borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 10 } } } } }
+      });
+    }
+
+    function renderLimitsList() {
+      const container = document.getElementById('limitesList');
+      if (!container) return;
+      
+      const categorias = currentData.categorias || [];
+      container.innerHTML = categorias.map(cat => {
+        const percent = (cat.gasto / cat.limite) * 100;
+        let statusClass = 'green';
+        let badge = '';
+        if (percent >= 100) { statusClass = 'red'; badge = '<span style="background:rgba(239,68,68,0.2);color:#EF4444;padding:2px 6px;border-radius:12px;font-size:9px;margin-left:8px">🔴 Estourado</span>'; }
+        else if (percent >= 80) { statusClass = 'yellow'; badge = '<span style="background:rgba(251,191,36,0.2);color:#FBBF24;padding:2px 6px;border-radius:12px;font-size:9px;margin-left:8px">⚠️ Alerta</span>'; }
+        return `<div class="limit-item"><div class="limit-header"><span>${cat.nome}</span><span>${formatMoney(cat.gasto)} / ${formatMoney(cat.limite)} ${badge}</span></div><div class="limit-bar-bg"><div class="limit-bar-fill ${statusClass}" style="width: ${Math.min(100, percent)}%"></div></div></div>`;
+      }).join('');
+    }
+
+    function renderDebtSection() {
+      const emprestimo = currentData.emprestimo || {};
+      const saldoDevedor = emprestimo.saldoDevedor || 35000;
+      const percentPago = ((35000 - saldoDevedor) / 35000) * 100;
+      
+      document.getElementById('debtSummary').innerHTML = `<div class="debt-summary"><div><div class="debt-stat-label">Credor</div><div class="debt-stat-val" style="color:var(--teal)">${emprestimo.nomeCredor || 'Cirlene'}</div></div><div><div class="debt-stat-label">Valor Original</div><div class="debt-stat-val">R$ 35.000</div></div><div><div class="debt-stat-label">Saldo Devedor</div><div class="debt-stat-val" style="color:var(--red)">${formatMoney(saldoDevedor)}</div></div></div>`;
+      document.getElementById('debtProgressFill').style.width = `${Math.min(100, percentPago)}%`;
+      document.getElementById('debtStats').innerHTML = `<span>📊 ${emprestimo.parcelasPagas || 0} de ${emprestimo.totalParcelas || 30} parcelas pagas</span><span>🎯 Quitação prevista: Novembro/2028</span>`;
+      
+      // Próximas parcelas
+      const parcelas = [];
+      const inicio = new Date(2026, 5, 5);
+      for (let i = 1; i <= 6; i++) {
+        const data = new Date(inicio);
+        data.setMonth(inicio.getMonth() + i - 1);
+        const isPLR = (i === 1 || i === 7);
+        const valorTotal = 500 + (isPLR ? 4000 : 0);
+        parcelas.push({ numero: i, data, valorTotal, isPLR });
+      }
+      document.getElementById('parcelasList').innerHTML = parcelas.map(p => `<div class="parcela-item ${p.isPLR ? 'highlight' : ''}"><div><strong>Parcela ${p.numero}</strong> - ${p.data.toLocaleDateString('pt-BR')}${p.isPLR ? ' <span style="background:rgba(251,191,36,0.2);color:#FBBF24;padding:2px 6px;border-radius:12px;font-size:9px;margin-left:8px">⚠️ Semestral +R$4.000</span>' : ''}</div><div>${formatMoney(valorTotal)}</div></div>`).join('');
+      
+      // Simulador
+      const btn = document.getElementById('calcularSimulacao');
+      const input = document.getElementById('extraAmort');
+      if (btn && input) {
+        btn.onclick = () => {
+          const extra = parseFloat(input.value) || 0;
+          const mesesRestantes = Math.ceil(saldoDevedor / (500 + extra));
+          const dataQuitacao = new Date();
+          dataQuitacao.setMonth(dataQuitacao.getMonth() + mesesRestantes);
+          document.getElementById('simulacaoResultado').innerHTML = `<i class="fas fa-chart-line"></i> Com +${formatMoney(extra)}/mês, quita em ${mesesRestantes} meses (${dataQuitacao.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })})`;
+        };
+      }
+    }
+
+    function renderEssenciais() {
+      const ess = currentData.custosEssenciais || { ana_lua: [], mandelinha: [] };
+      const anaTotal = ess.ana_lua.reduce((s, i) => s + i.valor, 0);
+      const mandiTotal = ess.mandelinha.reduce((s, i) => s + i.valor, 0);
+      const envelopes = document.getElementById('envelopes');
+      if (envelopes) {
+        envelopes.innerHTML = `
+          <div class="envelope" style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600">👶 Ana Lua</span><span style="color:var(--blue)">${formatMoney(anaTotal)} / R$ 760</span></div><div style="background:var(--slate-800);height:6px;border-radius:3px;margin-bottom:8px"><div style="width:${Math.min(100, (anaTotal/760)*100)}%;background:var(--blue);height:6px;border-radius:3px"></div></div><div style="font-size:11px;color:var(--text-secondary)">${ess.ana_lua.map(i => `${i.nome}: ${formatMoney(i.valor)}`).join(' • ')}</div></div>
+          <div class="envelope" style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:600">🐾 Mandelinha</span><span style="color:var(--amber)">${formatMoney(mandiTotal)} / R$ 200</span></div><div style="background:var(--slate-800);height:6px;border-radius:3px;margin-bottom:8px"><div style="width:${Math.min(100, (mandiTotal/200)*100)}%;background:var(--amber);height:6px;border-radius:3px"></div></div><div style="font-size:11px;color:var(--text-secondary)">${ess.mandelinha.map(i => `${i.nome}: ${formatMoney(i.valor)}`).join(' • ')}</div></div>`;
+      }
+    }
+
+    function renderReservaEmergencia() {
+      const saldo = Math.max(0, currentData.saldoAtual || 0);
+      const mediaGasto = currentData.totalDespesas || 5000;
+      const meta = mediaGasto * 6;
+      document.getElementById('reservaAtual').innerHTML = formatMoney(saldo);
+      document.getElementById('reservaMeta').innerHTML = formatMoney(meta);
+      document.getElementById('reservaProgress').style.width = `${Math.min(100, (saldo / meta) * 100)}%`;
+      document.getElementById('reservaMsg').innerHTML = saldo >= meta ? '🎉 Parabéns! Meta atingida!' : `📌 Faltam ${formatMoney(meta - saldo)} para sua meta`;
+    }
+
+    function renderReceitasDespesasFixas() {
+      const receitas = currentData.receitasFixas || [];
+      const despesas = currentData.despesasRecorrentes || [];
+      document.getElementById('receitasFixasList').innerHTML = receitas.map(r => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>${r.descricao}</span><span style="color:var(--emerald)">${formatMoney(r.valor)}</span></div>`).join('');
+      document.getElementById('despesasFixasList').innerHTML = despesas.map(d => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>${d.descricao}</span><span style="color:var(--rose)">${formatMoney(d.valor)}</span></div>`).join('');
+    }
+
+    function calculateHealthScore() {
+      let score = 0;
+      const poupancaPercent = (currentData.saldoAtual / currentData.totalReceitas) * 100;
+      if (poupancaPercent >= 20) score += 30;
+      else if (poupancaPercent >= 10) score += 15;
+      if (currentData.diasReserva >= 180) score += 25;
+      else if (currentData.diasReserva >= 90) score += 15;
+      const hasOverLimit = (currentData.categorias || []).some(c => c.gasto > c.limite);
+      if (!hasOverLimit) score += 20;
+      const parcelaMensal = 500;
+      if (parcelaMensal / currentData.totalReceitas < 0.2) score += 25;
+      
+      document.getElementById('healthScore').innerText = score;
+      document.getElementById('healthScoreBar').style.width = `${score}%`;
+      document.getElementById('healthScoreBar').style.backgroundColor = score >= 70 ? '#34D399' : (score >= 40 ? '#FBBF24' : '#EF4444');
+      document.getElementById('healthStatus').innerHTML = score >= 70 ? '🎉 Finanças Saudáveis!' : (score >= 40 ? '📊 Em construção' : '⚠️ Atenção necessária!');
+    }
+
+    function generateInsights() {
+      const insights = [];
+      const evolucao = currentData.evolucaoMensal || [];
+      if (evolucao.length >= 2) {
+        const ultimo = evolucao[evolucao.length - 1];
+        const anterior = evolucao[evolucao.length - 2];
+        const variacao = ((ultimo.despesa - anterior.despesa) / anterior.despesa) * 100;
+        if (variacao < -5) insights.push(`📉 Gastos ${Math.abs(variacao).toFixed(1)}% menores que o mês passado!`);
+        else if (variacao > 10) insights.push(`⚠️ Gastos aumentaram ${variacao.toFixed(1)}% este mês.`);
+      }
+      if (currentData.capPoupanca >= 15) insights.push(`💰 Você poupou ${currentData.capPoupanca.toFixed(1)}% da sua renda!`);
+      document.getElementById('insightText').innerHTML = insights[0] || '✅ Continue monitorando seus gastos!';
+    }
+
+    function updateLastUpdateTime() {
+      const now = new Date();
+      document.getElementById('lastUpdateTime').innerHTML = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function setupTabs() {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.getAttribute('data-tab');
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.add('hidden'));
+          tab.classList.add('active');
+          document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
+        });
+      });
+    }
+
+    function setupFilters() {
+      const filtroMes = document.getElementById('filtroMes');
+      if (filtroMes) {
+        filtroMes.innerHTML = '<option value="todos">Todos os meses</option><option value="2026-01">Jan/2026</option><option value="2026-02">Fev/2026</option><option value="2026-03">Mar/2026</option><option value="2026-04">Abr/2026</option><option value="2026-05">Mai/2026</option>';
+      }
+      const filtroCat = document.getElementById('filtroCategoria');
+      if (filtroCat) {
+        filtroCat.innerHTML = '<option value="todas">Todas categorias</option><option value="Alimentação">Alimentação</option><option value="Transporte">Transporte</option><option value="Lazer">Lazer</option><option value="Saúde">Saúde</option>';
+      }
+    }
+
+    function loadMetas() {
+      const metas = JSON.parse(localStorage.getItem('wealthaurora_metas') || '[]');
+      const container = document.getElementById('metasList');
+      if (container) {
+        container.innerHTML = metas.map((meta, idx) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:8px"><div><div style="font-weight:600">${meta.nome}</div><div style="font-size:11px;color:var(--text-secondary)">Alvo: ${formatMoney(meta.valor)} até ${meta.data}</div></div><button onclick="deleteMeta(${idx})" style="background:none;border:none;color:var(--text-secondary);cursor:pointer"><i class="fas fa-trash"></i></button></div>`).join('');
+      }
+      const addBtn = document.getElementById('addMetaBtn');
+      if (addBtn) {
+        addBtn.onclick = () => {
+          const nome = document.getElementById('novaMetaNome')?.value;
+          const valor = parseFloat(document.getElementById('novaMetaValor')?.value);
+          const data = document.getElementById('novaMetaData')?.value;
+          if (!nome || !valor || !data) { alert('Preencha todos os campos!'); return; }
+          const metas = JSON.parse(localStorage.getItem('wealthaurora_metas') || '[]');
+          metas.push({ nome, valor, data });
+          localStorage.setItem('wealthaurora_metas', JSON.stringify(metas));
+          document.getElementById('novaMetaNome').value = '';
+          document.getElementById('novaMetaValor').value = '';
+          document.getElementById('novaMetaData').value = '';
+          loadMetas();
+        };
+      }
+    }
+    window.deleteMeta = function(idx) {
+      const metas = JSON.parse(localStorage.getItem('wealthaurora_metas') || '[]');
+      metas.splice(idx, 1);
+      localStorage.setItem('wealthaurora_metas', JSON.stringify(metas));
+      loadMetas();
+    };
+
+    document.getElementById('refreshBtn')?.addEventListener('click', () => { renderAll(); updateLastUpdateTime(); });
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('dashboardContent').style.display = 'block';
+    
+    setupTabs();
+    setupFilters();
+    loadMetas();
+    renderAll();
+    updateLastUpdateTime();
+  </script>
 </body>
 </html>
