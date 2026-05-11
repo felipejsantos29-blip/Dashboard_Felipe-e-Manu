@@ -1,13 +1,13 @@
 {
-  "lastUpdate": "2026-05-10T22:31:08.787197",
+  "lastUpdate": "2026-05-11T11:48:36.687780",
   "rendaLiquida": 3500,
   "totalReceitas": 564849.0,
   "totalGastos": 242669.0,
   "saldoTotal": 322180.0,
-  "mediaDiaria": 437.23,
+  "mediaDiaria": 432.4,
   "taxaEsforco": 43.0,
   "capPoupanca": 57.0,
-  "diasReserva": 736.9,
+  "diasReserva": 745.1,
   "scoreFinanceiro": 80,
   "variacaoGastoMes": -84.9,
   "gastosMensais": {
