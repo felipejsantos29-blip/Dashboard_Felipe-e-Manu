@@ -1,54 +1,48 @@
 {
-  "lastUpdate": "2026-05-12T09:50:08.790758",
+  "lastUpdate": "2026-05-12T18:26:12.829599",
   "rendaLiquida": 3500,
-  "totalReceitas": 81680.43,
-  "totalGastos": 146990.75,
-  "saldoTotal": -65310.32,
-  "mediaDiaria": 331.7,
-  "taxaEsforco": 180.0,
-  "capPoupanca": -80.0,
+  "totalReceitas": 133162.15,
+  "totalGastos": 2033883.12,
+  "saldoTotal": -1900720.97,
+  "mediaDiaria": 4191.83,
+  "taxaEsforco": 1527.4,
+  "capPoupanca": -1427.4,
   "diasReserva": 0,
   "scoreFinanceiro": 25,
-  "variacaoGastoMes": 995.5,
+  "variacaoGastoMes": 1179.0,
   "gastosMensais": {
-    "2026-07": 62.7,
-    "2026-08": 158.0,
-    "2026-09": 135.84,
-    "2026-10": 31.01,
-    "2026-11": 15.09,
-    "2026-12": 165.31
+    "2026-07": 3669.0,
+    "2026-08": 1580.0,
+    "2026-09": 5034.0,
+    "2026-10": 3101.0,
+    "2026-11": 348.0,
+    "2026-12": 4451.0
   },
   "receitasMensais": {
     "2026-07": 0.0,
-    "2026-08": 1047.14,
-    "2026-09": 526.35,
-    "2026-10": 164.0,
+    "2026-08": 3200.0,
+    "2026-09": 8085.0,
+    "2026-10": 1640.0,
     "2026-11": 0.0,
     "2026-12": 0.0
   },
   "gastosPorCategoria": {
-    "Outras Despesas": 46946.07,
-    "Pagamento de Fatura": 35440.35,
-    "Compras": 13330.31,
-    "Transporte": 9983.53,
-    "Alimentação": 9441.86,
-    "Transferência Pessoal": 8602.88,
-    "Assinaturas": 6461.09,
-    "Saúde": 6176.27,
-    "Contas": 3428.32,
-    "Pagamento PIX": 3367.83,
-    "Taxas Bancárias": 1733.98,
-    "Doação/Educação": 1140.12,
-    "Educação": 328.67,
-    "Lazer": 276.93,
+    "Transporte": 603039.0,
+    "Outros": 576563.0,
+    "Alimentação": 413402.0,
+    "Compras": 216382.91,
+    "Serviços": 109086.0,
+    "Saúde": 44495.0,
+    "Juros": 30052.43,
+    "Casa": 13517.0,
+    "Imposto": 12605.0,
+    "Pet": 9479.34,
+    "Educação": 4828.67,
+    "Lazer": 220.0,
     "Eletrônicos": 67.27,
-    "Pet": 53.34,
     "Multa": 44.21,
     "Streaming": 40.9,
     "Telefone": 39.99,
-    "Serviços": 35.0,
-    "Saque": 20.0,
-    "Juros": 11.43,
     "Seguro": 10.41,
     "Assinatura": 9.99
   },
@@ -66,53 +60,44 @@
   },
   "rankingCategoria": [
     {
-      "categoria": "Outras Despesas",
-      "valor": 2400.6
-    },
-    {
-      "categoria": "Contas",
-      "valor": 750.0
-    },
-    {
-      "categoria": "Transporte",
-      "valor": 189.42
+      "categoria": "Outros",
+      "valor": 19435.0
     },
     {
       "categoria": "Alimentação",
-      "valor": 147.92
+      "valor": 9647.0
     },
     {
-      "categoria": "Compras",
-      "valor": 125.75
+      "categoria": "Transporte",
+      "valor": 9527.0
     },
     {
-      "categoria": "Taxas Bancárias",
-      "valor": 89.37
+      "categoria": "Imposto",
+      "valor": 914.0
     },
     {
-      "categoria": "Assinaturas",
-      "valor": 40.9
+      "categoria": "Pet",
+      "valor": 480.0
     },
     {
-      "categoria": "Lazer",
-      "valor": 24.99
+      "categoria": "Serviços",
+      "valor": 409.0
     },
     {
-      "categoria": "Transferência Pessoal",
-      "valor": 23.0
-    },
-    {
-      "categoria": "Pagamento PIX",
-      "valor": 14.46
+      "categoria": "Juros",
+      "valor": 222.0
     }
   ],
   "alertas": [
-    "🚨 Alimentação: R$9442 / limite R$700 (1349%)",
-    "🚨 Transporte: R$9984 / limite R$500 (1997%)",
-    "🚨 Saúde: R$6176 / limite R$400 (1544%)",
-    "⚠️  Lazer: 92% do limite (R$23 restam)",
-    "⚠️  Educação: 82% do limite (R$71 restam)",
-    "🚨 Compras: R$13330 / limite R$300 (4443%)"
+    "🚨 Alimentação: R$413402 / limite R$700 (59057%)",
+    "🚨 Transporte: R$603039 / limite R$500 (120608%)",
+    "🚨 Saúde: R$44495 / limite R$400 (11124%)",
+    "🚨 Educação: R$4829 / limite R$400 (1207%)",
+    "🚨 Pet: R$9479 / limite R$200 (4740%)",
+    "🚨 Compras: R$216383 / limite R$300 (72128%)",
+    "🚨 Serviços: R$109086 / limite R$200 (54543%)",
+    "🚨 Casa: R$13517 / limite R$1200 (1126%)",
+    "🚨 Outros: R$576563 / limite R$300 (192188%)"
   ],
   "debt": {
     "valor_total": 35000,
@@ -534,902 +519,902 @@
     {
       "data": "2026-12-03",
       "descricao": "PIX QRS 121 SMART S12/03",
-      "valor": 4.85,
-      "categoria": "Compras"
-    },
-    {
-      "data": "2026-12-03",
-      "descricao": "PIX QRS ESPACO GAST12/03",
-      "valor": 53.12,
-      "categoria": "Compras"
+      "valor": 485.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-03",
       "descricao": "PIX QRS KEETA DELIV12/03",
-      "valor": 28.99,
-      "categoria": "Compras"
+      "valor": 2899.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-02",
       "descricao": "PIX QRS RONNY REIS 12/02",
-      "valor": 5.0,
-      "categoria": "Compras"
+      "valor": 50.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-02",
       "descricao": "PIX QRS AUTOPASS S.12/02",
-      "valor": 10.8,
-      "categoria": "Transporte"
+      "valor": 108.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-02",
       "descricao": "PIX QRS ESQUINA DO 12/02",
-      "valor": 3.15,
-      "categoria": "Alimentação"
+      "valor": 315.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-02",
       "descricao": "PIX QRS AUTOPASS S.12/02",
-      "valor": 5.4,
-      "categoria": "Transporte"
+      "valor": 54.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-01",
       "descricao": "PIX QRS NIEDJA HORT11/01",
-      "valor": 10.0,
-      "categoria": "Compras"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-01",
       "descricao": "PIX QRS 40.848.018 11/01",
-      "valor": 14.0,
-      "categoria": "Compras"
+      "valor": 140.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-12-01",
       "descricao": "PIX TRANSF FABRISL10/01",
-      "valor": 30.0,
-      "categoria": "Pagamento PIX"
+      "valor": 300.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-11-03",
       "descricao": "PIX QRS 121 SMART S11/03",
-      "valor": 2.19,
-      "categoria": "Compras"
+      "valor": 219.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-11-02",
       "descricao": "PIX QRS MERCADO POR11/02",
-      "valor": 12.9,
+      "valor": 129.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-10-04",
       "descricao": "PIX QRS MERCADO POR10/04",
-      "valor": 14.95,
+      "valor": 1495.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-10-04",
       "descricao": "PIX QRS MERCADO POR10/04",
-      "valor": 3.05,
+      "valor": 305.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-10-04",
       "descricao": "PIX QRS ESQUINA DO 10/04",
-      "valor": 3.15,
+      "valor": 315.0,
+      "categoria": "Outros"
+    },
+    {
+      "data": "2026-10-02",
+      "descricao": "PIX QRS MERCADO POR10/02",
+      "valor": 467.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-10-02",
       "descricao": "PIX QRS MERCADO POR10/02",
-      "valor": 4.67,
-      "categoria": "Alimentação"
-    },
-    {
-      "data": "2026-10-02",
-      "descricao": "PIX QRS MERCADO POR10/02",
-      "valor": 5.19,
+      "valor": 519.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX QRS MERCADO POR07/02",
-      "valor": 8.79,
+      "valor": 879.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX QRS BRAHMAN ATA07/02",
-      "valor": 7.48,
-      "categoria": "Compras"
+      "valor": 748.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX QRS MERCADO POR07/02",
-      "valor": 10.95,
+      "valor": 1095.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX TRANSF TALITIE08/02",
-      "valor": 22.0,
-      "categoria": "Pagamento PIX"
+      "valor": 220.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX TRANSF JOSE AP07/02",
-      "valor": 70.0,
-      "categoria": "Pagamento PIX"
+      "valor": 700.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-09-02",
       "descricao": "PIX TRANSF MAURO D09/02",
-      "valor": 3.0,
-      "categoria": "Transferência Pessoal"
+      "valor": 30.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-09-01",
       "descricao": "PIX QRS MERCADO POR09/01",
-      "valor": 13.62,
+      "valor": 1362.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-08-04",
       "descricao": "PIX TRANSF EMANUEL08/04",
-      "valor": 150.0,
-      "categoria": "Transferência Pessoal"
+      "valor": 1500.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-08-01",
       "descricao": "PIX QRS SCARLLET RO08/01",
-      "valor": 8.0,
-      "categoria": "Compras"
+      "valor": 80.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-07-04",
       "descricao": "PIX QRS RECEITA FED07/04",
-      "valor": 26.81,
-      "categoria": "Compras"
+      "valor": 2681.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-07-04",
       "descricao": "PIX QRS SCARLLET RO07/04",
-      "valor": 9.0,
-      "categoria": "Compras"
+      "valor": 90.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-07-01",
       "descricao": "PIX QRS 121 SMART S07/01",
-      "valor": 6.99,
-      "categoria": "Compras"
+      "valor": 699.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-07-01",
       "descricao": "PIX QRS AUTOPASS S.07/01",
-      "valor": 19.9,
-      "categoria": "Transporte"
+      "valor": 199.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX QRS MERCADO POR06/04",
-      "valor": 11.25,
+      "valor": 1125.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX QRS ADEGA SAO C03/04",
-      "valor": 9.0,
-      "categoria": "Alimentação"
+      "valor": 90.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX QRS UBER DO BRA04/04",
-      "valor": 12.25,
+      "valor": 1225.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX QRS UBER DO BRA04/04",
-      "valor": 12.26,
+      "valor": 1226.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX QRS MERCADO POR04/04",
-      "valor": 5.95,
+      "valor": 595.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-06-04",
       "descricao": "PIX TRANSF MAURO D06/04",
-      "valor": 3.5,
-      "categoria": "Transferência Pessoal"
+      "valor": 35.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-06-01",
       "descricao": "PIX QRS SCARLLET RO06/01",
-      "valor": 8.0,
-      "categoria": "Compras"
+      "valor": 80.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-10",
       "descricao": "MERCADO PORCHALOSASCOBR",
-      "valor": 11.45,
+      "valor": 1145.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-05-10",
       "descricao": "DL*UberRidesSao PauloBR",
-      "valor": 14.79,
+      "valor": 1479.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-10",
       "descricao": "DL*UberRidesSao PauloBR",
-      "valor": 14.45,
+      "valor": 1445.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-09",
       "descricao": "MERCADO PORCHALOSASCOBR",
-      "valor": 43.14,
+      "valor": 4314.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-05-09",
       "descricao": "JoseMarcosDosCARAPICUIBABR",
-      "valor": 50.0,
-      "categoria": "Outras Despesas"
+      "valor": 500.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-09",
       "descricao": "99*SAO PAULOBR",
-      "valor": 20.4,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-05-09",
-      "descricao": "CrescieperdiSAO PAULOBR",
-      "valor": 117.0,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-05-09",
-      "descricao": "DL          *UberRidesSao PauloBR",
-      "valor": 4.83,
+      "valor": 204.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-09",
-      "descricao": "CHURRASCARIA SAVANASAO PAULOBR",
-      "valor": 51.45,
-      "categoria": "Alimentação"
+      "descricao": "CrescieperdiSAO PAULOBR",
+      "valor": 1170.0,
+      "categoria": "Outros"
+    },
+    {
+      "data": "2026-05-09",
+      "descricao": "DL          *UberRidesSao PauloBR",
+      "valor": 483.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-05-09",
       "descricao": "PG *99 RIDESAO PAULOBR",
-      "valor": 13.7,
+      "valor": 137.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-08",
       "descricao": "IFD*IFOOD CLUBOsascoBRA",
-      "valor": 5.95,
+      "valor": 595.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-05-08",
       "descricao": "ENCARGOS REFINANCIAMENTO",
-      "valor": 33.56,
-      "categoria": "Taxas Bancárias"
+      "valor": 3356.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-08",
       "descricao": "MULTA",
-      "valor": 44.45,
-      "categoria": "Taxas Bancárias"
+      "valor": 4445.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-08",
       "descricao": "JUROS DE MORA",
-      "valor": 2.22,
-      "categoria": "Taxas Bancárias"
+      "valor": 222.0,
+      "categoria": "Juros"
     },
     {
       "data": "2026-05-08",
       "descricao": "EBN*SPOTIFYCURITIBABR",
-      "valor": 40.9,
-      "categoria": "Assinaturas"
+      "valor": 409.0,
+      "categoria": "Serviços"
     },
     {
       "data": "2026-05-07",
       "descricao": "PG *99 RIDESAO PAULOBR",
-      "valor": 14.0,
+      "valor": 140.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-07",
       "descricao": "ScarlletRodriguesSANTANA DE PABRA",
-      "valor": 9.0,
-      "categoria": "Outras Despesas"
+      "valor": 90.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-06",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 3.0,
+      "valor": 30.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-05",
       "descricao": "MALAGUETABarueriBRA",
-      "valor": 106.6,
-      "categoria": "Outras Despesas"
+      "valor": 1066.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-05",
       "descricao": "DL          *UberRidesSao PauloBRA",
-      "valor": 11.46,
+      "valor": 1146.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-05",
       "descricao": "DL          *UberRidesSao PauloBRA",
-      "valor": 52.36,
-      "categoria": "Transporte"
-    },
-    {
-      "data": "2026-05-05",
-      "descricao": "DL          *UberRidesSao PauloBRA",
-      "valor": 12.26,
+      "valor": 1226.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-05",
       "descricao": "PIX QRS 121 SMART S05/05",
-      "valor": 3.79,
-      "categoria": "Compras"
-    },
-    {
-      "data": "2026-05-05",
-      "descricao": "PAG BOLETO CAIXA ECONOMICA FEDERAL - EN",
-      "valor": 750.0,
-      "categoria": "Contas"
+      "valor": 379.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-05",
       "descricao": "IOF",
-      "valor": 0.15,
-      "categoria": "Taxas Bancárias"
+      "valor": 15.0,
+      "categoria": "Imposto"
     },
     {
       "data": "2026-05-05",
       "descricao": "PIX QRS 121 SMART S05/05",
-      "valor": 2.19,
-      "categoria": "Compras"
+      "valor": 219.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-05",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 5.77,
+      "valor": 577.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-05",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 9.7,
+      "valor": 97.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-05",
       "descricao": "DL          *UberRidesSao PauloBRA",
-      "valor": 15.68,
+      "valor": 1568.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-04",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 8.3,
+      "valor": 83.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-04",
       "descricao": "JoseAparecidoDeOSASCOBRA",
-      "valor": 40.0,
-      "categoria": "Outras Despesas"
+      "valor": 400.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-03",
       "descricao": "DL          *UberRidesSao PauloBRA",
-      "valor": 9.12,
+      "valor": 912.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-05-02",
-      "descricao": "PIX EMANUELA ALEIXO DE CARVALHO",
-      "valor": 72.16,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-05-02",
       "descricao": "ANIMALIAPARKECOMMERCECOTIABRA",
-      "valor": 48.0,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-05-02",
-      "descricao": "PAGAMENTO COM SALDO",
-      "valor": 1917.54,
-      "categoria": "Outras Despesas"
+      "valor": 480.0,
+      "categoria": "Pet"
     },
     {
       "data": "2026-05-02",
       "descricao": "PIX QRS PLAY RECARG05/02",
-      "valor": 24.99,
-      "categoria": "Lazer"
+      "valor": 2499.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "IOF",
-      "valor": 8.99,
-      "categoria": "Taxas Bancárias"
+      "valor": 899.0,
+      "categoria": "Imposto"
     },
     {
       "data": "2026-05-01",
       "descricao": "MERCADO PORCHALOSASCOBRA",
-      "valor": 19.37,
+      "valor": 1937.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-05-01",
       "descricao": "MP*MELIMAISOSASCOBR",
-      "valor": 19.9,
-      "categoria": "Outras Despesas"
+      "valor": 199.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS CAROLINE FE03/01",
-      "valor": 13.02,
-      "categoria": "Compras"
+      "valor": 1302.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX TRANSF DEBORA 03/01",
-      "valor": 14.46,
-      "categoria": "Pagamento PIX"
+      "valor": 1446.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS JULIANA MAN03/01",
-      "valor": 54.0,
-      "categoria": "Compras"
+      "valor": 540.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS RODOSNACK C04/01",
-      "valor": 16.0,
-      "categoria": "Compras"
+      "valor": 160.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX TRANSF FRANCIS04/01",
-      "valor": 23.0,
-      "categoria": "Transferência Pessoal"
+      "valor": 230.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS CARREFOUR04/01",
-      "valor": 11.85,
-      "categoria": "Compras"
+      "valor": 1185.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS MERCADO POR04/01",
-      "valor": 16.56,
+      "valor": 1656.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-05-01",
       "descricao": "PIX QRS WILTON DOS 05/01",
-      "valor": 24.9,
-      "categoria": "Compras"
-    },
-    {
-      "data": "2026-04-30",
-      "descricao": "IFD*DROGARIA SAO PAULOOSASCOBRA",
-      "valor": 61.53,
-      "categoria": "Saúde"
+      "valor": 249.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-30",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 13.8,
+      "valor": 138.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-30",
       "descricao": "IFD*RAIA DROGASIL S/AOSASCOBRA",
-      "valor": 49.53,
-      "categoria": "Saúde"
+      "valor": 4953.0,
+      "categoria": "Alimentação"
     },
     {
       "data": "2026-04-30",
       "descricao": "PIX QRS 121 SMART S30/04",
-      "valor": 8.99,
-      "categoria": "Compras"
+      "valor": 899.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-30",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 11.3,
+      "valor": 113.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-29",
       "descricao": "DL          *UberRidesSao PauloBR",
-      "valor": 8.44,
+      "valor": 844.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-29",
       "descricao": "PIX TRANSF EUTEMIR29/04",
-      "valor": 14.8,
-      "categoria": "Pagamento PIX"
+      "valor": 148.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-29",
       "descricao": "PIX QRS 121 SMART S29/04",
-      "valor": 11.99,
-      "categoria": "Compras"
+      "valor": 1199.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-29",
       "descricao": "PIX TRANSF EMANUEL29/04",
-      "valor": 30.0,
-      "categoria": "Transferência Pessoal"
+      "valor": 300.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-29",
       "descricao": "99APP       *99AppSao PauloBRA",
-      "valor": 19.7,
+      "valor": 197.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-28",
       "descricao": "SEG CARTAO PROTEGIDO",
-      "valor": 10.41,
-      "categoria": "Taxas Bancárias"
+      "valor": 1041.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-28",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 11.5,
-      "categoria": "Outras Despesas"
+      "valor": 115.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-28",
       "descricao": "FRANCISCO DE ASSIS DESANTANA DE PABRA",
-      "valor": 36.0,
-      "categoria": "Outras Despesas"
+      "valor": 360.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-28",
       "descricao": "MERCADO PORCHALOSASCOBRA",
-      "valor": 14.74,
+      "valor": 1474.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-27",
       "descricao": "PIX TRANSF MAURO D26/04",
-      "valor": 10.0,
-      "categoria": "Transferência Pessoal"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-27",
       "descricao": "CLARO FLEX RECSAO PAULOBR",
-      "valor": 39.99,
-      "categoria": "Assinaturas"
+      "valor": 3999.0,
+      "categoria": "Serviços"
     },
     {
       "data": "2026-04-27",
       "descricao": "CLARO FLEXSAO PAULOBRA",
-      "valor": 39.99,
-      "categoria": "Assinaturas"
+      "valor": 3999.0,
+      "categoria": "Serviços"
     },
     {
       "data": "2026-04-27",
       "descricao": "ESQUINA DO PAO X PADAROSASCOBRA",
-      "valor": 4.5,
-      "categoria": "Alimentação"
+      "valor": 45.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-27",
       "descricao": "MERCADO PORCHALOSASCOBRA",
-      "valor": 22.17,
+      "valor": 2217.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-27",
       "descricao": "PIX QRS RICARDO DUA25/04",
-      "valor": 10.0,
-      "categoria": "Compras"
-    },
-    {
-      "data": "2026-04-26",
-      "descricao": "IFD*RAIA DROGASIL SAOSASCOBRA",
-      "valor": 105.55,
-      "categoria": "Saúde"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-26",
       "descricao": "ADEGA SAO CRISTOVAOOSASCOBRA",
-      "valor": 9.0,
-      "categoria": "Alimentação"
+      "valor": 90.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-25",
       "descricao": "PADARIA DIPLOMATAOSASCOBRA",
-      "valor": 34.1,
+      "valor": 341.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-25",
       "descricao": "MERCADO PORCHALOSASCOBRA",
-      "valor": 6.45,
+      "valor": 645.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-24",
       "descricao": "ESQUINA DO PAO X PADAROSASCOBRA",
-      "valor": 9.6,
-      "categoria": "Alimentação"
+      "valor": 96.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-24",
       "descricao": "Mensalidade - Plano do cartão",
-      "valor": 35.0,
-      "categoria": "Assinaturas"
+      "valor": 350.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-24",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 23.7,
-      "categoria": "Outras Despesas"
+      "valor": 237.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-23",
       "descricao": "121 SMART SHOP - BARUEBARUERIBRA",
-      "valor": 7.99,
-      "categoria": "Outras Despesas"
+      "valor": 799.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-23",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 9.5,
-      "categoria": "Outras Despesas"
+      "valor": 95.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-23",
       "descricao": "MERCADO PORCHALOSASCOBRA",
-      "valor": 9.95,
+      "valor": 995.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-23",
       "descricao": "PG *99 RIDESAO PAULOBR",
-      "valor": 18.0,
+      "valor": 180.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-23",
       "descricao": "DL          *UberRidesSao PauloBR",
-      "valor": 1.32,
+      "valor": 132.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-23",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 7.05,
-      "categoria": "Outras Despesas"
+      "valor": 705.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-22",
       "descricao": "MERCADO PORCHALOSASCOBR",
-      "valor": 14.16,
+      "valor": 1416.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-22",
       "descricao": "121 SMART SHOP - BARUEBARUERIBR",
-      "valor": 2.19,
-      "categoria": "Outras Despesas"
+      "valor": 219.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-21",
       "descricao": "99Food *Pizzaria Peg-LevSao PauloBR",
-      "valor": 38.85,
-      "categoria": "Alimentação"
+      "valor": 3885.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-21",
       "descricao": "MERCADO PORCHALOSASCOBR",
-      "valor": 22.89,
+      "valor": 2289.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-20",
       "descricao": "DROGARIA RAFAELAOSASCOBR",
-      "valor": 5.79,
+      "valor": 579.0,
       "categoria": "Saúde"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX TRANSF FABRISL20/04",
-      "valor": 63.0,
-      "categoria": "Pagamento PIX"
+      "valor": 630.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX TRANSF ANDRE L19/04",
-      "valor": 50.0,
-      "categoria": "Pagamento PIX"
+      "valor": 500.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX QRS STAFEBANK18/04",
-      "valor": 10.0,
-      "categoria": "Compras"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX QRS COMPANHIA B18/04",
-      "valor": 47.23,
-      "categoria": "Compras"
+      "valor": 4723.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX TRANSF GIOVANE19/04",
-      "valor": 25.0,
-      "categoria": "Pagamento PIX"
+      "valor": 250.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "UBER *ONE MEMBERSHIP UBERSAO PAULOBR",
-      "valor": 19.9,
+      "valor": 199.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-20",
       "descricao": "DROGARIA RAFAELAOSASCOBR",
-      "valor": 37.97,
+      "valor": 3797.0,
       "categoria": "Saúde"
     },
     {
       "data": "2026-04-20",
       "descricao": "34  POUPAKI OSASCOOSASCOBR",
-      "valor": 48.08,
-      "categoria": "Alimentação"
+      "valor": 4808.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-20",
       "descricao": "PIX QRS 99 TECNOLOG18/04",
-      "valor": 21.08,
-      "categoria": "Compras"
+      "valor": 2108.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 11.7,
-      "categoria": "Outras Despesas"
+      "valor": 117.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 13.23,
-      "categoria": "Outras Despesas"
+      "valor": 1323.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "DL*99 RideSAO PAULOBR",
-      "valor": 6.4,
-      "categoria": "Outras Despesas"
+      "valor": 64.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "PG *99 RIDESAO PAULOBR",
-      "valor": 22.0,
+      "valor": 220.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "JR LANCHESOSASCOBR",
-      "valor": 14.0,
+      "valor": 140.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-19",
       "descricao": "DL*UberRidesSao PauloBR",
-      "valor": 4.83,
+      "valor": 483.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-19",
       "descricao": "OFICINA CLUB DANCETERISAO PAULOBR",
-      "valor": 10.0,
-      "categoria": "Outras Despesas"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-19",
       "descricao": "TERRACO CLUBE LAUGE LISAO PAULOBR",
-      "valor": 10.0,
-      "categoria": "Outras Despesas"
+      "valor": 100.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-19",
       "descricao": "CORDEIRO LIMA LANCHESSAO PAULOBR",
-      "valor": 13.0,
+      "valor": 130.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-19",
-      "descricao": "ZIG*HIFI COMMUNITYSAO PAULOBR",
-      "valor": 288.82,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-04-19",
       "descricao": "DL*UberRidesSao PauloBR",
-      "valor": 5.99,
+      "valor": 599.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-18",
-      "descricao": "PAGAMENTO COM SALDO",
-      "valor": 2222.45,
-      "categoria": "Outras Despesas"
-    },
-    {
-      "data": "2026-04-18",
       "descricao": "ESTACAO REGGAEOSASCOBR",
-      "valor": 14.0,
-      "categoria": "Outras Despesas"
+      "valor": 140.0,
+      "categoria": "Outros"
     },
     {
       "data": "2026-04-18",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 5.0,
-      "categoria": "Outras Despesas"
+      "valor": 50.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-18",
       "descricao": "DL*UberRidesSao PauloBR",
-      "valor": 19.62,
+      "valor": 1962.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-18",
       "descricao": "MERCADO PORCHALOSASCOBR",
-      "valor": 11.94,
+      "valor": 1194.0,
       "categoria": "Alimentação"
     },
     {
       "data": "2026-04-18",
       "descricao": "DL*99 RIDESAO PAULOBR",
-      "valor": 23.4,
-      "categoria": "Outras Despesas"
+      "valor": 234.0,
+      "categoria": "Transporte"
     },
     {
       "data": "2026-04-18",
       "descricao": "UBER * PENDINGSAO PAULOBR",
-      "valor": 13.37,
+      "valor": 1337.0,
       "categoria": "Transporte"
     },
     {
       "data": "2026-04-17",
-      "descricao": "PETLOVE SAUD*PetlSAO PAULOBR",
-      "valor": 54.79,
-      "categoria": "Saúde"
+      "descricao": "PIX TRANSF 65.530.17/04",
+      "valor": 135.0,
+      "categoria": "Outros"
+    },
+    {
+      "data": "2026-04-16",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 140.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-15",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 102.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-15",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 94.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 141.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 94.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 94.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "UBER * PENDINGSAO PAULOBR",
+      "valor": 563.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "DL*99 RIDESAO PAULOBR",
+      "valor": 102.0,
+      "categoria": "Transporte"
+    },
+    {
+      "data": "2026-04-13",
+      "descricao": "PIX QRS MERCADO POR11/04",
+      "valor": 495.0,
+      "categoria": "Alimentação"
+    },
+    {
+      "data": "2026-04-12",
+      "descricao": "99APP*99AppSao PauloBR",
+      "valor": 62.0,
+      "categoria": "Transporte"
     }
   ],
   "receitasFixas": [
@@ -1608,8 +1593,8 @@
     ]
   },
   "stats": {
-    "total_gastos": 2506,
-    "total_receitas": 114,
-    "total_transacoes": 2620
+    "total_gastos": 2246,
+    "total_receitas": 83,
+    "total_transacoes": 2329
   }
 }
