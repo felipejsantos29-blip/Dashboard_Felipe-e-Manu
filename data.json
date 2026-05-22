@@ -1,14 +1,14 @@
 {
-  "lastUpdate": "2026-05-22T10:37:13.881521",
+  "lastUpdate": "2026-05-22T18:21:59.392930",
   "rendaLiquida": 3500,
-  "totalReceitas": 5280.15,
+  "totalReceitas": 0,
   "totalGastos": 464.96,
-  "saldoTotal": 4815.19,
+  "saldoTotal": -464.96,
   "mediaDiaria": 0,
-  "taxaEsforco": 8.8,
-  "capPoupanca": 91.2,
+  "taxaEsforco": 0,
+  "capPoupanca": 0,
   "diasReserva": 0,
-  "scoreFinanceiro": 75,
+  "scoreFinanceiro": 20,
   "variacaoGastoMes": 0.0,
   "gastosMensais": {},
   "receitasMensais": {},
@@ -453,23 +453,7 @@
     ]
   },
   "extrato": [],
-  "receitasFixas": [
-    {
-      "descricao": "Salário Principal",
-      "valor": 1761.48,
-      "dia_previsto": 15
-    },
-    {
-      "descricao": "Salário Complementar",
-      "valor": 1699.34,
-      "dia_previsto": 15
-    },
-    {
-      "descricao": "Salário Variável",
-      "valor": 1819.33,
-      "dia_previsto": 30
-    }
-  ],
+  "receitasFixas": [],
   "despesasRecorrentes": [
     {
       "descricao": "Seguro Cartão 5217",
