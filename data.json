@@ -1,9 +1,9 @@
 {
-  "lastUpdate": "2026-08-18T00:57:31.127079",
+  "lastUpdate": "2026-08-18T04:31:02.159659",
   "rendaLiquida": 3500,
   "totalReceitas": 0,
-  "totalGastos": 464.96,
-  "saldoTotal": -464.96,
+  "totalGastos": 0,
+  "saldoTotal": 0,
   "mediaDiaria": 0,
   "taxaEsforco": 0,
   "capPoupanca": 0,
@@ -12,14 +12,7 @@
   "variacaoGastoMes": 0.0,
   "gastosMensais": {},
   "receitasMensais": {},
-  "gastosPorCategoria": {
-    "Educação": 328.67,
-    "Streaming": 40.9,
-    "Telefone": 39.99,
-    "Serviços": 35.0,
-    "Seguro": 10.41,
-    "Assinatura": 9.99
-  },
+  "gastosPorCategoria": {},
   "limitesSugeridos": {
     "Alimentação": 700,
     "Transporte": 500,
@@ -33,9 +26,7 @@
     "Outros": 300
   },
   "rankingCategoria": [],
-  "alertas": [
-    "⚠️  Educação: 82% do limite (R$71 restam)"
-  ],
+  "alertas": [],
   "debt": {
     "valor_total": 35000,
     "saldo_devedor": 29500.0,
@@ -454,44 +445,7 @@
   },
   "extrato": [],
   "receitasFixas": [],
-  "despesasRecorrentes": [
-    {
-      "descricao": "Seguro Cartão 5217",
-      "categoria": "Seguro",
-      "valor": 10.41,
-      "dia_vencimento": 20
-    },
-    {
-      "descricao": "Anuidade Cartão 7398",
-      "categoria": "Serviços",
-      "valor": 35.0,
-      "dia_vencimento": 25
-    },
-    {
-      "descricao": "Spotify",
-      "categoria": "Streaming",
-      "valor": 40.9,
-      "dia_vencimento": 10
-    },
-    {
-      "descricao": "Google One",
-      "categoria": "Assinatura",
-      "valor": 9.99,
-      "dia_vencimento": 27
-    },
-    {
-      "descricao": "Claro Flex",
-      "categoria": "Telefone",
-      "valor": 39.99,
-      "dia_vencimento": 22
-    },
-    {
-      "descricao": "Faculdade",
-      "categoria": "Educação",
-      "valor": 328.67,
-      "dia_vencimento": 24
-    }
-  ],
+  "despesasRecorrentes": [],
   "projecaoMensal": [
     {
       "mes": "2026-01",
