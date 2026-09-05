@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2026-09-04T22:03:06.517177",
+  "lastUpdate": "2026-09-05T02:40:58.663353",
   "rendaLiquida": 3500,
   "totalReceitas": 0,
   "totalGastos": 464.96,
@@ -38,8 +38,8 @@
   ],
   "debt": {
     "valor_total": 35000,
-    "saldo_devedor": 29500.0,
-    "parcelas_pagas": 3,
+    "saldo_devedor": 29000.0,
+    "parcelas_pagas": 4,
     "total_parcelas": 30,
     "parcela_mensal": 500,
     "extra_semestral": 4000,
@@ -85,7 +85,7 @@
         "valor_extra": 0.0,
         "valor_total": 500.0,
         "saldo_apos": 29000.0,
-        "status": "Pendente",
+        "status": "Paga",
         "mes_plr": false
       },
       {
@@ -351,16 +351,6 @@
     ],
     "proximas_parcelas": [
       {
-        "data": "2026-09-05",
-        "parcela": 4,
-        "valor_mensal": 500.0,
-        "valor_extra": 0.0,
-        "valor_total": 500.0,
-        "saldo_apos": 29000.0,
-        "status": "Pendente",
-        "mes_plr": false
-      },
-      {
         "data": "2026-10-05",
         "parcela": 5,
         "valor_mensal": 500.0,
@@ -449,6 +439,16 @@
         "saldo_apos": 16500.0,
         "status": "Pendente",
         "mes_plr": true
+      },
+      {
+        "data": "2027-07-05",
+        "parcela": 14,
+        "valor_mensal": 500.0,
+        "valor_extra": 0.0,
+        "valor_total": 500.0,
+        "saldo_apos": 16000.0,
+        "status": "Pendente",
+        "mes_plr": false
       }
     ]
   },
